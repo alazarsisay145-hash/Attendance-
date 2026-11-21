@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0d221b">
+<meta name="theme-color" content="#0c1f18">
 <meta name="description" content="NEXUS — Workforce & Payroll OS. Offline employee attendance, QR cards, advances, and payroll.">
 <meta name="application-name" content="NEXUS">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,18 +11,18 @@
 <title>NEXUS — Workforce & Payroll OS</title>
 <style>
 :root{
- --bg-1:#e1eee8;
- --bg-2:#f5f8f6;
- --bg-3:#d5e7de;
- --glass:rgba(255,255,255,.72);
- --glass-card:rgba(255,255,255,.82);
- --glass-input:rgba(255,255,255,.94);
- --glass-well:rgba(240,247,243,.68);
- --glass-table:rgba(255,255,255,.58);
- --edge:rgba(255,255,255,.86);
+ --bg-1:#e3efe9;
+ --bg-2:#f4f8f6;
+ --bg-3:#d7e8df;
+ --glass:rgba(255,255,255,.78);
+ --glass-card:rgba(255,255,255,.88);
+ --glass-input:rgba(255,255,255,.96);
+ --glass-well:rgba(241,248,244,.82);
+ --glass-table:rgba(255,255,255,.74);
+ --edge:rgba(255,255,255,.9);
  --edge-soft:rgba(15,38,28,.09);
  --ink:#0f2118;
- --ink-strong:#17251f;
+ --ink-strong:#15241d;
  --muted:#566960;
  --green:#126846;
  --green-2:#1b855b;
@@ -33,21 +33,22 @@
  --amber-soft:rgba(148,93,18,.14);
  --red:#b53530;
  --red-soft:rgba(181,53,48,.12);
- --header-bg:rgba(12,31,24,.86);
+ --header-bg:rgba(12,31,24,.92);
+ --nav-bg:rgba(255,255,255,.92);
  --brand-word:#111111;
  --blur:blur(18px);
- --shadow:0 16px 38px rgba(11,34,24,.08), 0 2px 8px rgba(11,34,24,.04), inset 0 1px 0 rgba(255,255,255,.92);
+ --shadow:0 12px 30px rgba(11,34,24,.07), inset 0 1px 0 rgba(255,255,255,.9);
 }
 
 html.dark{
- --bg-1:#08120e;
- --bg-2:#0d1a15;
- --bg-3:#11231c;
- --glass:rgba(18,34,28,.76);
- --glass-card:rgba(20,39,32,.84);
- --glass-input:rgba(12,24,20,.92);
- --glass-well:rgba(14,28,23,.74);
- --glass-table:rgba(13,26,21,.64);
+ --bg-1:#07110d;
+ --bg-2:#0c1813;
+ --bg-3:#10211a;
+ --glass:rgba(18,34,28,.8);
+ --glass-card:rgba(19,38,31,.88);
+ --glass-input:rgba(12,24,20,.94);
+ --glass-well:rgba(14,28,23,.78);
+ --glass-table:rgba(13,26,21,.68);
  --edge:rgba(156,227,190,.15);
  --edge-soft:rgba(156,227,190,.11);
  --ink:#ecf6f0;
@@ -62,455 +63,283 @@ html.dark{
  --amber-soft:rgba(234,176,82,.16);
  --red:#ff726b;
  --red-soft:rgba(255,114,107,.16);
- --header-bg:rgba(7,16,13,.90);
+ --header-bg:rgba(7,16,13,.92);
+ --nav-bg:rgba(11,22,18,.92);
  --brand-word:#f3faf6;
- --shadow:0 18px 42px rgba(0,0,0,.38), 0 2px 10px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.06);
+ --shadow:0 14px 34px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.06);
 }
 
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{
  margin:0;
  min-height:100dvh;
  color:var(--ink);
- font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+ font:15px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
  background:
-  radial-gradient(560px 360px at 8% 6%, rgba(27,133,91,.17), transparent 70%),
-  radial-gradient(520px 340px at 92% 10%, rgba(23,56,255,.11), transparent 70%),
-  radial-gradient(620px 380px at 50% 96%, rgba(18,104,70,.13), transparent 72%),
-  linear-gradient(165deg, var(--bg-1) 0%, var(--bg-2) 52%, var(--bg-3) 100%);
+  radial-gradient(540px 340px at 10% 4%, rgba(27,133,91,.16), transparent 70%),
+  radial-gradient(520px 320px at 90% 8%, rgba(23,56,255,.10), transparent 70%),
+  linear-gradient(165deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
  background-attachment:fixed;
+ padding-bottom:calc(86px + env(safe-area-inset-bottom));
  transition:background .25s ease,color .2s ease;
 }
-html.dark body{
- background:
-  radial-gradient(600px 380px at 10% 6%, rgba(45,184,127,.14), transparent 70%),
-  radial-gradient(540px 360px at 90% 10%, rgba(108,133,255,.12), transparent 70%),
-  radial-gradient(640px 400px at 50% 96%, rgba(18,104,70,.15), transparent 72%),
-  linear-gradient(165deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
-}
 
-/* Admin Lock / Authentication Screen */
+/* Admin Lock Screen */
 .lock-screen{
- position:fixed;
- inset:0;
- z-index:50;
- display:flex;
- align-items:center;
- justify-content:center;
- padding:18px;
- overflow:auto;
- background:
-  radial-gradient(520px 340px at 20% 15%, rgba(27,133,91,.24), transparent 70%),
-  radial-gradient(520px 340px at 85% 85%, rgba(23,56,255,.18), transparent 70%),
-  linear-gradient(160deg, rgba(12,31,24,.92), rgba(18,46,36,.94));
- backdrop-filter:blur(22px);
- -webkit-backdrop-filter:blur(22px);
+ position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
+ padding:18px;overflow:auto;
+ background:linear-gradient(160deg, rgba(12,31,24,.94), rgba(18,46,36,.96));
+ backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
 }
 .lock-card{
- width:100%;
- max-width:410px;
- background:var(--glass-card);
- backdrop-filter:var(--blur);
- -webkit-backdrop-filter:var(--blur);
- border:1px solid var(--edge);
- border-radius:26px;
- padding:26px 22px;
- box-shadow:0 24px 60px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.15);
- text-align:center;
+ width:100%;max-width:390px;background:var(--glass-card);backdrop-filter:var(--blur);
+ -webkit-backdrop-filter:var(--blur);border:1px solid var(--edge);border-radius:26px;
+ padding:24px 20px;box-shadow:0 24px 60px rgba(0,0,0,.38);text-align:center;
 }
 .lock-brand{
- display:inline-flex;
- align-items:center;
- gap:8px;
- padding:6px 12px;
- border-radius:999px;
- background:var(--glass-input);
- border:1px solid var(--edge-soft);
- margin-bottom:14px;
+ display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;
+ background:var(--glass-input);border:1px solid var(--edge-soft);margin-bottom:12px;
 }
 .admin-chip{
- display:inline-block;
- font-size:10px;
- font-weight:800;
- letter-spacing:.08em;
- text-transform:uppercase;
- padding:4px 9px;
- border-radius:999px;
- background:var(--accent-soft);
- color:var(--accent);
- margin-bottom:8px;
+ display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+ padding:4px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-bottom:8px;
 }
-.lock-title{font-size:22px;font-weight:850;letter-spacing:-.5px;margin:0 0 4px;color:var(--ink-strong)}
-.lock-sub{font-size:13px;color:var(--muted);margin:0 0 18px}
-.passcode-input{
- text-align:center;
- font-size:20px;
- font-weight:800;
- letter-spacing:.28em;
- min-height:50px;
-}
-.lock-err{
- margin-top:10px;
- font-size:12px;
- font-weight:700;
- color:var(--red);
- min-height:18px;
-}
-.lock-change-box{
- margin-top:14px;
- padding-top:14px;
- border-top:1px solid var(--edge-soft);
- text-align:left;
-}
+.lock-title{font-size:21px;font-weight:850;letter-spacing:-.5px;margin:0 0 4px;color:var(--ink-strong)}
+.lock-sub{font-size:13px;color:var(--muted);margin:0 0 16px}
+.passcode-input{text-align:center;font-size:20px;font-weight:800;letter-spacing:.28em;min-height:48px}
+.lock-err{margin-top:10px;font-size:12px;font-weight:700;color:var(--red);min-height:18px}
+.lock-change-box{margin-top:14px;padding-top:14px;border-top:1px solid var(--edge-soft);text-align:left}
 
 /* In-app Payment / Advance Modal */
 .modal-backdrop{
- position:fixed;
- inset:0;
- z-index:55;
- display:flex;
- align-items:center;
- justify-content:center;
- padding:16px;
- overflow:auto;
- background:rgba(6,16,12,.68);
- backdrop-filter:blur(10px);
- -webkit-backdrop-filter:blur(10px);
+ position:fixed;inset:0;z-index:55;display:flex;align-items:flex-end;justify-content:center;
+ padding:12px;overflow:auto;background:rgba(6,16,12,.68);
+ backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
 }
+@media(min-width:640px){.modal-backdrop{align-items:center;padding:16px}}
 .modal-card{
- width:100%;
- max-width:440px;
- background:var(--glass-card);
- backdrop-filter:var(--blur);
- -webkit-backdrop-filter:var(--blur);
- border:1px solid var(--edge);
- border-radius:24px;
- padding:22px 20px;
- box-shadow:0 24px 60px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.16);
+ width:100%;max-width:430px;background:var(--glass-card);backdrop-filter:var(--blur);
+ -webkit-backdrop-filter:var(--blur);border:1px solid var(--edge);border-radius:24px;
+ padding:20px 18px;box-shadow:0 24px 60px rgba(0,0,0,.42);
 }
-.modal-head{
- display:flex;
- align-items:flex-start;
- justify-content:space-between;
- gap:12px;
- margin-bottom:10px;
-}
+.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
 .modal-head h2{margin:0;font-size:18px}
 .modal-meta{
- padding:11px 13px;
- border-radius:14px;
- background:var(--glass-well);
- border:1px solid var(--edge-soft);
- font-size:12px;
- margin-bottom:10px;
+ padding:10px 12px;border-radius:14px;background:var(--glass-well);
+ border:1px solid var(--edge-soft);font-size:12px;margin-bottom:10px;
 }
-.modal-err{
- min-height:18px;
- margin-top:8px;
- font-size:12px;
- font-weight:750;
- color:var(--red);
-}
+.modal-err{min-height:18px;margin-top:8px;font-size:12px;font-weight:750;color:var(--red)}
 
+/* Mobile App Top Bar */
 header{
- position:sticky;
- top:0;
- z-index:20;
- background:var(--header-bg);
- backdrop-filter:var(--blur);
- -webkit-backdrop-filter:var(--blur);
- border-bottom:1px solid rgba(255,255,255,.14);
- color:#fff;
- padding:14px max(16px,calc((100% - 1180px)/2));
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:12px;
+ position:sticky;top:0;z-index:20;background:var(--header-bg);
+ backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+ border-bottom:1px solid rgba(255,255,255,.12);color:#fff;
+ padding:12px max(14px,calc((100% - 920px)/2));
+ padding-top:calc(12px + env(safe-area-inset-top));
+ display:flex;justify-content:space-between;align-items:center;gap:10px;
 }
-.brand-wrap{display:flex;align-items:center;gap:11px}
+.brand-wrap{display:flex;align-items:center;gap:10px}
 .nx-mark{
- width:38px;height:38px;border-radius:12px;
- background:rgba(255,255,255,.96);
- border:1px solid rgba(255,255,255,.4);
- display:grid;place-items:center;
- box-shadow:0 6px 16px rgba(0,0,0,.22);
- flex:0 0 auto;
+ width:34px;height:34px;border-radius:11px;background:rgba(255,255,255,.96);
+ display:grid;place-items:center;flex:0 0 auto;
 }
-.brand{font-size:20px;font-weight:850;letter-spacing:.12em;line-height:1.1}
-.brand span{color:#9ce3be;font-weight:700;letter-spacing:-.2px;font-size:13px;display:block;margin-top:2px}
-.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.brand{font-size:18px;font-weight:850;letter-spacing:.12em;line-height:1.05}
+.brand span{color:#9ce3be;font-weight:650;letter-spacing:0;font-size:11px;display:block;margin-top:2px}
+.header-right{display:flex;align-items:center;gap:6px}
 .pill{
- border-radius:999px;
- padding:6px 11px;
- background:rgba(156,227,190,.15);
- border:1px solid rgba(156,227,190,.34);
- color:#bef2d6;
- font-size:11px;
- font-weight:800;
- letter-spacing:.04em;
- white-space:nowrap;
+ border-radius:999px;padding:5px 9px;background:rgba(156,227,190,.15);
+ border:1px solid rgba(156,227,190,.32);color:#bef2d6;font-size:10px;font-weight:800;white-space:nowrap;
 }
-.pill.warn{
- background:rgba(255,213,128,.16);
- border-color:rgba(255,213,128,.38);
- color:#ffe29e;
- cursor:pointer;
-}
+.pill.warn{background:rgba(255,213,128,.16);border-color:rgba(255,213,128,.38);color:#ffe29e;cursor:pointer}
 
-main{max-width:1180px;margin:auto;padding:22px 14px 56px}
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-h1{font-size:26px;margin:0 0 3px;letter-spacing:-.75px;font-weight:850;color:var(--ink-strong)}
-h2{font-size:17px;margin:0 0 13px;letter-spacing:-.25px;font-weight:800;color:var(--ink-strong)}
+/* Main App Container */
+main{max-width:920px;margin:auto;padding:16px 12px 24px}
+.app-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+h1{font-size:22px;margin:0;letter-spacing:-.5px;font-weight:850;color:var(--ink-strong)}
+h2{font-size:16px;margin:0 0 11px;letter-spacing:-.2px;font-weight:800;color:var(--ink-strong)}
 .muted{color:var(--muted)}
 .tiny{font-size:12px;color:var(--muted)}
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+/* KPI Strip */
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+@media(min-width:640px){.stats{grid-template-columns:repeat(4,1fr)}}
 .stat,.panel{
- background:var(--glass);
- backdrop-filter:var(--blur);
- -webkit-backdrop-filter:var(--blur);
- border:1px solid var(--edge);
- border-radius:22px;
- box-shadow:var(--shadow);
+ background:var(--glass-card);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+ border:1px solid var(--edge);border-radius:20px;box-shadow:var(--shadow);
 }
-.stat{padding:16px;position:relative;overflow:hidden;transition:transform .18s ease,background .18s ease}
-.stat::before{
- content:"";position:absolute;inset:0 0 auto 0;height:3px;
- background:linear-gradient(90deg,var(--green-2),var(--accent));
-}
-.stat:hover{transform:translateY(-2px);background:var(--glass-card)}
+.stat{padding:13px 14px;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--green-2),var(--accent))}
 .stat.clickable{cursor:pointer}
-.stat small{color:var(--muted);font-weight:700;font-size:12px;display:block}
-.stat strong{display:block;font-size:25px;margin-top:6px;letter-spacing:-.7px;font-variant-numeric:tabular-nums;color:var(--ink-strong)}
+.stat small{color:var(--muted);font-weight:700;font-size:11px;display:block}
+.stat strong{display:block;font-size:21px;margin-top:4px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;color:var(--ink-strong)}
 
-.layout{display:grid;grid-template-columns:1fr 1.25fr;gap:15px;align-items:start}
-.panel{padding:19px;margin-bottom:14px;background:var(--glass-card)}
+.panel{padding:16px;margin-bottom:12px}
+.stack{display:flex;flex-direction:column;gap:12px}
+@media(min-width:760px){.two-col{display:grid;grid-template-columns:1fr 1.15fr;gap:14px;align-items:start}}
 
-.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
-.quick-tile{
- text-align:left;
- padding:14px;
- border-radius:16px;
- background:var(--glass-well);
- border:1px solid var(--edge);
- cursor:pointer;
- transition:transform .15s ease,background .15s ease,border-color .15s ease;
- color:var(--ink);
+/* Hero Scanner CTA */
+.scan-hero{
+ width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;
+ padding:16px;border-radius:20px;border:1px solid rgba(255,255,255,.22);
+ background:linear-gradient(135deg,#104d35,#1b855b);color:#fff;cursor:pointer;
+ box-shadow:0 12px 26px rgba(18,104,70,.26);text-align:left;transition:transform .14s ease,filter .14s ease;
 }
-.quick-tile:hover{
- transform:translateY(-2px);
- background:var(--glass-input);
- border-color:rgba(45,184,127,.45);
-}
-.quick-tile strong{display:block;font-size:14px;margin-bottom:2px;color:var(--ink-strong)}
-.quick-tile span{display:block;font-size:12px;color:var(--muted)}
-
-.tabs{display:flex;gap:8px;overflow:auto;padding:4px 2px 15px;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{
- border:1px solid var(--edge);
- background:var(--glass);
- backdrop-filter:var(--blur);
- -webkit-backdrop-filter:var(--blur);
- padding:10px 16px;
- border-radius:999px;
- font-weight:750;
- font-size:13px;
- color:var(--ink);
- white-space:nowrap;
- cursor:pointer;
- transition:all .18s ease;
- box-shadow:0 4px 14px rgba(11,34,24,.05);
-}
-.tab:hover{background:var(--glass-input);transform:translateY(-1px)}
-.tab.active{
- background:linear-gradient(135deg,#103b2c,#196d4c);
- color:#fff;
- border-color:rgba(255,255,255,.32);
- box-shadow:0 10px 22px rgba(18,104,70,.28);
+.scan-hero:active{transform:scale(.99)}
+.scan-hero strong{display:block;font-size:16px;font-weight:850}
+.scan-hero span{display:block;font-size:12px;color:rgba(255,255,255,.86);margin-top:2px}
+.scan-icon-box{
+ width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.18);
+ display:grid;place-items:center;flex:0 0 auto;
 }
 
-label{display:block;font-size:12px;font-weight:750;color:var(--muted);margin:12px 0 5px}
+.app-shortcuts{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}
+.app-tile{
+ text-align:left;padding:12px 13px;border-radius:16px;background:var(--glass-well);
+ border:1px solid var(--edge-soft);cursor:pointer;color:var(--ink);transition:transform .14s ease,border-color .14s ease;
+}
+.app-tile:active{transform:scale(.98)}
+.app-tile strong{display:block;font-size:13px;font-weight:800;color:var(--ink-strong)}
+.app-tile span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+
+label{display:block;font-size:12px;font-weight:750;color:var(--muted);margin:11px 0 4px}
 input:not([type="checkbox"]),select{
- width:100%;
- min-height:44px;
- border:1px solid var(--edge-soft);
- border-radius:13px;
- padding:10px 13px;
- background:var(--glass-input);
- font:inherit;
- color:var(--ink);
- min-width:0;
- transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
+ width:100%;min-height:44px;border:1px solid var(--edge-soft);border-radius:13px;
+ padding:10px 12px;background:var(--glass-input);font:inherit;color:var(--ink);min-width:0;
 }
-input:not([type="checkbox"]):focus,select:focus{
- outline:none;border-color:var(--green-2);
- box-shadow:0 0 0 3px rgba(45,184,127,.2);
-}
-input[type="checkbox"]{width:19px;height:19px;accent-color:var(--green);cursor:pointer;margin:0;flex:0 0 auto}
+input:not([type="checkbox"]):focus,select:focus{outline:none;border-color:var(--green-2);box-shadow:0 0 0 3px rgba(45,184,127,.2)}
+input[type="checkbox"]{width:18px;height:18px;accent-color:var(--green);cursor:pointer;margin:0;flex:0 0 auto}
 
 .row{display:flex;gap:8px;align-items:end;flex-wrap:wrap}
-.row>*{flex:1;min-width:140px}
+.row>*{flex:1;min-width:130px}
 
 .btn{
- min-height:44px;
- border:1px solid rgba(255,255,255,.18);
- border-radius:13px;
- padding:10px 15px;
- font-weight:750;
- font-size:14px;
- cursor:pointer;
- background:linear-gradient(135deg,var(--green),var(--green-2));
- color:#fff;
- box-shadow:0 8px 20px rgba(18,104,70,.24);
- transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;
+ min-height:44px;border:1px solid rgba(255,255,255,.16);border-radius:13px;
+ padding:10px 14px;font-weight:750;font-size:14px;cursor:pointer;
+ background:linear-gradient(135deg,var(--green),var(--green-2));color:#fff;
+ box-shadow:0 6px 16px rgba(18,104,70,.22);transition:transform .14s ease,filter .14s ease;
 }
-.btn:hover:not(:disabled){filter:brightness(1.05);transform:translateY(-1px)}
-.btn:active:not(:disabled){transform:translateY(0)}
-.btn.secondary{
- background:var(--glass-input);color:var(--ink-strong);
- border:1px solid var(--edge-soft);box-shadow:0 3px 10px rgba(11,34,24,.06);
-}
-.btn.outline{
- background:var(--green-soft);color:var(--green-2);
- border:1px solid rgba(45,184,127,.32);box-shadow:none;
-}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn.secondary{background:var(--glass-input);color:var(--ink-strong);border:1px solid var(--edge-soft);box-shadow:none}
+.btn.outline{background:var(--green-soft);color:var(--green-2);border:1px solid rgba(45,184,127,.32);box-shadow:none}
 html:not(.dark) .btn.outline{color:var(--green)}
-.btn.danger{
- background:var(--red-soft);color:var(--red);
- border:1px solid rgba(181,53,48,.28);box-shadow:none;
-}
+.btn.danger{background:var(--red-soft);color:var(--red);border:1px solid rgba(181,53,48,.28);box-shadow:none}
 .btn.small{min-height:36px;padding:7px 11px;font-size:12px;border-radius:11px}
 .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
 
 .person-btn{
- display:inline-flex;
- align-items:center;
- gap:6px;
- padding:7px 11px;
- border-radius:12px;
- border:1px solid var(--edge-soft);
- background:var(--glass-input);
- color:var(--ink-strong);
- font-weight:750;
- font-size:13px;
- cursor:pointer;
- transition:transform .14s ease,border-color .14s ease,background .14s ease;
-}
-.person-btn:hover{
- transform:translateY(-1px);
- border-color:rgba(45,184,127,.45);
- background:var(--green-soft);
+ display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:12px;
+ border:1px solid var(--edge-soft);background:var(--glass-input);color:var(--ink-strong);
+ font-weight:750;font-size:12px;cursor:pointer;
 }
 .person-btn .num-pill{
- font-family:monospace,system-ui,sans-serif;
- font-size:11px;
- padding:2px 6px;
- border-radius:8px;
- background:var(--accent-soft);
- color:var(--accent);
+ font-family:monospace,system-ui,sans-serif;font-size:11px;padding:2px 6px;border-radius:8px;
+ background:var(--accent-soft);color:var(--accent);
 }
-.person-btn.absent-btn:hover{
- border-color:rgba(181,53,48,.4);
- background:var(--red-soft);
-}
-.person-btn.advance-btn .num-pill{
- background:var(--amber-soft);
- color:var(--amber);
-}
+.person-btn.absent-btn .num-pill{background:var(--red-soft);color:var(--red)}
+.person-btn.advance-btn .num-pill{background:var(--amber-soft);color:var(--amber)}
 .status-chip-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
 
 .actions{display:flex;gap:8px;flex-wrap:wrap}
-.actions>*{flex:1;min-width:100px}
+.actions>*{flex:1;min-width:96px}
 .hidden{display:none!important}
 
 #video{
- width:100%;max-height:300px;object-fit:cover;background:#0e1914;
+ width:100%;max-height:290px;object-fit:cover;background:#0e1914;
  border-radius:16px;display:none;margin-top:10px;border:1px solid var(--edge);
 }
 .result{
- padding:14px 15px;border-radius:15px;
- background:var(--glass-well);border:1px solid var(--edge-soft);
- margin-top:11px;min-height:54px;
+ padding:13px 14px;border-radius:15px;background:var(--glass-well);
+ border:1px solid var(--edge-soft);margin-top:10px;min-height:50px;
 }
 .result.success{background:rgba(35,156,107,.16);border-color:rgba(45,184,127,.38)}
 .result.warn{background:rgba(234,176,82,.16);border-color:rgba(234,176,82,.38)}
-html:not(.dark) .result.success{background:rgba(222,247,232,.88);border-color:rgba(18,104,70,.28)}
+html:not(.dark) .result.success{background:rgba(222,247,232,.9);border-color:rgba(18,104,70,.28)}
 html:not(.dark) .result.warn{background:rgba(255,245,222,.92);border-color:rgba(148,93,18,.26)}
-.result b.name{font-size:18px;display:block;margin-bottom:2px;color:var(--ink-strong)}
+.result b.name{font-size:17px;display:block;margin-bottom:2px;color:var(--ink-strong)}
 
 table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
-th{text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.55px;padding:10px 9px;border-bottom:1px solid var(--edge-soft)}
-td{padding:11px 9px;border-bottom:1px solid var(--edge-soft);vertical-align:middle}
+th{text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:9px 8px;border-bottom:1px solid var(--edge-soft)}
+td{padding:10px 8px;border-bottom:1px solid var(--edge-soft);vertical-align:middle}
 tr:last-child td{border:0}
 tr.selected-row td{background:var(--green-soft)}
-.tablewrap{overflow:auto;border-radius:16px;background:var(--glass-table);border:1px solid var(--edge)}
-.tag{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;margin-left:6px;vertical-align:middle}
+.tablewrap{overflow:auto;border-radius:15px;background:var(--glass-table);border:1px solid var(--edge)}
+.tag{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;margin-left:5px;vertical-align:middle}
 .tag.unassigned{background:var(--amber-soft);color:var(--amber)}
 .tag.inactive{background:var(--red-soft);color:var(--red)}
 .tag.cycle{background:var(--accent-soft);color:var(--accent)}
 .tag.advance{background:var(--amber-soft);color:var(--amber)}
 .tag.paid{background:var(--green-soft);color:var(--green-2)}
-.empty{text-align:center;padding:28px;color:var(--muted)}
+.tag.seq{background:var(--glass-well);color:var(--ink-strong);border:1px solid var(--edge-soft);font-family:monospace,system-ui,sans-serif}
+.empty{text-align:center;padding:22px 12px;color:var(--muted);font-size:13px}
 
 #qrOutput{
- display:flex;justify-content:center;align-items:center;padding:16px;min-height:196px;
- background:var(--glass-well);border:1.5px dashed rgba(45,184,127,.35);
- border-radius:18px;margin-top:13px;
+ display:flex;justify-content:center;align-items:center;padding:14px;min-height:184px;
+ background:var(--glass-well);border:1.5px dashed rgba(45,184,127,.35);border-radius:16px;margin-top:12px;
 }
-#qrOutput canvas{max-width:232px;height:auto;border-radius:14px;box-shadow:0 12px 26px rgba(0,0,0,.22)}
+#qrOutput canvas{max-width:220px;height:auto;border-radius:12px}
 
-#batchPreview{
- display:grid;
- grid-template-columns:repeat(auto-fill,minmax(122px,1fr));
- gap:10px;
- margin-top:12px;
-}
+#batchPreview{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:9px;margin-top:11px}
 .batch-card{
- background:var(--glass-well);
- border:1px solid var(--edge);
- border-radius:12px;
- padding:8px;
- text-align:center;
- cursor:pointer;
+ background:var(--glass-well);border:1px solid var(--edge);border-radius:12px;
+ padding:7px;text-align:center;cursor:pointer;
 }
-.batch-card canvas{width:100%;height:auto;border-radius:8px;display:block}
+.batch-num{
+ display:inline-block;font-size:11px;font-weight:800;font-family:monospace,system-ui,sans-serif;
+ padding:2px 7px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-bottom:5px;
+}
+.batch-card canvas{width:100%;height:auto;border-radius:7px;display:block}
 
-.bulkbar,.lookupbox{
- background:var(--glass-well);border:1px solid var(--edge);border-radius:16px;padding:12px;
-}
-.lookupbox{margin-bottom:12px}
-.bulkbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:10px}
-.chklabel{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:750;color:var(--ink);cursor:pointer;min-height:36px}
+.bulkbar,.lookupbox{background:var(--glass-well);border:1px solid var(--edge);border-radius:15px;padding:11px}
+.lookupbox{margin-bottom:10px}
+.bulkbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:9px}
+.chklabel{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:750;color:var(--ink);cursor:pointer}
 
 .nexus-badge{display:inline-flex;align-items:center;gap:7px;vertical-align:middle}
 .nexus-word{font-weight:700;letter-spacing:.14em;color:var(--brand-word);font-size:13px;line-height:1}
 
-.note{font-size:12px;color:var(--muted);margin-top:9px}
+.note{font-size:12px;color:var(--muted);margin-top:8px}
 .toast{
- position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+ position:fixed;bottom:calc(78px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
  background:rgba(10,25,19,.95);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
- border:1px solid rgba(255,255,255,.18);color:#fff;padding:11px 16px;border-radius:15px;
- z-index:60;max-width:92vw;font-weight:650;box-shadow:0 14px 32px rgba(0,0,0,.35);
+ border:1px solid rgba(255,255,255,.18);color:#fff;padding:10px 15px;border-radius:14px;
+ z-index:60;max-width:92vw;font-size:13px;font-weight:650;box-shadow:0 12px 28px rgba(0,0,0,.35);
 }
 .money{font-weight:850;color:var(--green-2)}
 html:not(.dark) .money{color:var(--green)}
-hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
+hr{border:0;border-top:1px solid var(--edge-soft);margin:14px 0}
 
-@media(max-width:760px){
- header{padding:14px 16px}
- .stats{grid-template-columns:repeat(2,1fr);gap:10px}
- .layout{grid-template-columns:1fr}
- .quick-grid{grid-template-columns:1fr}
- main{padding:16px 11px 48px}
- .panel,.stat{border-radius:20px}
- .stat{padding:14px}
- .stat strong{font-size:23px}
+/* Fixed Mobile Bottom Navigation Bar */
+.bottom-nav{
+ position:fixed;left:0;right:0;bottom:0;z-index:30;
+ background:var(--nav-bg);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+ border-top:1px solid var(--edge-soft);
+ padding:6px 8px calc(6px + env(safe-area-inset-bottom));
+ display:grid;grid-template-columns:repeat(5,1fr);align-items:center;gap:4px;
+ box-shadow:0 -8px 24px rgba(0,0,0,.12);
 }
+.nav-item{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+ min-height:50px;border:0;background:transparent;color:var(--muted);
+ font:700 10.5px/1.1 system-ui,-apple-system,sans-serif;cursor:pointer;border-radius:12px;
+}
+.nav-item svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav-item.active{color:var(--green-2);background:var(--green-soft)}
+html:not(.dark) .nav-item.active{color:var(--green)}
+
+.nav-scan-fab{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+ height:52px;margin-top:-10px;border-radius:16px;border:1px solid rgba(255,255,255,.25);
+ background:linear-gradient(135deg,var(--green),var(--green-2));color:#fff;
+ font:800 10.5px/1 system-ui,-apple-system,sans-serif;cursor:pointer;
+ box-shadow:0 8px 20px rgba(18,104,70,.34);
+}
+.nav-scan-fab svg{width:21px;height:21px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
 @media print{
- header,.no-print,.tabs,.note,.lock-screen,.modal-backdrop{display:none!important}
- body{background:#fff;color:#0f2118}
+ header,.bottom-nav,.no-print,.note,.lock-screen,.modal-backdrop{display:none!important}
+ body{background:#fff;color:#0f2118;padding-bottom:0}
  .panel,.stat{background:#fff;backdrop-filter:none;box-shadow:none;border-color:#ddd}
 }
 </style>
@@ -531,40 +360,44 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
   </div>
   <div class="admin-chip">Admin Authentication</div>
   <h1 id="lockTitle" class="lock-title">NEXUS Admin Login</h1>
-  <p class="lock-sub">Workforce & Payroll OS · Enter admin passcode to unlock</p>
+  <p class="lock-sub">Workforce & Payroll OS · Enter admin passcode</p>
   <form id="loginForm">
    <label for="passcodeInput" style="margin-top:0;text-align:left">Admin passcode</label>
    <input id="passcodeInput" class="passcode-input" type="password" inputmode="numeric" autocomplete="current-password" placeholder="••••" required>
-   <button class="btn" type="submit" style="width:100%;margin-top:14px">Authenticate as Admin</button>
+   <button class="btn" type="submit" style="width:100%;margin-top:12px">Unlock NEXUS</button>
    <div id="loginError" class="lock-err" aria-live="polite"></div>
   </form>
   <button class="btn secondary small" id="toggleLockChangeBtn" type="button" style="width:100%;margin-top:6px">Change admin passcode</button>
   <div id="lockChangeBox" class="lock-change-box hidden">
-   <label for="lockOldPass" style="margin-top:0">Current admin passcode</label>
+   <label for="lockOldPass" style="margin-top:0">Current passcode</label>
    <input id="lockOldPass" type="password" placeholder="Current passcode">
-   <label for="lockNewPass">New admin passcode (min 4 chars)</label>
+   <label for="lockNewPass">New passcode (min 4 chars)</label>
    <input id="lockNewPass" type="password" placeholder="New passcode">
-   <button class="btn outline small" id="lockSaveNewPassBtn" type="button" style="width:100%;margin-top:10px">Save new admin passcode</button>
+   <button class="btn outline small" id="lockSaveNewPassBtn" type="button" style="width:100%;margin-top:10px">Save new passcode</button>
   </div>
-  <div class="tiny" style="margin-top:12px">Default admin passcode: <b>2026</b> (change anytime)</div>
+  <div class="tiny" style="margin-top:10px">Default passcode: <b>2026</b></div>
  </div>
 </div>
 
-<!-- In-App Advance & Payment Form Modal -->
+<!-- In-app Advance & Payment Modal -->
 <div id="payModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="payModalTitle">
  <div class="modal-card">
   <div class="modal-head">
    <div>
-    <div class="admin-chip" id="payModalBadge">Payroll Entry</div>
-    <h2 id="payModalTitle">Record payment or advance</h2>
+    <div class="admin-chip" id="payModalBadge">Cash / Wage Advance</div>
+    <h2 id="payModalTitle">Record advance</h2>
    </div>
    <button type="button" class="btn secondary small" id="closePayModalBtn" aria-label="Close modal">Close</button>
+  </div>
+  <div id="payModalEmployeeWrap" class="hidden" style="margin-bottom:8px">
+   <label for="payEmployeeSelect" style="margin-top:0">Employee</label>
+   <select id="payEmployeeSelect"></select>
   </div>
   <div class="modal-meta" id="payModalSummary"></div>
   <form id="payModalForm">
    <label for="payTypeSelect" style="margin-top:4px">Entry type</label>
    <select id="payTypeSelect">
-    <option value="advance">Advance (deducted from balance)</option>
+    <option value="advance">Advance (subtracted from balance)</option>
     <option value="regular">Regular pay</option>
     <option value="adjustment">Adjustment / bonus</option>
    </select>
@@ -576,12 +409,12 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
    <input id="payDateInput" type="date" required>
 
    <label for="payNoteInput">Note (optional)</label>
-   <input id="payNoteInput" maxlength="120" placeholder="e.g. Cash advance, Week 3 wage, Harvest bonus">
+   <input id="payNoteInput" maxlength="120" placeholder="e.g. Cash advance or weekly wage">
 
    <div id="payModalError" class="modal-err" aria-live="polite"></div>
    <div class="actions" style="margin-top:12px">
     <button type="button" class="btn secondary" id="cancelPayModalBtn">Cancel</button>
-    <button type="submit" class="btn" id="submitPayModalBtn">Save entry</button>
+    <button type="submit" class="btn" id="submitPayModalBtn">Save advance</button>
    </div>
   </form>
  </div>
@@ -590,7 +423,7 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
 <header>
  <div class="brand-wrap">
   <div class="nx-mark" aria-hidden="true">
-   <svg width="24" height="21" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <svg width="22" height="19" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="5.5" cy="5.5" r="3.5" fill="#1738ff"/>
     <rect x="13.2" y="3.2" width="6.6" height="17.6" rx="3.3" transform="rotate(24 13.2 3.2)" fill="#1738ff"/>
    </svg>
@@ -600,113 +433,107 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
   </div>
  </div>
  <div class="header-right">
-  <button class="pill warn hidden" id="backupBadge" title="Open Backup & Security">Backup recommended</button>
-  <div class="pill">● OFFLINE READY</div>
-  <button class="btn secondary small no-print" id="themeBtn" type="button" title="Toggle dark or light mode">Dark mode</button>
-  <button class="btn secondary small no-print" id="lockBtn" type="button" title="Lock admin session">Lock</button>
+  <button class="pill warn hidden" id="backupBadge" title="Open Backup & Security">Backup</button>
+  <div class="pill">● OFFLINE</div>
+  <button class="btn secondary small no-print" id="themeBtn" type="button">Dark</button>
+  <button class="btn secondary small no-print" id="lockBtn" type="button">Lock</button>
  </div>
 </header>
 
 <main id="appMain">
- <div class="top">
+ <div class="app-bar">
   <div>
-   <h1 id="pageHeading">NEXUS Home</h1>
-   <div class="muted" id="todayLabel"></div>
+   <h1 id="pageHeading">Home</h1>
+   <div class="tiny" id="todayLabel"></div>
   </div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap" class="no-print">
-   <button class="btn outline" id="quickBackupTop">Save backup</button>
-   <button class="btn secondary" id="exportToday">Export today CSV</button>
-  </div>
+  <button class="btn secondary small no-print" id="exportToday">Today CSV</button>
  </div>
 
  <section class="stats">
-  <div class="stat"><small>Active employees</small><strong id="totalEmployees">0</strong></div>
+  <div class="stat"><small>Active staff</small><strong id="totalEmployees">0</strong></div>
   <div class="stat"><small>Present today</small><strong id="presentToday">0</strong></div>
-  <div class="stat clickable" id="statAbsentCard" title="Tap to see who is absent today"><small>Absent today (Tap)</small><strong id="absentToday">0</strong></div>
-  <div class="stat"><small>Today's wage total</small><strong id="todayWages">0 ETB</strong></div>
+  <div class="stat clickable" id="statAbsentCard"><small>Absent today</small><strong id="absentToday">0</strong></div>
+  <div class="stat"><small>Today's wages</small><strong id="todayWages">0 ETB</strong></div>
  </section>
 
- <nav class="tabs no-print" aria-label="NEXUS sections">
-  <button class="tab active" data-tab="home">Home</button>
-  <button class="tab" data-tab="scan">Scan attendance</button>
-  <button class="tab" data-tab="employees">Employees & QR</button>
-  <button class="tab" data-tab="payroll">Payroll & Advances</button>
-  <button class="tab" data-tab="reports">Reports</button>
-  <button class="tab" data-tab="backup">Backup & Security</button>
- </nav>
-
- <!-- HOME PAGE -->
+ <!-- HOME -->
  <section id="tab-home" class="tabpage">
-  <div class="layout">
-   <div class="panel">
-    <h2>Quick Actions</h2>
-    <p class="muted" style="margin-top:0">Jump straight into daily operations on this device.</p>
-    <div class="quick-grid">
-     <button class="quick-tile" data-jump="scan">
-      <strong>Scan Attendance</strong>
-      <span>Camera scanner or manual QR ID</span>
-     </button>
-     <button class="quick-tile" data-jump="employees">
-      <strong>Create / Assign QR</strong>
-      <span>Generate 1–50 & print NEXUS cards</span>
-     </button>
-     <button class="quick-tile" id="homeNextUnassigned">
-      <strong>Assign Unassigned Name</strong>
-      <span>Edit next unnamed card</span>
-     </button>
-     <button class="quick-tile" data-jump="payroll">
-      <strong>Payroll & Advances</strong>
-      <span>Wages, advances & who got paid</span>
-     </button>
-     <button class="quick-tile" data-jump="reports">
-      <strong>Attendance Reports</strong>
-      <span>Filter dates & export CSV</span>
-     </button>
-     <button class="quick-tile" data-jump="backup">
-      <strong>Backup, Theme & Passcode</strong>
-      <span>Dark mode, JSON backup & security</span>
-     </button>
-    </div>
-
-    <div id="homeAbsentPanel">
-     <hr>
-     <h2>Who Is Absent Today (Tap Name or Number)</h2>
-     <div id="homeAbsentButtons"></div>
-    </div>
+  <button type="button" class="scan-hero" id="homeOpenScannerBtn">
+   <div>
+    <strong>Scan Employee QR Camera</strong>
+    <span>Tap to open camera scanner and record today's attendance</span>
    </div>
+   <div class="scan-icon-box" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+     <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+     <circle cx="12" cy="13" r="4"/>
+    </svg>
+   </div>
+  </button>
 
+  <div class="app-shortcuts">
+   <button type="button" class="app-tile" data-jump="employees">
+    <strong>QR Cards (#1–#n)</strong>
+    <span>Create, batch & print cards</span>
+   </button>
+   <button type="button" class="app-tile" data-jump="payroll">
+    <strong>Payroll & Advances</strong>
+    <span>Record advance & pay</span>
+   </button>
+   <button type="button" class="app-tile" id="homeNextUnassigned">
+    <strong>Assign Unassigned</strong>
+    <span>Name next QR card</span>
+   </button>
+   <button type="button" class="app-tile" data-jump="more">
+    <strong>Reports & Backup</strong>
+    <span>CSV, JSON backup & lock</span>
+   </button>
+  </div>
+
+  <div class="two-col" style="margin-top:12px">
    <div class="panel">
     <h2>Recent Scans Today</h2>
     <div id="homeRecentList"></div>
-    <div class="note" id="homeSystemNote">NEXUS Workforce & Payroll OS runs locally in your browser with zero cloud dependency.</div>
+   </div>
+   <div class="panel" id="homeAbsentPanel">
+    <h2>Absent Today (Tap to Mark Present)</h2>
+    <div id="homeAbsentButtons"></div>
    </div>
   </div>
  </section>
 
  <!-- SCAN ATTENDANCE -->
  <section id="tab-scan" class="tabpage hidden">
-  <div class="layout">
+  <div class="two-col">
    <div class="panel">
-    <h2>Record attendance</h2>
-    <button class="btn" id="startScan" style="width:100%">Start QR camera scanner</button>
-    <button class="btn secondary hidden" id="stopScan" style="width:100%;margin-top:8px">Stop camera</button>
+    <button class="scan-hero" id="startScan" type="button">
+     <div>
+      <strong>Open QR Camera Scanner</strong>
+      <span>Point camera at employee NEXUS QR card</span>
+     </div>
+     <div class="scan-icon-box" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+       <circle cx="12" cy="13" r="4"/>
+      </svg>
+     </div>
+    </button>
+    <button class="btn danger hidden" id="stopScan" type="button" style="width:100%;margin-top:8px">Stop camera</button>
     <video id="video" playsinline muted></video>
-    <div class="result" id="scanResult">Ready. Scan a NEXUS employee card to record attendance.</div>
-    <div class="note">One attendance record per employee per local calendar day. Re-scanning protects against duplicate days or wages.</div>
-    <hr>
-    <h2>Manual QR ID entry</h2>
-    <label for="manualId">Employee QR ID</label>
+    <div class="result" id="scanResult">Ready. Tap camera above or type a QR ID below.</div>
+
+    <label for="manualId">Manual QR ID</label>
     <div class="row">
-     <input id="manualId" maxlength="17" placeholder="Example: NX-8A2F41C9">
-     <button class="btn secondary" id="manualScan" style="flex:0 0 auto">Record</button>
+     <input id="manualId" maxlength="17" placeholder="e.g. NX-8A2F41C9">
+     <button class="btn secondary" id="manualScan" type="button" style="flex:0 0 auto">Record</button>
     </div>
-    <div class="note">Use if camera scanning is unavailable. The ID must match a registered employee (up to 17 characters).</div>
    </div>
+
    <div class="panel">
-    <h2>Today's attendance</h2>
+    <h2>Present Today</h2>
     <div id="todayList"></div>
     <hr>
-    <h2>Who Is Absent Today (Tap to mark present)</h2>
+    <h2>Absent Today</h2>
     <div id="scanAbsentButtons"></div>
    </div>
   </div>
@@ -714,60 +541,61 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
 
  <!-- EMPLOYEES & QR -->
  <section id="tab-employees" class="tabpage hidden">
-  <div class="layout">
+  <div class="two-col">
    <div class="panel">
-    <h2 id="employeeFormTitle">Create / assign NEXUS QR card</h2>
+    <h2 id="employeeFormTitle">Create / assign QR card</h2>
     <input id="editId" type="hidden">
-    <label for="newName">Full name (optional now — edit after assigning QR ID)</label>
-    <input id="newName" placeholder="Leave blank to use QR ID for now" autocomplete="name">
-    <label for="newExtra">Phone / staff number / reference (optional)</label>
+    <input id="editBatchNum" type="hidden">
+    <input id="editBatchTotal" type="hidden">
+    <label for="newName">Full name (optional now)</label>
+    <input id="newName" placeholder="Leave blank to assign name later" autocomplete="name">
+    <label for="newExtra">Phone / staff number (optional)</label>
     <input id="newExtra" placeholder="e.g. 09... or #12">
     <label for="newWage">Daily wage (ETB)</label>
     <input id="newWage" type="number" min="0" step="0.01" placeholder="e.g. 400">
     <label for="newPayCycle">Pay cycle</label>
     <select id="newPayCycle">
-     <option value="weekly" selected>Weekly (every 7 days)</option>
-     <option value="biweekly">Biweekly (every 2 weeks / 14 days)</option>
+     <option value="weekly" selected>Weekly</option>
+     <option value="biweekly">Biweekly</option>
      <option value="monthly">Monthly</option>
     </select>
     <label for="newQrId">QR card ID (max 17 chars)</label>
     <div class="row">
-     <input id="newQrId" maxlength="17" placeholder="Click Generate or type ID">
-     <button class="btn secondary" id="makeId" style="flex:0 0 auto">Generate</button>
+     <input id="newQrId" maxlength="17" placeholder="Tap Generate">
+     <button class="btn secondary" id="makeId" type="button" style="flex:0 0 auto">Generate</button>
     </div>
-    <button class="btn" id="saveEmployee" style="width:100%;margin-top:14px">Save & generate NEXUS QR</button>
-    <button class="btn secondary hidden" id="cancelEdit" style="width:100%;margin-top:8px">Cancel editing</button>
+    <button class="btn" id="saveEmployee" type="button" style="width:100%;margin-top:12px">Save & generate QR</button>
+    <button class="btn secondary hidden" id="cancelEdit" type="button" style="width:100%;margin-top:8px">Cancel edit</button>
 
-    <div id="qrOutput"><span class="muted">NEXUS employee QR card preview appears here</span></div>
-    <div class="row" style="margin-top:10px">
+    <div id="qrOutput"><span class="muted">QR card preview appears here</span></div>
+    <div class="row" style="margin-top:8px">
      <div>
       <label for="printMode" style="margin-top:0">Print layout</label>
       <select id="printMode">
        <option value="full">Full card</option>
-       <option value="grid">Compact grid (multi-card sheet)</option>
+       <option value="grid">Compact grid</option>
       </select>
      </div>
     </div>
-    <div class="actions" style="margin-top:10px">
-     <button class="btn secondary" id="printQr" disabled>Print card</button>
-     <button class="btn outline" id="downloadQr" disabled>Download card</button>
-     <button class="btn secondary" id="quickNextCard">New QR card</button>
+    <div class="actions" style="margin-top:8px">
+     <button class="btn secondary" id="printQr" type="button" disabled>Print</button>
+     <button class="btn outline" id="downloadQr" type="button" disabled>Save PNG</button>
+     <button class="btn secondary" id="quickNextCard" type="button">New ID</button>
     </div>
-    <div class="note">Click Generate for an instant QR card preview, print or download right away, and assign or update the employee's name anytime.</div>
 
     <hr>
-    <h2>Batch generate QR cards (1–50)</h2>
+    <h2>Batch generate (#1–#n)</h2>
     <div class="row">
      <div>
       <label for="batchCount" style="margin-top:0">Count (1–50)</label>
-      <input id="batchCount" type="number" min="1" max="50" value="10" placeholder="1 to 50">
+      <input id="batchCount" type="number" min="1" max="50" value="10">
      </div>
      <div>
-      <label for="batchWage" style="margin-top:0">Default daily wage (ETB)</label>
+      <label for="batchWage" style="margin-top:0">Daily wage (ETB)</label>
       <input id="batchWage" type="number" min="0" step="0.01" placeholder="e.g. 400">
      </div>
      <div>
-      <label for="batchCycle" style="margin-top:0">Pay cycle</label>
+      <label for="batchCycle" style="margin-top:0">Cycle</label>
       <select id="batchCycle">
        <option value="weekly" selected>Weekly</option>
        <option value="biweekly">Biweekly</option>
@@ -776,40 +604,39 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
      </div>
     </div>
     <div class="actions" style="margin-top:10px">
-     <button class="btn" id="generateBatchBtn" type="button">Generate & save batch</button>
-     <button class="btn outline" id="printBatchPreviewBtn" type="button" disabled>Print batch sheet</button>
+     <button class="btn" id="generateBatchBtn" type="button">Generate batch (#1–#n)</button>
+     <button class="btn outline" id="printBatchPreviewBtn" type="button" disabled>Print batch</button>
     </div>
-    <div id="batchStatus" class="note">Generates up to 50 unique QR cards ready for assigning names later.</div>
+    <div id="batchStatus" class="note">Creates 1–50 cards tagged #1 to #n.</div>
     <div id="batchPreview"></div>
    </div>
 
    <div class="panel">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-     <h2 style="margin:0">Employee directory</h2>
-     <button class="btn outline small" id="nextUnassignedBtn">Next unassigned (<span id="unassignedCount">0</span>)</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+     <h2 style="margin:0">Directory</h2>
+     <button class="btn outline small" id="nextUnassignedBtn" type="button">Unassigned (<span id="unassignedCount">0</span>)</button>
     </div>
 
     <div class="lookupbox">
-     <label for="lookupQrInput" style="margin-top:0">Quick assign / edit by QR ID</label>
+     <label for="lookupQrInput" style="margin-top:0">Quick edit by QR ID</label>
      <div class="row">
-      <input id="lookupQrInput" maxlength="17" placeholder="Enter QR ID e.g. NX-8A2F41C9">
-      <button class="btn secondary" id="lookupQrBtn" style="flex:0 0 auto">Load to edit</button>
+      <input id="lookupQrInput" maxlength="17" placeholder="e.g. NX-8A2F41C9">
+      <button class="btn secondary" id="lookupQrBtn" type="button" style="flex:0 0 auto">Edit</button>
      </div>
     </div>
 
     <div class="row">
-     <div style="flex:3"><input id="employeeSearch" placeholder="Search by name, QR ID, cycle, or number/reference"></div>
-     <button class="btn secondary small" id="clearSearch" style="flex:0 0 auto;min-height:44px">Clear</button>
+     <div style="flex:3"><input id="employeeSearch" placeholder="Search name, #tag, QR ID..."></div>
+     <button class="btn secondary small" id="clearSearch" type="button" style="flex:0 0 auto;min-height:44px">Clear</button>
     </div>
 
     <div class="bulkbar">
-     <label class="chklabel"><input type="checkbox" id="selectAllQr"> Select all (<span id="selectedCount">0</span>)</label>
+     <label class="chklabel"><input type="checkbox" id="selectAllQr"> All (<span id="selectedCount">0</span>)</label>
      <div style="display:flex;gap:6px;flex-wrap:wrap">
-      <button class="btn small" id="downloadSelectedQr" disabled>Download selected</button>
-      <button class="btn outline small" id="printSelectedQr" disabled>Print selected</button>
+      <button class="btn small" id="downloadSelectedQr" type="button" disabled>Save PNGs</button>
+      <button class="btn outline small" id="printSelectedQr" type="button" disabled>Print</button>
      </div>
     </div>
-    <div class="note">Tip: Some mobile browsers pause after multiple automatic downloads—use <b>Print selected</b> with <b>Compact grid</b> to print or save a multi-card sheet/PDF.</div>
     <div id="employeeList" style="margin-top:10px"></div>
    </div>
   </div>
@@ -818,116 +645,116 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
  <!-- PAYROLL & ADVANCES -->
  <section id="tab-payroll" class="tabpage hidden">
   <div class="panel">
-   <h2>NEXUS Payroll & Advances</h2>
+   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+    <h2 style="margin:0">Payroll & Advances</h2>
+    <button class="btn" id="quickRecordAdvanceBtn" type="button">Record advance</button>
+   </div>
    <div class="row">
-    <div><label for="payFrom">From date</label><input type="date" id="payFrom"></div>
-    <div><label for="payTo">To date</label><input type="date" id="payTo"></div>
+    <div><label for="payFrom">From</label><input type="date" id="payFrom"></div>
+    <div><label for="payTo">To</label><input type="date" id="payTo"></div>
     <div>
-     <label for="payCycleFilter">Pay cycle</label>
+     <label for="payCycleFilter">Cycle</label>
      <select id="payCycleFilter">
       <option value="all">All cycles</option>
       <option value="weekly">Weekly</option>
-      <option value="biweekly">Biweekly (2 weeks)</option>
+      <option value="biweekly">Biweekly</option>
       <option value="monthly">Monthly</option>
      </select>
     </div>
     <div>
-     <label for="payStatusFilter">Payment status</label>
+     <label for="payStatusFilter">Filter</label>
      <select id="payStatusFilter">
-      <option value="all" selected>All employees</option>
+      <option value="all" selected>All staff</option>
       <option value="paid">Who got paid</option>
       <option value="advance">Has advances</option>
-      <option value="unpaid">Unpaid / balance due</option>
+      <option value="unpaid">Balance due</option>
      </select>
     </div>
    </div>
    <div class="actions" style="margin-top:10px">
-    <button class="btn secondary small" id="preset7Days" type="button">Last 7 days</button>
-    <button class="btn secondary small" id="preset14Days" type="button">Last 14 days</button>
+    <button class="btn secondary small" id="preset7Days" type="button">7 days</button>
+    <button class="btn secondary small" id="preset14Days" type="button">14 days</button>
     <button class="btn secondary small" id="presetMonth" type="button">This month</button>
     <button class="btn outline small" id="jumpPaidListBtn" type="button">Who got paid</button>
     <button class="btn danger small" id="jumpAbsentListBtn" type="button">Who is absent</button>
    </div>
-   <div class="row" style="margin-top:12px">
-    <button class="btn" id="runPayroll">Calculate payroll</button>
-    <button class="btn secondary" id="payExport">Export payroll CSV</button>
+   <div class="row" style="margin-top:10px">
+    <button class="btn" id="runPayroll" type="button">Calculate</button>
+    <button class="btn secondary" id="payExport" type="button">Export CSV</button>
    </div>
-   <div id="payrollSummary" style="margin-top:14px"></div>
-   <div class="note">Advances reduce what is left to pay (`Balance = Earned - Advances - Regular/Other Payments`). Tap any employee button to open their card or use the in-app form to record an advance or payment.</div>
+   <div id="payrollSummary" style="margin-top:12px"></div>
   </div>
  </section>
 
- <!-- REPORTS -->
- <section id="tab-reports" class="tabpage hidden">
+ <!-- MORE: REPORTS, BACKUP & SECURITY -->
+ <section id="tab-more" class="tabpage hidden">
   <div class="panel">
-   <h2>Attendance report</h2>
+   <h2>Attendance Report</h2>
    <div class="row">
     <div><label for="fromDate">From</label><input type="date" id="fromDate"></div>
     <div><label for="toDate">To</label><input type="date" id="toDate"></div>
    </div>
-   <div class="row" style="margin-top:12px">
-    <button class="btn" id="runReport">Generate report</button>
-    <button class="btn secondary" id="exportReport">Export CSV</button>
+   <div class="row" style="margin-top:10px">
+    <button class="btn" id="runReport" type="button">Run report</button>
+    <button class="btn secondary" id="exportReport" type="button">Export CSV</button>
    </div>
-   <div id="reportOutput" style="margin-top:14px"></div>
+   <div id="reportOutput" style="margin-top:12px"></div>
    <hr>
-   <h2>Attendance entries in range</h2>
+   <h2>Attendance Log</h2>
    <div id="attendanceEntriesList"></div>
   </div>
- </section>
 
- <!-- BACKUP & SECURITY -->
- <section id="tab-backup" class="tabpage hidden">
   <div class="panel">
-   <h2>Appearance</h2>
-   <p class="muted" style="margin-top:0">Switch between Dark Mode and Light Mode for comfortable viewing day or night.</p>
-   <div class="actions">
-    <button class="btn secondary" id="backupThemeBtn" type="button">Toggle Dark / Light mode</button>
-   </div>
-   <hr>
-   <h2>Admin authentication passcode</h2>
-   <p class="muted" style="margin-top:0">Change your admin passcode anytime. You can also change it from the login screen using your current passcode.</p>
+   <h2>Theme & Admin Passcode</h2>
+   <button class="btn secondary" id="backupThemeBtn" type="button" style="width:100%">Switch Dark / Light Mode</button>
    <div class="row">
     <div>
-     <label for="currentPasscodeInput">Current admin passcode</label>
-     <input id="currentPasscodeInput" type="password" placeholder="Enter current passcode">
+     <label for="currentPasscodeInput">Current passcode</label>
+     <input id="currentPasscodeInput" type="password" placeholder="Current passcode">
     </div>
     <div>
-     <label for="newPasscodeInput">New admin passcode (min 4 chars)</label>
-     <input id="newPasscodeInput" type="password" placeholder="Enter new passcode">
+     <label for="newPasscodeInput">New passcode (min 4)</label>
+     <input id="newPasscodeInput" type="password" placeholder="New passcode">
     </div>
-    <button class="btn" id="savePasscodeBtn" style="flex:0 0 auto">Update passcode</button>
+    <button class="btn" id="savePasscodeBtn" type="button" style="flex:0 0 auto">Update</button>
    </div>
+
    <hr>
-   <h2>Backup & restore</h2>
-   <p class="muted">NEXUS stores all employee, attendance, and payment/advance records locally in this browser on this device. Export a JSON backup regularly and store a copy safely.</p>
+   <h2>Backup & Data</h2>
    <div class="actions">
-    <button class="btn" id="backupBtn">Download full backup</button>
-    <button class="btn secondary" id="restoreBtn">Restore backup</button>
+    <button class="btn" id="backupBtn" type="button">Download backup</button>
+    <button class="btn secondary" id="restoreBtn" type="button">Restore backup</button>
    </div>
    <input type="file" id="restoreFile" accept=".json,application/json" class="hidden">
-   <p class="note">Restoring replaces current records on this device. Export a backup first.</p>
-   <hr>
-   <h2>Data health</h2>
    <div id="storageInfo" class="result"></div>
-   <button class="btn danger" id="clearData" style="margin-top:12px">Delete all local data</button>
+   <button class="btn danger" id="clearData" type="button" style="width:100%;margin-top:10px">Delete all local data</button>
   </div>
  </section>
 </main>
 
-<footer class="note" style="text-align:center;margin-top:12px;padding:18px 10px 34px">
- <div style="margin-bottom:6px">
-  <span class="nexus-badge" aria-label="NEXUS">
-   <svg width="20" height="18" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <circle cx="5.5" cy="5.5" r="3.5" fill="#1738ff"/>
-    <rect x="13.2" y="3.2" width="6.6" height="17.6" rx="3.3" transform="rotate(24 13.2 3.2)" fill="#1738ff"/>
-   </svg>
-   <span class="nexus-word">NEXUS</span>
-  </span>
- </div>
- <div style="font-weight:750;color:var(--ink-strong)">NEXUS v5.6 · Workforce & Payroll OS</div>
- <div style="margin-top:6px;font-size:11px;color:var(--muted)">Offline local records · Export backups regularly</div>
-</footer>
+<!-- Bottom Mobile Navigation Bar -->
+<nav class="bottom-nav no-print" aria-label="Main mobile navigation">
+ <button type="button" class="nav-item active" data-tab="home">
+  <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+  <span>Home</span>
+ </button>
+ <button type="button" class="nav-item" data-tab="employees">
+  <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h3v3H7zm7 0h3v3h-3zM7 13h3v3H7z"/></svg>
+  <span>QR & Staff</span>
+ </button>
+ <button type="button" class="nav-scan-fab" id="navScanBtn" aria-label="Scan QR Attendance">
+  <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+  <span>Scan</span>
+ </button>
+ <button type="button" class="nav-item" data-tab="payroll">
+  <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+  <span>Payroll</span>
+ </button>
+ <button type="button" class="nav-item" data-tab="more">
+  <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+  <span>More</span>
+ </button>
+</nav>
 
 <div id="toast" class="toast hidden"></div>
 
@@ -976,7 +803,6 @@ function drawNexusBrand(ctx,centerX,centerY,scale=1){
  ctx.restore();
 }
 
-/* NEXUS branded employee card canvas */
 function makeBrandedCardCanvas(emp){
  const qrCanvas=makeOfflineQr(emp.qrId);
  const W=440,H=596;
@@ -992,7 +818,18 @@ function makeBrandedCardCanvas(emp){
  ctx.font='700 11px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
  ctx.fillText('NEXUS WORKFORCE & PAYROLL OS',W/2,69);
 
- const qrSize=248,qrX=(W-qrSize)/2,qrY=112;
+ if(emp.batchNum){
+  const badgeTxt=emp.batchTotal?`#${emp.batchNum} OF ${emp.batchTotal}`:`#${emp.batchNum}`;
+  ctx.fillStyle='#eef2ff';
+  roundRectPath(ctx,W-128,104,108,26,13);
+  ctx.fill();
+  ctx.strokeStyle='#c7d2fe';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.fillStyle='#1738ff';
+  ctx.font='800 11px monospace,system-ui,sans-serif';
+  ctx.fillText(badgeTxt,W-74,118);
+ }
+
+ const qrSize=244,qrX=(W-qrSize)/2,qrY=116;
  ctx.fillStyle='#f7faf8';ctx.fillRect(qrX-10,qrY-10,qrSize+20,qrSize+20);
  ctx.strokeStyle='#dce5de';ctx.lineWidth=2;ctx.strokeRect(qrX-10,qrY-10,qrSize+20,qrSize+20);
  ctx.drawImage(qrCanvas,qrX,qrY,qrSize,qrSize);
@@ -1011,8 +848,9 @@ function makeBrandedCardCanvas(emp){
  ctx.fillStyle='#126846';ctx.font='800 15px monospace,system-ui,sans-serif';
  ctx.fillText(emp.qrId,W/2,450);
 
+ const seqPart=emp.batchNum?`#${emp.batchNum}`:'';
  const cycleTxt=cycleLabel(emp.payCycle);
- const subLine=[emp.extra,cycleTxt+' pay'].filter(Boolean).join(' · ');
+ const subLine=[seqPart,emp.extra,cycleTxt+' pay'].filter(Boolean).join(' · ');
  if(subLine){
   ctx.fillStyle='#62756c';
   ctx.font='600 12px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
@@ -1044,7 +882,7 @@ const THEME_KEY='nexus_workforce_theme_v1';
 const DEFAULT_PASSCODE='2026';
 
 let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='', lastScanAt=0, reportRows=[], payrollRows=[], batchDraftCards=[];
-let modalState={mode:'create',employeeId:null,paymentId:null};
+let modalState={mode:'create',employeeId:null,paymentId:null,allowSelectEmployee:false};
 const selectedIds=new Set();
 const $=id=>document.getElementById(id);
 
@@ -1059,8 +897,8 @@ function applyTheme(mode,notify=false){
  const isDark=mode==='dark';
  document.documentElement.classList.toggle('dark',isDark);
  const metaTheme=document.querySelector('meta[name="theme-color"]');
- if(metaTheme)metaTheme.setAttribute('content',isDark?'#07100d':'#0d221b');
- if($('themeBtn'))$('themeBtn').textContent=isDark?'Light mode':'Dark mode';
+ if(metaTheme)metaTheme.setAttribute('content',isDark?'#07100d':'#0c1f18');
+ if($('themeBtn'))$('themeBtn').textContent=isDark?'Light':'Dark';
  try{localStorage.setItem(THEME_KEY,isDark?'dark':'light')}catch(e){}
  if(notify)toast(isDark?'Dark mode enabled':'Light mode enabled');
 }
@@ -1099,17 +937,17 @@ function setPasscode(val){
 }
 function applyPasscodeChange(currentVal,nextVal){
  if(currentVal!==getPasscode()){
-  return {ok:false,msg:'Current admin passcode is incorrect.'};
+  return {ok:false,msg:'Current passcode is incorrect.'};
  }
  const cleanNext=String(nextVal||'').trim();
  if(cleanNext.length<4){
-  return {ok:false,msg:'New admin passcode must be at least 4 characters.'};
+  return {ok:false,msg:'New passcode must be at least 4 characters.'};
  }
  try{
   setPasscode(cleanNext);
-  return {ok:true,msg:'Admin passcode updated.'};
+  return {ok:true,msg:'Passcode updated.'};
  }catch(e){
-  return {ok:false,msg:'Could not save passcode in browser storage.'};
+  return {ok:false,msg:'Could not save passcode.'};
  }
 }
 function lockScreen(){
@@ -1151,7 +989,7 @@ function persist(rollbackFn=null){
   return true;
  }catch(e){
   if(typeof rollbackFn==='function')rollbackFn();
-  toast('Storage is full or blocked. Export a backup first.');
+  toast('Storage full or blocked. Export a backup first.');
   return false;
  }
 }
@@ -1166,7 +1004,7 @@ function esc(s){
 }
 function toast(s){
  $('toast').textContent=s;$('toast').classList.remove('hidden');
- clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.add('hidden'),2900);
+ clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.add('hidden'),2700);
 }
 function makeId(){
  let id;
@@ -1188,7 +1026,7 @@ function paidBreakdown(empId,from='0000-01-01',to='9999-12-31'){
  return {advance,other,total:advance+other};
 }
 function todayPresent(){return db.attendance.filter(a=>a.date===localDate())}
-function dateLabel(d){return new Date(d+'T00:00:00').toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})}
+function dateLabel(d){return new Date(d+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}
 
 function personDisplayLabel(emp){
  if(!emp)return 'Unknown';
@@ -1208,41 +1046,63 @@ window.quickMarkPresentById=id=>{
  recordAttendance(emp.qrId);
 };
 function renderPersonButton(emp,extraText='',variant='default',onClickExpr=''){
- const primary=esc(personDisplayLabel(emp));
+ const seqTag=emp.batchNum?`#${emp.batchNum} `:'';
+ const primary=esc(seqTag+personDisplayLabel(emp));
  const num=esc(emp.extra||emp.qrId);
  const action=onClickExpr||`openEmployeeCard('${emp.id}','edit')`;
  const extraCls=variant==='absent'?'absent-btn':variant==='advance'?'advance-btn':'';
- return `<button type="button" class="person-btn ${extraCls}" onclick="${action}" title="Tap to open ${primary} (${num})"><span>${primary}</span><span class="num-pill">${num}</span>${extraText?`<span class="tiny">${esc(extraText)}</span>`:''}</button>`;
+ return `<button type="button" class="person-btn ${extraCls}" onclick="${action}"><span>${primary}</span><span class="num-pill">${num}</span>${extraText?`<span class="tiny">${esc(extraText)}</span>`:''}</button>`;
 }
 
 /* In-app Payment & Advance Modal Controls */
-function openPayModal({mode='create',employeeId=null,paymentId=null,defaultType='advance'}){
+function refreshModalSummary(empId){
+ const [from,to]=dateRange('pay');
+ const emp=db.employees.find(x=>x.id===empId);
+ if(!emp){
+  $('payModalSummary').innerHTML='<span class="tiny">Select an employee.</span>';
+  return;
+ }
+ const earned=attendanceFor(emp.id,from,to).reduce((s,a)=>s+Number(a.dailyWage||0),0);
+ const bk=paidBreakdown(emp.id,from,to);
+ $('payModalSummary').innerHTML=`<b>${esc(emp.name)}</b> (${esc(emp.qrId)}) · Rate: <b>${money(emp.dailyWage)}</b><br><span class="tiny">Earned: <b>${money(earned)}</b> · Advances: <b>${money(bk.advance)}</b> · Balance: <b>${money(earned-bk.total)}</b></span>`;
+}
+
+function openPayModal({mode='create',employeeId=null,paymentId=null,defaultType='advance',allowSelectEmployee=false}){
  const [from,to]=dateRange('pay');
  if(mode==='edit'){
   const p=db.payments.find(x=>x.id===paymentId);
-  if(!p){toast('Payment entry not found.');return}
+  if(!p){toast('Entry not found.');return}
   const emp=db.employees.find(x=>x.id===p.employeeId);
-  modalState={mode:'edit',employeeId:p.employeeId,paymentId:p.id};
+  modalState={mode:'edit',employeeId:p.employeeId,paymentId:p.id,allowSelectEmployee:false};
+  $('payModalEmployeeWrap').classList.add('hidden');
   $('payModalBadge').textContent='Edit Entry';
-  $('payModalTitle').textContent=emp?`Edit · ${emp.name}`:'Edit payment entry';
+  $('payModalTitle').textContent=emp?`Edit · ${emp.name}`:'Edit entry';
   const earned=attendanceFor(p.employeeId,from,to).reduce((s,a)=>s+Number(a.dailyWage||0),0);
   const bk=paidBreakdown(p.employeeId,from,to);
-  $('payModalSummary').innerHTML=`<b>${esc(emp?.name||'Employee')}</b> (${esc(emp?.qrId||'')})<br><span class="tiny">Period (${esc(from)} to ${esc(to)}): Earned <b>${money(earned)}</b> · Advances <b>${money(bk.advance)}</b> · Balance <b>${money(earned-bk.total)}</b></span>`;
+  $('payModalSummary').innerHTML=`<b>${esc(emp?.name||'Employee')}</b> (${esc(emp?.qrId||'')})<br><span class="tiny">Earned: <b>${money(earned)}</b> · Advances: <b>${money(bk.advance)}</b> · Balance: <b>${money(earned-bk.total)}</b></span>`;
   $('payTypeSelect').value=normalizePayType(p.type);
   $('payAmountInput').value=String(p.amount);
   $('payDateInput').value=p.date;
   $('payNoteInput').value=p.note||'';
-  $('submitPayModalBtn').textContent='Update entry';
+  $('submitPayModalBtn').textContent='Update';
  }else{
-  const emp=db.employees.find(x=>x.id===employeeId);
-  if(!emp){toast('Employee not found.');return}
+  const list=db.employees;
+  if(!list.length){toast('Add an employee first.');return}
+  const chosenId=employeeId&&list.some(e=>e.id===employeeId)?employeeId:list[0].id;
   const pType=normalizePayType(defaultType);
-  modalState={mode:'create',employeeId:emp.id,paymentId:null};
+  modalState={mode:'create',employeeId:chosenId,paymentId:null,allowSelectEmployee};
+  if(allowSelectEmployee){
+   $('payEmployeeSelect').innerHTML=list.map(e=>`<option value="${esc(e.id)}" ${e.id===chosenId?'selected':''}>${esc((e.batchNum?`#${e.batchNum} `:'')+e.name)} (${esc(e.qrId)})</option>`).join('');
+   $('payModalEmployeeWrap').classList.remove('hidden');
+  }else{
+   $('payModalEmployeeWrap').classList.add('hidden');
+  }
+  const emp=db.employees.find(x=>x.id===chosenId);
   $('payModalBadge').textContent=pType==='advance'?'Cash / Wage Advance':'Payroll Payment';
-  $('payModalTitle').textContent=pType==='advance'?`Advance · ${emp.name}`:`Pay · ${emp.name}`;
-  const earned=attendanceFor(emp.id,from,to).reduce((s,a)=>s+Number(a.dailyWage||0),0);
-  const bk=paidBreakdown(emp.id,from,to);
-  $('payModalSummary').innerHTML=`<b>${esc(emp.name)}</b> (${esc(emp.qrId)}) · Daily rate: <b>${money(emp.dailyWage)}</b><br><span class="tiny">Period (${esc(from)} to ${esc(to)}): Earned <b>${money(earned)}</b> · Advances <b>${money(bk.advance)}</b> · Balance <b>${money(earned-bk.total)}</b></span>`;
+  $('payModalTitle').textContent=allowSelectEmployee
+   ?(pType==='advance'?'Record advance':'Record payment')
+   :(pType==='advance'?`Advance · ${emp.name}`:`Pay · ${emp.name}`);
+  refreshModalSummary(chosenId);
   $('payTypeSelect').value=pType;
   $('payAmountInput').value='';
   $('payDateInput').value=localDate();
@@ -1257,7 +1117,7 @@ function openPayModal({mode='create',employeeId=null,paymentId=null,defaultType=
 function closePayModal(){
  $('payModal').classList.add('hidden');
  $('payModalError').textContent='';
- modalState={mode:'create',employeeId:null,paymentId:null};
+ modalState={mode:'create',employeeId:null,paymentId:null,allowSelectEmployee:false};
 }
 
 function submitPayModal(e){
@@ -1266,6 +1126,7 @@ function submitPayModal(e){
  const amount=Number($('payAmountInput').value);
  const date=String($('payDateInput').value||'').trim();
  const note=String($('payNoteInput').value||'').trim();
+ const targetEmpId=modalState.allowSelectEmployee?$('payEmployeeSelect').value:modalState.employeeId;
 
  if(!Number.isFinite(amount)||amount<=0){
   $('payModalError').textContent='Enter an amount greater than zero.';
@@ -1282,29 +1143,17 @@ function submitPayModal(e){
   const p=db.payments.find(x=>x.id===modalState.paymentId);
   if(!p){closePayModal();return}
   const prev={type:p.type,amount:p.amount,date:p.date,note:p.note};
-  p.type=pType;
-  p.amount=amount;
-  p.date=date;
-  p.note=note;
-  p.updatedAt=new Date().toISOString();
+  p.type=pType;p.amount=amount;p.date=date;p.note=note;p.updatedAt=new Date().toISOString();
   if(!persist(()=>Object.assign(p,prev)))return;
   closePayModal();
   toast(`${payTypeLabel(pType)} updated.`);
  }else{
-  if(!modalState.employeeId){closePayModal();return}
-  const entry={
-   id:crypto.randomUUID(),
-   employeeId:modalState.employeeId,
-   type:pType,
-   amount,
-   date,
-   note,
-   createdAt:new Date().toISOString()
-  };
+  if(!targetEmpId){closePayModal();return}
+  const entry={id:crypto.randomUUID(),employeeId:targetEmpId,type:pType,amount,date,note,createdAt:new Date().toISOString()};
   db.payments.push(entry);
   if(!persist(()=>db.payments.pop()))return;
   closePayModal();
-  toast(`${payTypeLabel(pType)} of ${money(amount)} saved.`);
+  toast(`${payTypeLabel(pType)} of ${money(amount)} subtracted from balance.`);
  }
 }
 
@@ -1319,19 +1168,13 @@ function updateBackupReminder(){
  const totalRecords=db.employees.length+db.attendance.length+db.payments.length;
  if(totalRecords===0){badge.classList.add('hidden');return}
  const days=daysSinceBackup();
- if(days===null){
-  badge.textContent='No backup yet';
-  badge.classList.remove('hidden');
- }else if(days>=3){
-  badge.textContent=`Backup ${days}d ago`;
-  badge.classList.remove('hidden');
- }else{
-  badge.classList.add('hidden');
- }
+ if(days===null){badge.textContent='Backup';badge.classList.remove('hidden')}
+ else if(days>=3){badge.textContent=`${days}d backup`;badge.classList.remove('hidden')}
+ else badge.classList.add('hidden');
 }
 
 function renderAll(){
- $('todayLabel').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+ $('todayLabel').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'short',day:'numeric'});
  const active=db.employees.filter(e=>e.active!==false),today=todayPresent(),present=today.length;
  const presentIds=new Set(today.map(a=>a.employeeId));
  const absentList=active.filter(e=>!presentIds.has(e.id));
@@ -1343,21 +1186,21 @@ function renderAll(){
 
  const sorted=[...today].sort((a,b)=>b.timestamp.localeCompare(a.timestamp));
  $('todayList').innerHTML=sorted.length
-  ?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Time</th><th>Wage</th><th>Edit</th></tr></thead><tbody>${sorted.map(a=>`<tr><td><b>${esc(a.nameSnapshot)}</b><div class="tiny">${esc(a.qrId)}</div></td><td>${esc(a.time)}</td><td>${money(a.dailyWage)}</td><td><button class="btn danger small" onclick="deleteAttendance('${a.id}')">Remove</button></td></tr>`).join('')}</tbody></table></div>`
-  :'<div class="empty">No attendance recorded today.</div>';
+  ?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Time</th><th>Wage</th><th></th></tr></thead><tbody>${sorted.map(a=>`<tr><td><b>${esc(a.nameSnapshot)}</b><div class="tiny">${esc(a.qrId)}</div></td><td>${esc(a.time)}</td><td>${money(a.dailyWage)}</td><td><button class="btn danger small" onclick="deleteAttendance('${a.id}')">Remove</button></td></tr>`).join('')}</tbody></table></div>`
+  :'<div class="empty">No scans today yet.</div>';
 
- const recent=sorted.slice(0,6);
+ const recent=sorted.slice(0,5);
  $('homeRecentList').innerHTML=recent.length
   ?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Time</th><th>Wage</th></tr></thead><tbody>${recent.map(a=>`<tr><td><b>${esc(a.nameSnapshot)}</b><div class="tiny">${esc(a.qrId)}</div></td><td>${esc(a.time)}</td><td>${money(a.dailyWage)}</td></tr>`).join('')}</tbody></table></div>`
-  :'<div class="empty">No scans recorded yet today. Use <b>Scan Attendance</b> to get started.</div>';
+  :'<div class="empty">No scans today yet.</div>';
 
  $('homeAbsentButtons').innerHTML=absentList.length
-  ?`<div class="status-chip-wrap">${absentList.map(e=>renderPersonButton(e,'Absent · Tap to mark present','absent',`quickMarkPresentById('${e.id}')`)).join('')}</div>`
-  :'<div class="empty">Everyone active is present today.</div>';
+  ?`<div class="status-chip-wrap">${absentList.map(e=>renderPersonButton(e,'Present','absent',`quickMarkPresentById('${e.id}')`)).join('')}</div>`
+  :'<div class="empty">All active staff present today.</div>';
 
  $('scanAbsentButtons').innerHTML=absentList.length
   ?`<div class="status-chip-wrap">${absentList.map(e=>renderPersonButton(e,'Mark present','absent',`quickMarkPresentById('${e.id}')`)).join('')}</div>`
-  :'<div class="empty">No absent active employees today.</div>';
+  :'<div class="empty">None absent today.</div>';
 
  renderEmployees();
  runReport();
@@ -1365,17 +1208,19 @@ function renderAll(){
  updateBackupReminder();
 
  const lastTxt=db.lastBackupAt?`Last backup: ${new Date(db.lastBackupAt).toLocaleString()}`:'No backup exported yet.';
- $('storageInfo').textContent=`${db.employees.length} employees · ${db.attendance.length} attendance records · ${db.payments.length} payments/advances. ${lastTxt}`;
+ $('storageInfo').textContent=`${db.employees.length} staff · ${db.attendance.length} scans · ${db.payments.length} entries. ${lastTxt}`;
 }
 
 function getFilteredEmployees(){
  const q=($('employeeSearch').value||'').trim().toLowerCase();
- return db.employees.filter(e=>(e.name+' '+e.qrId+' '+(e.extra||'')+' '+cycleLabel(e.payCycle)).toLowerCase().includes(q));
+ return db.employees.filter(e=>{
+  const seqStr=e.batchNum?`#${e.batchNum} ${e.batchNum}`:'';
+  return (e.name+' '+e.qrId+' '+(e.extra||'')+' '+seqStr+' '+cycleLabel(e.payCycle)).toLowerCase().includes(q);
+ });
 }
 function updateSelectionUI(){
  const validIds=new Set(db.employees.map(e=>e.id));
  for(const id of [...selectedIds])if(!validIds.has(id))selectedIds.delete(id);
-
  const filtered=getFilteredEmployees();
  const allFilteredSelected=filtered.length>0&&filtered.every(e=>selectedIds.has(e.id));
  $('selectAllQr').checked=allFilteredSelected;
@@ -1383,7 +1228,6 @@ function updateSelectionUI(){
  $('selectedCount').textContent=selectedIds.size;
  $('downloadSelectedQr').disabled=selectedIds.size===0;
  $('printSelectedQr').disabled=selectedIds.size===0;
-
  const unassigned=db.employees.filter(e=>e.name===e.qrId);
  $('unassignedCount').textContent=unassigned.length;
  $('nextUnassignedBtn').disabled=unassigned.length===0;
@@ -1395,29 +1239,30 @@ window.toggleSelectEmp=(id,checked)=>{
 function renderEmployees(){
  const list=getFilteredEmployees();
  $('employeeList').innerHTML=list.length
-  ?`<div class="tablewrap"><table><thead><tr><th style="width:36px">Pick</th><th>Employee</th><th>Daily wage</th><th>Actions</th></tr></thead><tbody>${list.map(e=>{
+  ?`<div class="tablewrap"><table><thead><tr><th style="width:34px"></th><th>Staff</th><th>Wage</th><th>Actions</th></tr></thead><tbody>${list.map(e=>{
    const sel=selectedIds.has(e.id);
    const unassigned=e.name===e.qrId;
    const inactive=e.active===false;
    const cLabel=cycleLabel(e.payCycle);
-   return `<tr class="${sel?'selected-row':''}"><td><input type="checkbox" ${sel?'checked':''} onchange="toggleSelectEmp('${e.id}',this.checked)" aria-label="Select ${esc(e.name)}"></td><td><b>${esc(e.name)}</b><span class="tag cycle">${esc(cLabel)}</span>${unassigned?'<span class="tag unassigned">Needs name</span>':''}${inactive?'<span class="tag inactive">Inactive</span>':''}<div class="tiny">${esc(e.qrId)}${e.extra?' · '+esc(e.extra):''}</div></td><td>${money(e.dailyWage)}</td><td><div class="actions"><button class="btn secondary small" onclick="editEmployee('${e.id}')">Edit</button><button class="btn outline small" onclick="cardFor('${e.id}')">QR</button><button class="btn small" onclick="downloadOneQr('${e.id}')">↓ QR</button><button class="btn ${inactive?'secondary':'danger'} small" onclick="toggleEmployee('${e.id}')">${inactive?'Activate':'Deactivate'}</button></div></td></tr>`;
+   const seqBadge=e.batchNum?`<span class="tag seq">#${e.batchNum}${e.batchTotal?'/'+e.batchTotal:''}</span>`:'';
+   return `<tr class="${sel?'selected-row':''}"><td><input type="checkbox" ${sel?'checked':''} onchange="toggleSelectEmp('${e.id}',this.checked)"></td><td>${seqBadge}<b>${esc(e.name)}</b><span class="tag cycle">${esc(cLabel)}</span>${unassigned?'<span class="tag unassigned">Needs name</span>':''}${inactive?'<span class="tag inactive">Inactive</span>':''}<div class="tiny">${esc(e.qrId)}${e.extra?' · '+esc(e.extra):''}</div></td><td>${money(e.dailyWage)}</td><td><div class="actions"><button class="btn secondary small" onclick="editEmployee('${e.id}')">Edit</button><button class="btn outline small" onclick="cardFor('${e.id}')">QR</button><button class="btn small" onclick="downloadOneQr('${e.id}')">PNG</button><button class="btn ${inactive?'secondary':'danger'} small" onclick="toggleEmployee('${e.id}')">${inactive?'On':'Off'}</button></div></td></tr>`;
   }).join('')}</tbody></table></div>`
-  :'<div class="empty">No employees match your filter.</div>';
+  :'<div class="empty">No staff match filter.</div>';
  updateSelectionUI();
 }
 
 function recordAttendance(raw){
  const id=String(raw||'').trim().toUpperCase(),box=$('scanResult'),emp=empByQr(id);
- if(!id){box.className='result warn';box.textContent='Enter or scan a NEXUS employee QR ID.';return}
- if(!emp){box.className='result warn';box.textContent=`Unknown QR ID: ${id}. Create or assign this card first.`;toast('QR ID is not registered');return}
- if(emp.active===false){box.className='result warn';box.innerHTML=`<b class="name">${esc(emp.name)}</b>Employee is inactive. Attendance was not recorded.`;return}
+ if(!id){box.className='result warn';box.textContent='Scan or enter a QR ID.';return}
+ if(!emp){box.className='result warn';box.textContent=`Unknown QR ID: ${id}`;toast('Unknown QR ID');return}
+ if(emp.active===false){box.className='result warn';box.innerHTML=`<b class="name">${esc(emp.name)}</b>Employee is inactive.`;return}
  const date=localDate(),existing=db.attendance.find(a=>a.employeeId===emp.id&&a.date===date);
- if(existing){box.className='result warn';box.innerHTML=`<b class="name">${esc(emp.name)}</b><b>Already recorded today.</b><div class="tiny">First scan: ${esc(existing.time)} · No duplicate day or wage added.</div>`;toast('Duplicate scan blocked');return}
+ if(existing){box.className='result warn';box.innerHTML=`<b class="name">${esc(emp.name)}</b><b>Already scanned today</b><div class="tiny">Recorded at ${esc(existing.time)}</div>`;toast('Already scanned today');return}
  const now=new Date(),entry={id:crypto.randomUUID(),employeeId:emp.id,qrId:emp.qrId,nameSnapshot:emp.name,date,time:now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'}),timestamp:now.toISOString(),dailyWage:Number(emp.dailyWage)||0,source:'scan'};
  db.attendance.push(entry);
  if(!persist(()=>db.attendance.pop()))return;
  box.className='result success';
- box.innerHTML=`<b class="name">✓ ${esc(emp.name)}</b><b>NEXUS attendance recorded</b><div>${dateLabel(date)} · ${esc(entry.time)}</div><div class="money">Today's wage: ${money(entry.dailyWage)}</div>`;
+ box.innerHTML=`<b class="name">✓ ${esc(emp.name)}</b><div>${dateLabel(date)} · ${esc(entry.time)}</div><div class="money">${money(entry.dailyWage)}</div>`;
  $('manualId').value='';lastScanned=id;lastScanAt=Date.now();toast(emp.name+' marked present');
 }
 
@@ -1425,72 +1270,73 @@ window.deleteAttendance=attId=>{
  const idx=db.attendance.findIndex(a=>a.id===attId);
  if(idx===-1)return;
  const item=db.attendance[idx];
- if(!confirm(`Remove attendance record for ${item.nameSnapshot} on ${item.date}?`))return;
+ if(!confirm(`Remove scan for ${item.nameSnapshot} on ${item.date}?`))return;
  const removed=db.attendance.splice(idx,1)[0];
  if(!persist(()=>db.attendance.splice(idx,0,removed)))return;
- toast('Attendance record removed.');
+ toast('Scan removed.');
 };
 
 function saveEmployee(){
  const editId=$('editId').value,rawName=$('newName').value.trim(),extra=$('newExtra').value.trim(),qrId=$('newQrId').value.trim().toUpperCase(),rawWage=$('newWage').value,payCycle=normalizeCycle($('newPayCycle').value);
+ const batchNum=$('editBatchNum').value?Number($('editBatchNum').value):null;
+ const batchTotal=$('editBatchTotal').value?Number($('editBatchTotal').value):null;
  const wage=rawWage===''?0:Number(rawWage);
- if(!qrId||!Number.isFinite(wage)||wage<0){toast('Enter a QR ID and a valid daily wage.');return}
- if(new TextEncoder().encode(qrId).length>17){toast('QR ID must be 17 bytes or fewer.');return}
- if(db.employees.some(e=>e.qrId.toUpperCase()===qrId&&e.id!==editId)){toast('That QR ID already belongs to another employee.');return}
+ if(!qrId||!Number.isFinite(wage)||wage<0){toast('Enter a QR ID and valid wage.');return}
+ if(new TextEncoder().encode(qrId).length>17){toast('QR ID max 17 bytes.');return}
+ if(db.employees.some(e=>e.qrId.toUpperCase()===qrId&&e.id!==editId)){toast('QR ID already in use.');return}
  const name=rawName||qrId;
  if(editId){
   const emp=db.employees.find(e=>e.id===editId);if(!emp)return;
   const prev={name:emp.name,extra:emp.extra,qrId:emp.qrId,dailyWage:emp.dailyWage,payCycle:emp.payCycle};
   emp.name=name;emp.extra=extra;emp.qrId=qrId;emp.dailyWage=wage;emp.payCycle=payCycle;emp.updatedAt=new Date().toISOString();
   if(!persist(()=>Object.assign(emp,prev)))return;
-  toast('Employee updated. Past attendance wages stay unchanged.');
+  toast('Saved.');
  }else{
-  const emp={id:crypto.randomUUID(),name,extra,qrId,dailyWage:wage,payCycle,active:true,createdAt:new Date().toISOString()};
+  const emp={id:crypto.randomUUID(),name,extra,qrId,dailyWage:wage,payCycle,batchNum,batchTotal,active:true,createdAt:new Date().toISOString()};
   db.employees.push(emp);
   if(!persist(()=>db.employees.pop()))return;
-  toast(rawName?'Employee registered.':'QR card assigned with ID '+qrId+'. Add name anytime.');
+  toast('QR card saved.');
  }
  const saved=db.employees.find(e=>e.qrId===qrId);
- try{showQr(saved)}catch(err){toast(err.message||'Could not render QR')}
+ try{showQr(saved)}catch(err){toast(err.message||'QR error')}
  resetEmployeeForm(false);
 }
 
 function resetEmployeeForm(clearQr=true){
- $('editId').value='';$('newName').value='';$('newExtra').value='';$('newWage').value='';
- $('newPayCycle').value='weekly';
- $('newQrId').disabled=false;
+ $('editId').value='';$('editBatchNum').value='';$('editBatchTotal').value='';
+ $('newName').value='';$('newExtra').value='';$('newWage').value='';
+ $('newPayCycle').value='weekly';$('newQrId').disabled=false;
  if(clearQr){$('newQrId').value='';clearQrPreview()}
- $('employeeFormTitle').textContent='Create / assign NEXUS QR card';
- $('saveEmployee').textContent='Save & generate NEXUS QR';
+ $('employeeFormTitle').textContent='Create / assign QR card';
+ $('saveEmployee').textContent='Save & generate QR';
  $('cancelEdit').classList.add('hidden');
 }
 
 function clearQrPreview(){
  currentQr='';
- $('qrOutput').innerHTML='<span class="muted">NEXUS employee QR card preview appears here</span>';
+ $('qrOutput').innerHTML='<span class="muted">QR card preview appears here</span>';
  $('printQr').disabled=true;$('downloadQr').disabled=true;
 }
 
 function previewQrFromId(rawId,overrides={}){
  const qrId=String(rawId||'').trim().toUpperCase();
  if(!qrId){clearQrPreview();return}
- if(new TextEncoder().encode(qrId).length>17){toast('QR ID must be 17 bytes or fewer.');return}
+ if(new TextEncoder().encode(qrId).length>17){toast('QR ID max 17 bytes.');return}
  const existing=empByQr(qrId);
  const draftEmp={
-  id:existing?.id||'',
-  qrId,
+  id:existing?.id||'',qrId,
   name:overrides.name??($('newName').value.trim()||existing?.name||qrId),
   extra:overrides.extra??($('newExtra').value.trim()||existing?.extra||''),
   dailyWage:overrides.dailyWage??($('newWage').value!==''?Number($('newWage').value):(existing?.dailyWage??0)),
-  payCycle:normalizeCycle(overrides.payCycle??$('newPayCycle').value??existing?.payCycle??'weekly')
+  payCycle:normalizeCycle(overrides.payCycle??$('newPayCycle').value??existing?.payCycle??'weekly'),
+  batchNum:overrides.batchNum??(existing?.batchNum||null),
+  batchTotal:overrides.batchTotal??(existing?.batchTotal||null)
  };
  try{
   const canvas=makeBrandedCardCanvas(draftEmp);
-  currentQr=qrId;
-  $('qrOutput').innerHTML='';
-  $('qrOutput').appendChild(canvas);
+  currentQr=qrId;$('qrOutput').innerHTML='';$('qrOutput').appendChild(canvas);
   $('printQr').disabled=false;$('downloadQr').disabled=false;
- }catch(err){toast(err.message||'Could not render QR')}
+ }catch(err){toast(err.message||'QR error')}
 }
 
 function getActiveCardEmployee(){
@@ -1502,145 +1348,117 @@ function getActiveCardEmployee(){
   name:$('newName').value.trim()||currentQr,
   extra:$('newExtra').value.trim()||'',
   dailyWage:$('newWage').value!==''?Number($('newWage').value):0,
-  payCycle:normalizeCycle($('newPayCycle').value)
+  payCycle:normalizeCycle($('newPayCycle').value),
+  batchNum:$('editBatchNum').value?Number($('editBatchNum').value):null,
+  batchTotal:$('editBatchTotal').value?Number($('editBatchTotal').value):null
  };
 }
 
 function generateBatchCards(){
  const count=Number($('batchCount').value);
- if(!Number.isInteger(count)||count<1||count>50){toast('Enter a number between 1 and 50.');return}
+ if(!Number.isInteger(count)||count<1||count>50){toast('Enter 1 to 50.');return}
  const rawWage=$('batchWage').value;
  const wage=rawWage===''?0:Number(rawWage);
- if(!Number.isFinite(wage)||wage<0){toast('Enter a valid daily wage.');return}
+ if(!Number.isFinite(wage)||wage<0){toast('Enter valid wage.');return}
  const payCycle=normalizeCycle($('batchCycle').value);
-
  const created=[];
  for(let i=0;i<count;i++){
   const qrId=makeId();
-  const emp={id:crypto.randomUUID(),name:qrId,extra:'',qrId,dailyWage:wage,payCycle,active:true,createdAt:new Date().toISOString()};
-  db.employees.push(emp);
-  created.push(emp);
+  const batchNum=i+1;
+  const emp={id:crypto.randomUUID(),name:qrId,extra:'',batchNum,batchTotal:count,qrId,dailyWage:wage,payCycle,active:true,createdAt:new Date().toISOString()};
+  db.employees.push(emp);created.push(emp);
  }
  if(!persist(()=>{db.employees.splice(db.employees.length-created.length,created.length)}))return;
- batchDraftCards=created;
- renderBatchPreview(created);
- toast(`Generated ${created.length} NEXUS QR cards.`);
+ batchDraftCards=created;renderBatchPreview(created);
+ toast(`Generated ${created.length} cards (#1–#${created.length}).`);
 }
 
 function renderBatchPreview(cards){
- const box=$('batchPreview');
- box.innerHTML='';
+ const box=$('batchPreview');box.innerHTML='';
  $('printBatchPreviewBtn').disabled=!cards.length;
- if(!cards.length){
-  $('batchStatus').textContent='Generates up to 50 unique QR cards ready for assigning names later.';
-  return;
- }
- $('batchStatus').textContent=`${cards.length} QR cards generated and saved as unassigned ("Needs name"). Tap any card below or in the directory to assign a name.`;
- cards.forEach(emp=>{
-  const card=document.createElement('div');
-  card.className='batch-card';
-  card.title='Tap to assign name to '+emp.qrId;
+ if(!cards.length){$('batchStatus').textContent='Creates 1–50 cards tagged #1 to #n.';return}
+ $('batchStatus').textContent=`${cards.length} cards (#1–#${cards.length}). Tap any card to add name.`;
+ cards.forEach((emp,idx)=>{
+  const num=emp.batchNum||(idx+1);
+  const total=emp.batchTotal||cards.length;
+  const card=document.createElement('div');card.className='batch-card';
   card.onclick=()=>openEmployeeCard(emp.id,'edit');
+  const tag=document.createElement('div');tag.className='batch-num';tag.textContent=`#${num}/${total}`;
   const canvas=makeBrandedCardCanvas(emp);
-  const label=document.createElement('div');
-  label.className='tiny';
-  label.style.marginTop='6px';
-  label.textContent=emp.qrId;
-  card.appendChild(canvas);
-  card.appendChild(label);
-  box.appendChild(card);
+  const label=document.createElement('div');label.className='tiny';label.style.marginTop='5px';label.textContent=emp.qrId;
+  card.appendChild(tag);card.appendChild(canvas);card.appendChild(label);box.appendChild(card);
  });
 }
 
 function startNextCard(){
  resetEmployeeForm(true);
- const id=makeId();
- $('newQrId').value=id;
- previewQrFromId(id);
- $('newName').focus();
- toast('New QR ID generated');
+ const id=makeId();$('newQrId').value=id;previewQrFromId(id);$('newName').focus();
 }
 function loadEmployeeIntoForm(e){
  if(!e)return;
- $('editId').value=e.id;
- $('newName').value=e.name===e.qrId?'':e.name;
- $('newExtra').value=e.extra||'';
- $('newWage').value=e.dailyWage;
- $('newPayCycle').value=normalizeCycle(e.payCycle);
- $('newQrId').value=e.qrId;
- $('newQrId').disabled=true;
- $('employeeFormTitle').textContent='Edit employee ('+e.qrId+')';
- $('saveEmployee').textContent='Save employee details';
- $('cancelEdit').classList.remove('hidden');
- showQr(e);
- $('newName').focus();
- $('newName').select();
- window.scrollTo({top:0,behavior:'smooth'});
+ $('editId').value=e.id;$('editBatchNum').value=e.batchNum||'';$('editBatchTotal').value=e.batchTotal||'';
+ $('newName').value=e.name===e.qrId?'':e.name;$('newExtra').value=e.extra||'';
+ $('newWage').value=e.dailyWage;$('newPayCycle').value=normalizeCycle(e.payCycle);
+ $('newQrId').value=e.qrId;$('newQrId').disabled=true;
+ $('employeeFormTitle').textContent='Edit ('+e.qrId+(e.batchNum?` · #${e.batchNum}`:'')+')';
+ $('saveEmployee').textContent='Save changes';$('cancelEdit').classList.remove('hidden');
+ showQr(e);$('newName').focus();window.scrollTo({top:0,behavior:'smooth'});
 }
 window.editEmployee=id=>{const e=db.employees.find(x=>x.id===id);if(e)loadEmployeeIntoForm(e)};
 function editNextUnassigned(){
  const next=db.employees.find(e=>e.name===e.qrId);
- if(!next){toast('All QR cards already have names.');return}
- openTab('employees');
- loadEmployeeIntoForm(next);
- toast('Loaded unassigned card '+next.qrId);
+ if(!next){toast('All cards named.');return}
+ openTab('employees');loadEmployeeIntoForm(next);
 }
 function lookupByQrId(){
  const id=$('lookupQrInput').value.trim().toUpperCase();
- if(!id){toast('Enter a QR ID first.');return}
+ if(!id){toast('Enter QR ID.');return}
  const emp=empByQr(id);
- if(!emp){toast('No employee found with QR ID '+id);return}
- $('lookupQrInput').value='';
- loadEmployeeIntoForm(emp);
- toast('Loaded '+emp.qrId+' for editing');
+ if(!emp){toast('Not found: '+id);return}
+ $('lookupQrInput').value='';loadEmployeeIntoForm(emp);
 }
 window.cardFor=id=>{const e=db.employees.find(x=>x.id===id);if(e){showQr(e);openTab('employees');window.scrollTo({top:0,behavior:'smooth'})}};
 window.toggleEmployee=id=>{
  const e=db.employees.find(x=>x.id===id);if(!e)return;
  const next=e.active===false;
  if(!confirm(`${next?'Activate':'Deactivate'} ${e.name}?`))return;
- const prev=e.active;
- e.active=next;e.updatedAt=new Date().toISOString();
+ const prev=e.active;e.active=next;e.updatedAt=new Date().toISOString();
  if(!persist(()=>{e.active=prev}))return;
- toast(next?'Employee activated.':'Employee deactivated.');
 };
 
 function showQr(emp){
- currentQr=emp.qrId;$('qrOutput').innerHTML='';
- $('qrOutput').appendChild(makeBrandedCardCanvas(emp));
+ currentQr=emp.qrId;$('qrOutput').innerHTML='';$('qrOutput').appendChild(makeBrandedCardCanvas(emp));
  $('printQr').disabled=false;$('downloadQr').disabled=false;
 }
-function safeFileName(str){return String(str||'employee').replace(/[^a-z0-9_-]+/gi,'_').replace(/^_|_$/g,'')}
+function safeFileName(str){return String(str||'staff').replace(/[^a-z0-9_-]+/gi,'_').replace(/^_|_$/g,'')}
 function triggerCardDownload(emp){
- const c=makeBrandedCardCanvas(emp);
- const a=document.createElement('a');
+ const c=makeBrandedCardCanvas(emp);const a=document.createElement('a');
  a.href=c.toDataURL('image/png');
- a.download=`NEXUS-${emp.qrId}-${safeFileName(emp.name)}.png`;
+ a.download=`NEXUS${emp.batchNum?`-#${emp.batchNum}`:''}-${emp.qrId}-${safeFileName(emp.name)}.png`;
  document.body.appendChild(a);a.click();a.remove();
 }
-window.downloadOneQr=id=>{const emp=db.employees.find(x=>x.id===id);if(!emp)return;triggerCardDownload(emp);toast(`Downloaded ${emp.name}'s NEXUS card`)};
+window.downloadOneQr=id=>{const emp=db.employees.find(x=>x.id===id);if(emp){triggerCardDownload(emp);toast('Saved PNG')}};
 function downloadQr(){const emp=getActiveCardEmployee();if(emp)triggerCardDownload(emp)}
 async function downloadSelectedQrs(){
  const chosen=db.employees.filter(e=>selectedIds.has(e.id));
  if(!chosen.length)return;
- toast(`Downloading ${chosen.length} NEXUS card(s)...`);
  for(let i=0;i<chosen.length;i++){
   triggerCardDownload(chosen[i]);
   if(i<chosen.length-1)await new Promise(r=>setTimeout(r,320));
  }
- toast(`Queued ${chosen.length} card(s).`);
+ toast(`Saved ${chosen.length} PNG(s).`);
 }
 function printCardsList(emps){
  if(!emps.length)return;
  const w=window.open('','_blank');
- if(!w){toast('Allow pop-ups to print cards, or use Download.');return}
- const mode=$('printMode')?.value||'full';
- const isGrid=mode==='grid';
- const imgs=emps.map(emp=>{
+ if(!w){toast('Allow pop-ups to print.');return}
+ const isGrid=($('printMode')?.value||'full')==='grid';
+ const imgs=emps.map((emp,i)=>{
   const c=makeBrandedCardCanvas(emp);
-  return `<div class="card"><img src="${c.toDataURL('image/png')}" alt="${esc(emp.name)}"></div>`;
+  const tagTxt=emp.batchNum?`#${emp.batchNum}${emp.batchTotal?'/'+emp.batchTotal:''}`:`#${i+1}`;
+  return `<div class="card"><div class="seq">${esc(tagTxt)}</div><img src="${c.toDataURL('image/png')}" alt="${esc(emp.name)}"></div>`;
  }).join('');
- w.document.write(`<!doctype html><html><head><title>NEXUS QR Cards</title><style>body{font-family:system-ui,Arial;margin:14px;background:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(${isGrid?'175px':'240px'},1fr));gap:${isGrid?'10px':'16px'};justify-items:center}.card{break-inside:avoid;page-break-inside:avoid}.card img{width:${isGrid?'175px':'240px'};height:auto;display:block;border-radius:8px}@media print{body{margin:6px}}</style></head><body><div class="grid">${imgs}</div><script>window.onload=()=>window.print()<\/script></body></html>`);
+ w.document.write(`<!doctype html><html><head><title>NEXUS Cards</title><style>body{font-family:system-ui,Arial;margin:14px;background:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(${isGrid?'175px':'240px'},1fr));gap:${isGrid?'10px':'16px'};justify-items:center}.card{break-inside:avoid;text-align:center}.seq{font-family:monospace,sans-serif;font-weight:800;font-size:12px;margin-bottom:4px;color:#1738ff}.card img{width:${isGrid?'175px':'240px'};height:auto;border-radius:8px}</style></head><body><div class="grid">${imgs}</div><script>window.onload=()=>window.print()<\/script></body></html>`);
  w.document.close();
 }
 function printCard(){const emp=getActiveCardEmployee();if(emp)printCardsList([emp])}
@@ -1648,27 +1466,17 @@ function printSelectedQrs(){printCardsList(db.employees.filter(e=>selectedIds.ha
 
 function dateRange(prefix){return [$(prefix+'From').value||'0000-01-01',$(prefix+'To').value||'9999-12-31']}
 function setPayrollPreset(mode){
- const today=new Date();
- const to=localDate(today);
- if(mode==='month'){
-  $('payFrom').value=to.slice(0,7)+'-01';
- }else{
-  const start=new Date(today);
-  start.setDate(today.getDate()-(Number(mode)-1));
-  $('payFrom').value=localDate(start);
- }
- $('payTo').value=to;
- runPayroll();
+ const today=new Date();const to=localDate(today);
+ if(mode==='month')$('payFrom').value=to.slice(0,7)+'-01';
+ else{const start=new Date(today);start.setDate(today.getDate()-(Number(mode)-1));$('payFrom').value=localDate(start)}
+ $('payTo').value=to;runPayroll();
 }
 
 function runPayroll(){
  const [from,to]=dateRange('pay');
  const cycleFilter=$('payCycleFilter')?.value||'all';
  const statusFilter=$('payStatusFilter')?.value||'all';
-
- const allPeriodPayments=db.payments
-  .filter(p=>p.date>=from&&p.date<=to)
-  .sort((a,b)=>b.date.localeCompare(a.date));
+ const allPeriodPayments=db.payments.filter(p=>p.date>=from&&p.date<=to).sort((a,b)=>b.date.localeCompare(a.date));
 
  const baseRows=db.employees
   .filter(e=>cycleFilter==='all'||normalizeCycle(e.payCycle)===cycleFilter)
@@ -1677,16 +1485,13 @@ function runPayroll(){
    const days=attendanceFor(e.id,from,to);
    const earned=days.reduce((s,a)=>s+Number(a.dailyWage||0),0);
    const bk=paidBreakdown(e.id,from,to);
-   const paid=bk.total;
-   const advance=bk.advance;
-   const balance=earned-paid;
-   const lastPay=allPeriodPayments.find(p=>p.employeeId===e.id);
+   const paid=bk.total;const advance=bk.advance;const balance=earned-paid;
    const cycle=normalizeCycle(e.payCycle);
    let payStatus='Unpaid';
-   if(paid>0&&earned>0&&paid>=earned)payStatus='Paid in full';
-   else if(advance>0&&balance>0)payStatus='Advance taken';
-   else if(paid>0)payStatus='Partially paid';
-   return {id:e.id,name:e.name,extra:e.extra||'',qrId:e.qrId,payCycle:cycle,cycleLabel:cycleLabel(cycle),days:days.length,earned,advance,paid,balance,lastPayDate:lastPay?.date||'',payStatus};
+   if(paid>0&&earned>0&&paid>=earned)payStatus='Paid';
+   else if(advance>0&&balance>0)payStatus='Advance';
+   else if(paid>0)payStatus='Partial';
+   return {id:e.id,name:e.name,extra:e.extra||'',qrId:e.qrId,batchNum:e.batchNum||null,payCycle:cycle,cycleLabel:cycleLabel(cycle),days:days.length,earned,advance,paid,balance,payStatus};
   });
 
  payrollRows=baseRows.filter(r=>{
@@ -1697,7 +1502,6 @@ function runPayroll(){
  });
 
  const paidPeople=baseRows.filter(r=>r.paid>0);
- const advancePeople=baseRows.filter(r=>r.advance>0);
  const absentInPeriod=baseRows.filter(r=>r.days===0);
  const totalEarned=payrollRows.reduce((s,r)=>s+r.earned,0);
  const totalAdvance=payrollRows.reduce((s,r)=>s+r.advance,0);
@@ -1706,42 +1510,34 @@ function runPayroll(){
  const allowedEmpIds=new Set(payrollRows.map(r=>r.id));
  const periodPayments=allPeriodPayments.filter(p=>cycleFilter==='all'||allowedEmpIds.has(p.employeeId));
 
- $('payrollSummary').innerHTML=`<div class="stats"><div class="stat"><small>Total earned</small><strong>${money(totalEarned)}</strong></div><div class="stat"><small>Advances given</small><strong>${money(totalAdvance)}</strong></div><div class="stat"><small>Total paid (incl. adv.)</small><strong>${money(totalPaid)}</strong></div><div class="stat"><small>Remaining balance</small><strong>${money(balance)}</strong></div></div>
- <div class="layout" style="margin-bottom:14px" id="payrollWhoLists">
-  <div class="panel" style="margin-bottom:0;padding:15px" id="whoGotPaidCard">
-   <h2 style="margin:0 0 6px">Who got paid (${paidPeople.length})</h2>
-   <div class="tiny">Tap a name or number button to open their card</div>
-   ${paidPeople.length
-    ?`<div class="status-chip-wrap">${paidPeople.map(p=>renderPersonButton(p,money(p.paid),false,`openEmployeeCard('${p.id}','edit')`)).join('')}</div>`
-    :'<div class="empty">No one paid in this range yet.</div>'}
+ $('payrollSummary').innerHTML=`<div class="stats"><div class="stat"><small>Earned</small><strong>${money(totalEarned)}</strong></div><div class="stat"><small>Advances</small><strong>${money(totalAdvance)}</strong></div><div class="stat"><small>Paid</small><strong>${money(totalPaid)}</strong></div><div class="stat"><small>Balance</small><strong>${money(balance)}</strong></div></div>
+ <div class="two-col" style="margin-bottom:12px">
+  <div class="panel" style="margin-bottom:0;padding:13px" id="whoGotPaidCard">
+   <h2 style="margin:0 0 4px">Who got paid (${paidPeople.length})</h2>
+   ${paidPeople.length?`<div class="status-chip-wrap">${paidPeople.map(p=>renderPersonButton(p,money(p.paid),false,`openEmployeeCard('${p.id}','edit')`)).join('')}</div>`:'<div class="empty">None paid in range.</div>'}
   </div>
-  <div class="panel" style="margin-bottom:0;padding:15px" id="whoIsAbsentCard">
-   <h2 style="margin:0 0 6px">Who is absent — 0 days in period (${absentInPeriod.length})</h2>
-   <div class="tiny">Tap a name or number button to open their card</div>
-   ${absentInPeriod.length
-    ?`<div class="status-chip-wrap">${absentInPeriod.map(a=>renderPersonButton(a,'0 days','absent',`openEmployeeCard('${a.id}','edit')`)).join('')}</div>`
-    :'<div class="empty">Everyone had at least 1 attendance day.</div>'}
+  <div class="panel" style="margin-bottom:0;padding:13px" id="whoIsAbsentCard">
+   <h2 style="margin:0 0 4px">Who is absent (${absentInPeriod.length})</h2>
+   ${absentInPeriod.length?`<div class="status-chip-wrap">${absentInPeriod.map(a=>renderPersonButton(a,'0d','absent',`openEmployeeCard('${a.id}','edit')`)).join('')}</div>`:'<div class="empty">No 0-day staff.</div>'}
   </div>
  </div>
- ${advancePeople.length?`<div class="panel" style="margin-bottom:14px;padding:15px"><h2 style="margin:0 0 6px">Employees with advances (${advancePeople.length})</h2><div class="status-chip-wrap">${advancePeople.map(a=>renderPersonButton(a,'Adv: '+money(a.advance),'advance',`openEmployeeCard('${a.id}','edit')`)).join('')}</div></div>`:''}
- <div class="tablewrap"><table><thead><tr><th>Employee</th><th>Cycle</th><th>Days</th><th>Earned</th><th>Advances</th><th>Total paid</th><th>Balance</th><th>Actions</th></tr></thead><tbody>${payrollRows.map(r=>`<tr><td>${renderPersonButton(r,'',false,`openEmployeeCard('${r.id}','edit')`)}<div class="tiny">${esc(r.payStatus)} · ${esc(r.qrId)}</div></td><td><span class="tag cycle">${esc(r.cycleLabel)}</span></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${r.advance>0?`<span class="tag advance">${money(r.advance)}</span>`:money(0)}</td><td class="money">${money(r.paid)}</td><td><b>${money(r.balance)}</b></td><td><div class="actions"><button class="btn secondary small" onclick="addPayment('${r.id}','regular')">+ Pay</button><button class="btn outline small" onclick="addPayment('${r.id}','advance')">+ Advance</button></div></td></tr>`).join('')||'<tr><td colspan="8" class="empty">No employees match the current filters.</td></tr>'}</tbody></table></div>
- <h2 style="margin-top:18px">Payment & advance history in this period</h2>
- <div class="tablewrap"><table><thead><tr><th>Employee</th><th>Type</th><th>Date</th><th>Amount</th><th>Note</th><th>Actions</th></tr></thead><tbody>${periodPayments.map(p=>{
+ <div class="tablewrap"><table><thead><tr><th>Staff</th><th>Days</th><th>Earned</th><th>Adv.</th><th>Paid</th><th>Balance</th><th></th></tr></thead><tbody>${payrollRows.map(r=>`<tr><td>${renderPersonButton(r,'',false,`openEmployeeCard('${r.id}','edit')`)}<div class="tiny">${esc(r.payStatus)}</div></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${r.advance>0?`<span class="tag advance">-${money(r.advance)}</span>`:money(0)}</td><td class="money">${money(r.paid)}</td><td><b>${money(r.balance)}</b></td><td><div class="actions"><button class="btn secondary small" onclick="addPayment('${r.id}','regular')">+ Pay</button><button class="btn outline small" onclick="addPayment('${r.id}','advance')">+ Advance</button></div></td></tr>`).join('')||'<tr><td colspan="7" class="empty">No matching staff.</td></tr>'}</tbody></table></div>
+ <h2 style="margin-top:16px">Advances & payments log</h2>
+ <div class="tablewrap"><table><thead><tr><th>Staff</th><th>Type</th><th>Date</th><th>Amount</th><th>Note</th><th></th></tr></thead><tbody>${periodPayments.map(p=>{
   const e=db.employees.find(x=>x.id===p.employeeId);
   const pType=normalizePayType(p.type);
-  return `<tr><td>${e?renderPersonButton(e,'',false,`openEmployeeCard('${e.id}','edit')`):esc('Deleted employee')}</td><td><span class="tag ${pType==='advance'?'advance':'paid'}">${esc(payTypeLabel(pType))}</span></td><td>${esc(p.date)}</td><td>${money(p.amount)}</td><td class="tiny">${esc(p.note||'—')}</td><td><div class="actions"><button class="btn secondary small" onclick="editPayment('${p.id}')">Edit</button><button class="btn danger small" onclick="deletePayment('${p.id}')">Delete</button></div></td></tr>`;
- }).join('')||'<tr><td colspan="6" class="muted">No payments or advances recorded for this period.</td></tr>'}</tbody></table></div>`;
+  return `<tr><td>${e?renderPersonButton(e,'',false,`openEmployeeCard('${e.id}','edit')`):esc('Deleted')}</td><td><span class="tag ${pType==='advance'?'advance':'paid'}">${esc(payTypeLabel(pType))}</span></td><td>${esc(p.date)}</td><td>${money(p.amount)}</td><td class="tiny">${esc(p.note||'—')}</td><td><div class="actions"><button class="btn secondary small" onclick="editPayment('${p.id}')">Edit</button><button class="btn danger small" onclick="deletePayment('${p.id}')">Del</button></div></td></tr>`;
+ }).join('')||'<tr><td colspan="6" class="empty">No entries in period.</td></tr>'}</tbody></table></div>`;
 }
 
-window.addPayment=(id,defaultType='regular')=>openPayModal({mode:'create',employeeId:id,defaultType});
+window.addPayment=(id,defaultType='regular')=>openPayModal({mode:'create',employeeId:id,defaultType,allowSelectEmployee:false});
 window.editPayment=payId=>openPayModal({mode:'edit',paymentId:payId});
-
 window.deletePayment=payId=>{
  const idx=db.payments.findIndex(x=>x.id===payId);if(idx===-1)return;
- if(!confirm('Delete this payment/advance entry?'))return;
+ if(!confirm('Delete this entry?'))return;
  const removed=db.payments.splice(idx,1)[0];
  if(!persist(()=>db.payments.splice(idx,0,removed)))return;
- toast('Entry deleted.');
+ toast('Deleted.');
 };
 
 function runReport(){
@@ -1751,13 +1547,13 @@ function runReport(){
   .filter(e=>e.days||e.active);
 
  $('reportOutput').innerHTML=reportRows.length
-  ?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Cycle</th><th>Days</th><th>Earned</th><th>Status</th></tr></thead><tbody>${reportRows.map(r=>`<tr><td><b>${esc(r.name)}</b><div class="tiny">${esc(r.qrId)}</div></td><td><span class="tag cycle">${esc(r.payCycle)}</span></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${r.active?'Active':'Inactive'}</td></tr>`).join('')}</tbody></table></div>`
-  :'<div class="empty">No employees in this report.</div>';
+  ?`<div class="tablewrap"><table><thead><tr><th>Staff</th><th>Days</th><th>Earned</th><th>Status</th></tr></thead><tbody>${reportRows.map(r=>`<tr><td><b>${esc(r.name)}</b><div class="tiny">${esc(r.qrId)}</div></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${r.active?'Active':'Off'}</td></tr>`).join('')}</tbody></table></div>`
+  :'<div class="empty">No report rows.</div>';
 
  const entries=db.attendance.filter(a=>a.date>=from&&a.date<=to).sort((a,b)=>b.date.localeCompare(a.date)||b.timestamp.localeCompare(a.timestamp));
  $('attendanceEntriesList').innerHTML=entries.length
-  ?`<div class="tablewrap"><table><thead><tr><th>Date</th><th>Employee</th><th>Time</th><th>Wage</th><th>Action</th></tr></thead><tbody>${entries.map(a=>`<tr><td>${esc(a.date)}</td><td><b>${esc(a.nameSnapshot)}</b><div class="tiny">${esc(a.qrId)}</div></td><td>${esc(a.time)}</td><td>${money(a.dailyWage)}</td><td><button class="btn danger small" onclick="deleteAttendance('${a.id}')">Remove</button></td></tr>`).join('')}</tbody></table></div>`
-  :'<div class="empty">No attendance entries in this date range.</div>';
+  ?`<div class="tablewrap"><table><thead><tr><th>Date</th><th>Staff</th><th>Time</th><th>Wage</th><th></th></tr></thead><tbody>${entries.map(a=>`<tr><td>${esc(a.date)}</td><td><b>${esc(a.nameSnapshot)}</b></td><td>${esc(a.time)}</td><td>${money(a.dailyWage)}</td><td><button class="btn danger small" onclick="deleteAttendance('${a.id}')">Del</button></td></tr>`).join('')}</tbody></table></div>`
+  :'<div class="empty">No entries in range.</div>';
 }
 
 function csv(rows){return rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n')}
@@ -1766,9 +1562,9 @@ function download(name,content,type='text/csv;charset=utf-8'){
  a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
  setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
-function exportPayroll(){const [from,to]=dateRange('pay');download(`nexus-payroll-${from}-to-${to}.csv`,csv([['Employee','QR ID','Pay cycle','Working days','Earned ETB','Advances ETB','Total paid ETB','Balance ETB'],...payrollRows.map(r=>[r.name,r.qrId,r.cycleLabel,r.days,r.earned,r.advance,r.paid,r.balance])]))}
-function exportReport(){runReport();const from=$('fromDate').value,to=$('toDate').value;download(`nexus-attendance-${from}-to-${to}.csv`,csv([['Employee','QR ID','Pay cycle','Working days','Earned ETB','Active'],...reportRows.map(r=>[r.name,r.qrId,r.payCycle,r.days,r.earned,r.active?'Yes':'No'])]))}
-function exportToday(){download(`nexus-attendance-${localDate()}.csv`,csv([['Employee','QR ID','Date','Time','Daily wage ETB'],...todayPresent().map(a=>[a.nameSnapshot,a.qrId,a.date,a.time,a.dailyWage])]))}
+function exportPayroll(){const [from,to]=dateRange('pay');download(`nexus-payroll-${from}-to-${to}.csv`,csv([['Employee','Batch #','QR ID','Cycle','Days','Earned ETB','Advances ETB','Paid ETB','Balance ETB'],...payrollRows.map(r=>[r.name,r.batchNum||'',r.qrId,r.cycleLabel,r.days,r.earned,r.advance,r.paid,r.balance])]))}
+function exportReport(){runReport();const from=$('fromDate').value,to=$('toDate').value;download(`nexus-attendance-${from}-to-${to}.csv`,csv([['Employee','QR ID','Cycle','Days','Earned ETB','Active'],...reportRows.map(r=>[r.name,r.qrId,r.payCycle,r.days,r.earned,r.active?'Yes':'No'])]))}
+function exportToday(){download(`nexus-attendance-${localDate()}.csv`,csv([['Employee','QR ID','Date','Time','Wage ETB'],...todayPresent().map(a=>[a.nameSnapshot,a.qrId,a.date,a.time,a.dailyWage])]))}
 
 function validBackup(x){
  return x&&Array.isArray(x.employees)&&Array.isArray(x.attendance)&&Array.isArray(x.payments||[])
@@ -1781,31 +1577,31 @@ function backup(){
  db.lastBackupAt=new Date().toISOString();
  download(`nexus-backup-${localDate()}.json`,JSON.stringify({...db,system:'NEXUS Workforce & Payroll OS',backupCreatedAt:db.lastBackupAt},null,2),'application/json');
  persist(()=>{db.lastBackupAt=prevBackup});
- toast('NEXUS backup exported.');
+ toast('Backup downloaded.');
 }
 function restoreFile(file){
  const reader=new FileReader();
  reader.onload=()=>{
   try{
    const x=JSON.parse(reader.result);
-   if(!validBackup(x))throw Error('Backup file format is invalid');
-   if(!confirm('Replace current employees, attendance, and payments on this device with this backup?'))return;
+   if(!validBackup(x))throw Error('Invalid backup file');
+   if(!confirm('Replace current data with this backup?'))return;
    const snapshot=JSON.parse(JSON.stringify(db));
    const employees=(x.employees||[]).map(e=>({...e,payCycle:normalizeCycle(e.payCycle)}));
    const payments=(x.payments||[]).map(p=>({...p,type:normalizePayType(p.type),note:String(p.note||'')}));
    db={...blankDB(),...x,employees,payments,lastBackupAt:new Date().toISOString()};
    selectedIds.clear();
    if(!persist(()=>{db=snapshot}))return;
-   toast('Backup restored successfully.');
-  }catch(e){toast(e.message||'Could not read backup file.')}
+   toast('Backup restored.');
+  }catch(e){toast(e.message||'Invalid file')}
  };
  reader.readAsText(file);
 }
 
 async function startCamera(){
- if(!window.isSecureContext){toast('Camera requires HTTPS. Use manual QR ID entry if unavailable.');return}
- if(!navigator.mediaDevices?.getUserMedia){toast('Camera API unavailable. Use manual QR ID entry.');return}
- if(!('BarcodeDetector'in window)){toast('Built-in QR detector unavailable. Use manual QR ID entry.');return}
+ if(!window.isSecureContext){toast('Camera needs HTTPS. Use manual QR ID.');return}
+ if(!navigator.mediaDevices?.getUserMedia){toast('Camera unavailable. Use manual QR ID.');return}
+ if(!('BarcodeDetector'in window)){toast('QR detector unavailable. Use manual QR ID.');return}
  try{
   const detector=new BarcodeDetector({formats:['qr_code']});
   cameraStream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'}}});
@@ -1825,7 +1621,7 @@ async function startCamera(){
    scanLoop=setTimeout(tick,300);
   };
   tick();
- }catch(e){stopCamera();toast('Could not start camera. Check camera permissions.')}
+ }catch(e){stopCamera();toast('Could not open camera.')}
 }
 function stopCamera(){
  if(scanLoop)clearTimeout(scanLoop);scanLoop=null;
@@ -1834,38 +1630,25 @@ function stopCamera(){
  $('startScan').classList.remove('hidden');$('stopScan').classList.add('hidden');
 }
 
-const TAB_HEADINGS={
- home:'NEXUS Home',
- scan:'Scan Attendance',
- employees:'Employees & QR Cards',
- payroll:'NEXUS Payroll & Advances',
- reports:'Attendance Reports',
- backup:'Backup & Security'
-};
+const TAB_HEADINGS={home:'Home',scan:'Scan QR',employees:'QR & Staff',payroll:'Payroll',more:'More'};
 function openTab(tabName){
- document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tabName));
+ document.querySelectorAll('.bottom-nav .nav-item').forEach(x=>x.classList.toggle('active',x.dataset.tab===tabName));
  document.querySelectorAll('.tabpage').forEach(x=>x.classList.toggle('hidden',x.id!=='tab-'+tabName));
- $('pageHeading').textContent=TAB_HEADINGS[tabName]||'NEXUS Workforce & Payroll OS';
+ $('pageHeading').textContent=TAB_HEADINGS[tabName]||'NEXUS';
  if(tabName!=='scan')stopCamera();
+ window.scrollTo({top:0,behavior:'smooth'});
 }
-document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
-document.querySelectorAll('.quick-tile[data-jump]').forEach(el=>el.addEventListener('click',()=>openTab(el.dataset.jump)));
-$('statAbsentCard').onclick=()=>{
- openTab('home');
- $('homeAbsentPanel')?.scrollIntoView({behavior:'smooth'});
-};
-$('jumpPaidListBtn').onclick=()=>{
- $('payStatusFilter').value='paid';
- runPayroll();
- $('whoGotPaidCard')?.scrollIntoView({behavior:'smooth'});
-};
-$('jumpAbsentListBtn').onclick=()=>{
- runPayroll();
- $('whoIsAbsentCard')?.scrollIntoView({behavior:'smooth'});
-};
+document.querySelectorAll('.bottom-nav .nav-item').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
+$('navScanBtn').onclick=()=>{openTab('scan');startCamera()};
+$('homeOpenScannerBtn').onclick=()=>{openTab('scan');startCamera()};
+document.querySelectorAll('.app-tile[data-jump]').forEach(el=>el.addEventListener('click',()=>openTab(el.dataset.jump)));
+$('statAbsentCard').onclick=()=>{openTab('home');$('homeAbsentPanel')?.scrollIntoView({behavior:'smooth'})};
+$('jumpPaidListBtn').onclick=()=>{$('payStatusFilter').value='paid';runPayroll();$('whoGotPaidCard')?.scrollIntoView({behavior:'smooth'})};
+$('jumpAbsentListBtn').onclick=()=>{runPayroll();$('whoIsAbsentCard')?.scrollIntoView({behavior:'smooth'})};
+$('quickRecordAdvanceBtn').onclick=()=>openPayModal({mode:'create',defaultType:'advance',allowSelectEmployee:true});
+$('payEmployeeSelect').addEventListener('change',()=>{modalState.employeeId=$('payEmployeeSelect').value;refreshModalSummary(modalState.employeeId)});
 $('homeNextUnassigned').onclick=editNextUnassigned;
-$('backupBadge').onclick=()=>openTab('backup');
-$('quickBackupTop').onclick=backup;
+$('backupBadge').onclick=()=>openTab('more');
 $('themeBtn').onclick=toggleTheme;
 $('backupThemeBtn').onclick=toggleTheme;
 $('lockBtn').onclick=lockScreen;
@@ -1873,9 +1656,7 @@ $('lockBtn').onclick=lockScreen;
 $('payModalForm').addEventListener('submit',submitPayModal);
 $('closePayModalBtn').onclick=closePayModal;
 $('cancelPayModalBtn').onclick=closePayModal;
-$('payModal').addEventListener('click',e=>{
- if(e.target===$('payModal'))closePayModal();
-});
+$('payModal').addEventListener('click',e=>{if(e.target===$('payModal'))closePayModal()});
 $('payTypeSelect').addEventListener('change',()=>{
  const t=normalizePayType($('payTypeSelect').value);
  if(modalState.mode==='create'){
@@ -1885,55 +1666,29 @@ $('payTypeSelect').addEventListener('change',()=>{
   else if(t!=='advance'&&$('payNoteInput').value.trim()==='Advance payment')$('payNoteInput').value='';
  }
 });
-document.addEventListener('keydown',e=>{
- if(e.key==='Escape'&&!$('payModal').classList.contains('hidden'))closePayModal();
-});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('payModal').classList.contains('hidden'))closePayModal()});
 
 $('loginForm').addEventListener('submit',e=>{
  e.preventDefault();
- const entered=$('passcodeInput').value;
- if(entered===getPasscode()){
-  unlockScreen();
-  toast('Admin authenticated in NEXUS');
- }else{
-  $('loginError').textContent='Incorrect admin passcode. Try again.';
-  $('passcodeInput').select();
- }
+ if($('passcodeInput').value===getPasscode()){unlockScreen();toast('Unlocked')}
+ else{$('loginError').textContent='Wrong passcode.';$('passcodeInput').select()}
 });
-
 $('toggleLockChangeBtn').onclick=()=>{
- $('lockChangeBox').classList.toggle('hidden');
- $('loginError').textContent='';
+ $('lockChangeBox').classList.toggle('hidden');$('loginError').textContent='';
  if(!$('lockChangeBox').classList.contains('hidden'))$('lockOldPass').focus();
 };
-
 $('lockSaveNewPassBtn').onclick=()=>{
  const res=applyPasscodeChange($('lockOldPass').value,$('lockNewPass').value);
- if(!res.ok){
-  $('loginError').textContent=res.msg;
-  return;
- }
- $('lockOldPass').value='';
- $('lockNewPass').value='';
- $('lockChangeBox').classList.add('hidden');
- $('loginError').textContent='';
- toast(res.msg);
+ if(!res.ok){$('loginError').textContent=res.msg;return}
+ $('lockOldPass').value='';$('lockNewPass').value='';$('lockChangeBox').classList.add('hidden');$('loginError').textContent='';toast(res.msg);
 };
-
 $('savePasscodeBtn').onclick=()=>{
  const res=applyPasscodeChange($('currentPasscodeInput').value,$('newPasscodeInput').value);
  if(!res.ok){toast(res.msg);return}
- $('currentPasscodeInput').value='';
- $('newPasscodeInput').value='';
- toast(res.msg);
+ $('currentPasscodeInput').value='';$('newPasscodeInput').value='';toast(res.msg);
 };
 
-$('makeId').onclick=()=>{
- const id=makeId();
- $('newQrId').value=id;
- previewQrFromId(id);
- $('newName').focus();
-};
+$('makeId').onclick=()=>{const id=makeId();$('newQrId').value=id;previewQrFromId(id);$('newName').focus()};
 $('newQrId').addEventListener('input',()=>previewQrFromId($('newQrId').value));
 $('newName').addEventListener('input',()=>{if($('newQrId').value.trim())previewQrFromId($('newQrId').value)});
 $('newExtra').addEventListener('input',()=>{if($('newQrId').value.trim())previewQrFromId($('newQrId').value)});
@@ -1962,25 +1717,20 @@ $('selectAllQr').onchange=e=>{
 $('downloadSelectedQr').onclick=downloadSelectedQrs;
 $('printSelectedQr').onclick=printSelectedQrs;
 $('payFrom').value=localDate().slice(0,7)+'-01';$('payTo').value=localDate();
-$('payCycleFilter').onchange=runPayroll;
-$('payStatusFilter').onchange=runPayroll;
-$('preset7Days').onclick=()=>setPayrollPreset(7);
-$('preset14Days').onclick=()=>setPayrollPreset(14);
-$('presetMonth').onclick=()=>setPayrollPreset('month');
+$('payCycleFilter').onchange=runPayroll;$('payStatusFilter').onchange=runPayroll;
+$('preset7Days').onclick=()=>setPayrollPreset(7);$('preset14Days').onclick=()=>setPayrollPreset(14);$('presetMonth').onclick=()=>setPayrollPreset('month');
 $('fromDate').value=localDate().slice(0,7)+'-01';$('toDate').value=localDate();
 $('runPayroll').onclick=runPayroll;$('payExport').onclick=exportPayroll;
 $('runReport').onclick=runReport;$('exportReport').onclick=exportReport;
 $('exportToday').onclick=exportToday;
-$('backupBtn').onclick=backup;
-$('restoreBtn').onclick=()=>$('restoreFile').click();
+$('backupBtn').onclick=backup;$('restoreBtn').onclick=()=>$('restoreFile').click();
 $('restoreFile').onchange=e=>{if(e.target.files[0])restoreFile(e.target.files[0]);e.target.value=''};
 $('clearData').onclick=()=>{
- if(confirm('PERMANENTLY delete every employee, attendance record, and payment on this device? Download a backup first.')){
+ if(confirm('Delete ALL local data? Backup first.')){
   const snapshot=JSON.parse(JSON.stringify(db));
   db=blankDB();selectedIds.clear();
   if(!persist(()=>{db=snapshot}))return;
-  $('scanResult').textContent='Local records deleted.';
-  toast('All local NEXUS data deleted.');
+  $('scanResult').textContent='Local records deleted.';toast('All data deleted.');
  }
 };
 window.addEventListener('beforeunload',stopCamera);
