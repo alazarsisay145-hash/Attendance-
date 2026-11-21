@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0c1f18">
+<meta name="theme-color" content="#0f172a">
 <meta name="description" content="NEXUS — Workforce & Payroll OS. Offline employee attendance, QR cards, advances, and payroll.">
 <meta name="application-name" content="NEXUS">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,62 +11,59 @@
 <title>NEXUS — Workforce & Payroll OS</title>
 <style>
 :root{
- --bg-1:#e3efe9;
- --bg-2:#f4f8f6;
- --bg-3:#d7e8df;
- --glass:rgba(255,255,255,.78);
- --glass-card:rgba(255,255,255,.88);
- --glass-input:rgba(255,255,255,.96);
- --glass-well:rgba(241,248,244,.82);
- --glass-table:rgba(255,255,255,.74);
- --edge:rgba(255,255,255,.9);
- --edge-soft:rgba(15,38,28,.09);
- --ink:#0f2118;
- --ink-strong:#15241d;
- --muted:#566960;
- --green:#126846;
- --green-2:#1b855b;
- --green-soft:rgba(18,104,70,.12);
- --accent:#1738ff;
- --accent-soft:rgba(23,56,255,.11);
- --amber:#945d12;
- --amber-soft:rgba(148,93,18,.14);
- --red:#b53530;
- --red-soft:rgba(181,53,48,.12);
- --header-bg:rgba(12,31,24,.92);
- --nav-bg:rgba(255,255,255,.92);
- --brand-word:#111111;
- --blur:blur(18px);
- --shadow:0 12px 30px rgba(11,34,24,.07), inset 0 1px 0 rgba(255,255,255,.9);
+ --bg:#f6f7f9;
+ --surface:#ffffff;
+ --surface-subtle:#f1f3f6;
+ --surface-elevated:#ffffff;
+ --border:#e4e7ec;
+ --border-strong:#d0d5dd;
+ --ink:#0f172a;
+ --ink-secondary:#344054;
+ --muted:#667085;
+ --primary:#111827;
+ --primary-hover:#1f2937;
+ --primary-fg:#ffffff;
+ --accent:#1d4ed8;
+ --accent-soft:#eff4ff;
+ --success:#15803d;
+ --success-soft:#ecfdf3;
+ --warning:#b45309;
+ --warning-soft:#fffbeb;
+ --danger:#b91c1c;
+ --danger-soft:#fef2f2;
+ --header-bg:#ffffff;
+ --nav-bg:rgba(255,255,255,.96);
+ --brand-word:#0f172a;
+ --shadow-sm:0 1px 2px rgba(15,23,42,.04);
+ --shadow-md:0 6px 20px rgba(15,23,42,.06);
 }
 
 html.dark{
- --bg-1:#07110d;
- --bg-2:#0c1813;
- --bg-3:#10211a;
- --glass:rgba(18,34,28,.8);
- --glass-card:rgba(19,38,31,.88);
- --glass-input:rgba(12,24,20,.94);
- --glass-well:rgba(14,28,23,.78);
- --glass-table:rgba(13,26,21,.68);
- --edge:rgba(156,227,190,.15);
- --edge-soft:rgba(156,227,190,.11);
- --ink:#ecf6f0;
- --ink-strong:#ffffff;
- --muted:#95afa3;
- --green:#239c6b;
- --green-2:#2db87f;
- --green-soft:rgba(45,184,127,.16);
- --accent:#6c85ff;
- --accent-soft:rgba(108,133,255,.18);
- --amber:#eab052;
- --amber-soft:rgba(234,176,82,.16);
- --red:#ff726b;
- --red-soft:rgba(255,114,107,.16);
- --header-bg:rgba(7,16,13,.92);
- --nav-bg:rgba(11,22,18,.92);
- --brand-word:#f3faf6;
- --shadow:0 14px 34px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.06);
+ --bg:#090d16;
+ --surface:#111622;
+ --surface-subtle:#171d2c;
+ --surface-elevated:#151b29;
+ --border:#222a3d;
+ --border-strong:#2f3952;
+ --ink:#f8fafc;
+ --ink-secondary:#cbd5e1;
+ --muted:#94a3b8;
+ --primary:#f8fafc;
+ --primary-hover:#e2e8f0;
+ --primary-fg:#090d16;
+ --accent:#60a5fa;
+ --accent-soft:rgba(96,165,250,.14);
+ --success:#4ade80;
+ --success-soft:rgba(74,222,128,.12);
+ --warning:#fbbf24;
+ --warning-soft:rgba(251,191,36,.12);
+ --danger:#f87171;
+ --danger-soft:rgba(248,113,113,.12);
+ --header-bg:#0d121d;
+ --nav-bg:rgba(13,18,29,.96);
+ --brand-word:#f8fafc;
+ --shadow-sm:0 1px 2px rgba(0,0,0,.25);
+ --shadow-md:0 12px 28px rgba(0,0,0,.45);
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -74,227 +71,221 @@ html{scroll-behavior:smooth}
 body{
  margin:0;
  min-height:100dvh;
+ background:var(--bg);
  color:var(--ink);
- font:15px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
- background:
-  radial-gradient(540px 340px at 10% 4%, rgba(27,133,91,.16), transparent 70%),
-  radial-gradient(520px 320px at 90% 8%, rgba(23,56,255,.10), transparent 70%),
-  linear-gradient(165deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
- background-attachment:fixed;
- padding-bottom:calc(86px + env(safe-area-inset-bottom));
- transition:background .25s ease,color .2s ease;
+ font:400 15px/1.5 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif;
+ padding-bottom:calc(84px + env(safe-area-inset-bottom));
+ transition:background-color .2s ease,color .2s ease;
 }
 
 /* Admin Lock Screen */
 .lock-screen{
  position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
- padding:18px;overflow:auto;
- background:linear-gradient(160deg, rgba(12,31,24,.94), rgba(18,46,36,.96));
- backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+ padding:20px;overflow:auto;background:var(--bg);
 }
 .lock-card{
- width:100%;max-width:390px;background:var(--glass-card);backdrop-filter:var(--blur);
- -webkit-backdrop-filter:var(--blur);border:1px solid var(--edge);border-radius:26px;
- padding:24px 20px;box-shadow:0 24px 60px rgba(0,0,0,.38);text-align:center;
+ width:100%;max-width:380px;background:var(--surface);border:1px solid var(--border);
+ border-radius:20px;padding:28px 24px;box-shadow:var(--shadow-md);text-align:center;
 }
 .lock-brand{
- display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;
- background:var(--glass-input);border:1px solid var(--edge-soft);margin-bottom:12px;
+ display:inline-flex;align-items:center;justify-content:center;
+ padding:7px 14px;border-radius:999px;background:var(--surface-subtle);
+ border:1px solid var(--border);margin-bottom:14px;
 }
 .admin-chip{
- display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
- padding:4px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-bottom:8px;
+ display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+ padding:3px 9px;border-radius:999px;background:var(--surface-subtle);color:var(--muted);margin-bottom:8px;
 }
-.lock-title{font-size:21px;font-weight:850;letter-spacing:-.5px;margin:0 0 4px;color:var(--ink-strong)}
-.lock-sub{font-size:13px;color:var(--muted);margin:0 0 16px}
-.passcode-input{text-align:center;font-size:20px;font-weight:800;letter-spacing:.28em;min-height:48px}
-.lock-err{margin-top:10px;font-size:12px;font-weight:700;color:var(--red);min-height:18px}
-.lock-change-box{margin-top:14px;padding-top:14px;border-top:1px solid var(--edge-soft);text-align:left}
+.lock-title{font-size:20px;font-weight:700;letter-spacing:-.02em;margin:0 0 4px;color:var(--ink)}
+.lock-sub{font-size:13px;color:var(--muted);margin:0 0 18px}
+.passcode-input{text-align:center;font-size:20px;font-weight:700;letter-spacing:.3em;min-height:48px}
+.lock-err{margin-top:10px;font-size:12.5px;font-weight:600;color:var(--danger);min-height:18px}
+.lock-change-box{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);text-align:left}
 
 /* In-app Payment / Advance Modal */
 .modal-backdrop{
  position:fixed;inset:0;z-index:55;display:flex;align-items:flex-end;justify-content:center;
- padding:12px;overflow:auto;background:rgba(6,16,12,.68);
- backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ padding:12px;overflow:auto;background:rgba(15,23,42,.48);
 }
-@media(min-width:640px){.modal-backdrop{align-items:center;padding:16px}}
+@media(min-width:640px){.modal-backdrop{align-items:center;padding:20px}}
 .modal-card{
- width:100%;max-width:430px;background:var(--glass-card);backdrop-filter:var(--blur);
- -webkit-backdrop-filter:var(--blur);border:1px solid var(--edge);border-radius:24px;
- padding:20px 18px;box-shadow:0 24px 60px rgba(0,0,0,.42);
+ width:100%;max-width:420px;background:var(--surface-elevated);border:1px solid var(--border);
+ border-radius:20px;padding:22px 20px;box-shadow:var(--shadow-md);
 }
-.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
-.modal-head h2{margin:0;font-size:18px}
+.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.modal-head h2{margin:0;font-size:17px}
 .modal-meta{
- padding:10px 12px;border-radius:14px;background:var(--glass-well);
- border:1px solid var(--edge-soft);font-size:12px;margin-bottom:10px;
+ padding:11px 13px;border-radius:12px;background:var(--surface-subtle);
+ border:1px solid var(--border);font-size:12.5px;margin-bottom:12px;color:var(--ink-secondary);
 }
-.modal-err{min-height:18px;margin-top:8px;font-size:12px;font-weight:750;color:var(--red)}
+.modal-err{min-height:18px;margin-top:8px;font-size:12.5px;font-weight:600;color:var(--danger)}
 
-/* Mobile App Top Bar */
+/* Top Header */
 header{
  position:sticky;top:0;z-index:20;background:var(--header-bg);
- backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
- border-bottom:1px solid rgba(255,255,255,.12);color:#fff;
- padding:12px max(14px,calc((100% - 920px)/2));
- padding-top:calc(12px + env(safe-area-inset-top));
- display:flex;justify-content:space-between;align-items:center;gap:10px;
+ border-bottom:1px solid var(--border);color:var(--ink);
+ padding:11px max(16px,calc((100% - 880px)/2));
+ padding-top:calc(11px + env(safe-area-inset-top));
+ display:flex;justify-content:space-between;align-items:center;gap:12px;
 }
 .brand-wrap{display:flex;align-items:center;gap:10px}
 .nx-mark{
- width:34px;height:34px;border-radius:11px;background:rgba(255,255,255,.96);
- display:grid;place-items:center;flex:0 0 auto;
+ width:32px;height:32px;border-radius:9px;background:var(--surface-subtle);
+ border:1px solid var(--border);display:grid;place-items:center;flex:0 0 auto;
 }
-.brand{font-size:18px;font-weight:850;letter-spacing:.12em;line-height:1.05}
-.brand span{color:#9ce3be;font-weight:650;letter-spacing:0;font-size:11px;display:block;margin-top:2px}
+.brand{font-size:15px;font-weight:750;letter-spacing:.1em;line-height:1.15;color:var(--ink)}
+.brand span{color:var(--muted);font-weight:500;letter-spacing:0;font-size:11.5px;display:block}
 .header-right{display:flex;align-items:center;gap:6px}
 .pill{
- border-radius:999px;padding:5px 9px;background:rgba(156,227,190,.15);
- border:1px solid rgba(156,227,190,.32);color:#bef2d6;font-size:10px;font-weight:800;white-space:nowrap;
+ border-radius:999px;padding:4px 9px;background:var(--surface-subtle);
+ border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:600;white-space:nowrap;
 }
-.pill.warn{background:rgba(255,213,128,.16);border-color:rgba(255,213,128,.38);color:#ffe29e;cursor:pointer}
+.pill.warn{background:var(--warning-soft);border-color:rgba(180,83,9,.25);color:var(--warning);cursor:pointer}
 
-/* Main App Container */
-main{max-width:920px;margin:auto;padding:16px 12px 24px}
-.app-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
-h1{font-size:22px;margin:0;letter-spacing:-.5px;font-weight:850;color:var(--ink-strong)}
-h2{font-size:16px;margin:0 0 11px;letter-spacing:-.2px;font-weight:800;color:var(--ink-strong)}
+/* Container */
+main{max-width:880px;margin:0 auto;padding:20px 16px 28px}
+.app-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+h1{font-size:22px;margin:0;letter-spacing:-.025em;font-weight:750;color:var(--ink)}
+h2{font-size:15px;margin:0 0 12px;letter-spacing:-.015em;font-weight:700;color:var(--ink)}
 .muted{color:var(--muted)}
 .tiny{font-size:12px;color:var(--muted)}
 
-/* KPI Strip */
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+/* Metrics */
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
 @media(min-width:640px){.stats{grid-template-columns:repeat(4,1fr)}}
 .stat,.panel{
- background:var(--glass-card);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
- border:1px solid var(--edge);border-radius:20px;box-shadow:var(--shadow);
+ background:var(--surface);border:1px solid var(--border);
+ border-radius:16px;box-shadow:var(--shadow-sm);
 }
-.stat{padding:13px 14px;position:relative;overflow:hidden}
-.stat::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--green-2),var(--accent))}
-.stat.clickable{cursor:pointer}
-.stat small{color:var(--muted);font-weight:700;font-size:11px;display:block}
-.stat strong{display:block;font-size:21px;margin-top:4px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;color:var(--ink-strong)}
+.stat{padding:14px 16px}
+.stat.clickable{cursor:pointer;transition:border-color .15s ease}
+.stat.clickable:hover{border-color:var(--border-strong)}
+.stat small{color:var(--muted);font-weight:600;font-size:12px;display:block}
+.stat strong{display:block;font-size:20px;margin-top:4px;letter-spacing:-.02em;font-weight:750;font-variant-numeric:tabular-nums;color:var(--ink)}
 
-.panel{padding:16px;margin-bottom:12px}
-.stack{display:flex;flex-direction:column;gap:12px}
-@media(min-width:760px){.two-col{display:grid;grid-template-columns:1fr 1.15fr;gap:14px;align-items:start}}
+.panel{padding:18px;margin-bottom:14px}
+@media(min-width:760px){.two-col{display:grid;grid-template-columns:1fr 1.15fr;gap:16px;align-items:start}}
 
-/* Hero Scanner CTA */
+/* Clean Scanner CTA */
 .scan-hero{
- width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;
- padding:16px;border-radius:20px;border:1px solid rgba(255,255,255,.22);
- background:linear-gradient(135deg,#104d35,#1b855b);color:#fff;cursor:pointer;
- box-shadow:0 12px 26px rgba(18,104,70,.26);text-align:left;transition:transform .14s ease,filter .14s ease;
+ width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;
+ padding:16px 18px;border-radius:16px;border:1px solid var(--border-strong);
+ background:var(--surface);color:var(--ink);cursor:pointer;
+ box-shadow:var(--shadow-sm);text-align:left;transition:border-color .15s ease,background-color .15s ease;
 }
-.scan-hero:active{transform:scale(.99)}
-.scan-hero strong{display:block;font-size:16px;font-weight:850}
-.scan-hero span{display:block;font-size:12px;color:rgba(255,255,255,.86);margin-top:2px}
+.scan-hero:hover{border-color:var(--accent)}
+.scan-hero strong{display:block;font-size:15px;font-weight:700;color:var(--ink)}
+.scan-hero span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
 .scan-icon-box{
- width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.18);
+ width:42px;height:42px;border-radius:12px;background:var(--accent-soft);color:var(--accent);
  display:grid;place-items:center;flex:0 0 auto;
 }
 
-.app-shortcuts{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}
+.app-shortcuts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
 .app-tile{
- text-align:left;padding:12px 13px;border-radius:16px;background:var(--glass-well);
- border:1px solid var(--edge-soft);cursor:pointer;color:var(--ink);transition:transform .14s ease,border-color .14s ease;
+ text-align:left;padding:13px 14px;border-radius:14px;background:var(--surface);
+ border:1px solid var(--border);cursor:pointer;color:var(--ink);box-shadow:var(--shadow-sm);
+ transition:border-color .15s ease,background-color .15s ease;
 }
-.app-tile:active{transform:scale(.98)}
-.app-tile strong{display:block;font-size:13px;font-weight:800;color:var(--ink-strong)}
-.app-tile span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.app-tile:hover{border-color:var(--border-strong);background:var(--surface-subtle)}
+.app-tile strong{display:block;font-size:13.5px;font-weight:650;color:var(--ink)}
+.app-tile span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
 
-label{display:block;font-size:12px;font-weight:750;color:var(--muted);margin:11px 0 4px}
+label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-secondary);margin:12px 0 5px}
 input:not([type="checkbox"]),select{
- width:100%;min-height:44px;border:1px solid var(--edge-soft);border-radius:13px;
- padding:10px 12px;background:var(--glass-input);font:inherit;color:var(--ink);min-width:0;
+ width:100%;min-height:42px;border:1px solid var(--border-strong);border-radius:10px;
+ padding:9px 12px;background:var(--surface);font:inherit;color:var(--ink);min-width:0;
+ transition:border-color .15s ease;
 }
-input:not([type="checkbox"]):focus,select:focus{outline:none;border-color:var(--green-2);box-shadow:0 0 0 3px rgba(45,184,127,.2)}
-input[type="checkbox"]{width:18px;height:18px;accent-color:var(--green);cursor:pointer;margin:0;flex:0 0 auto}
+input:not([type="checkbox"]):focus,select:focus{outline:none;border-color:var(--accent)}
+input[type="checkbox"]{width:17px;height:17px;accent-color:var(--accent);cursor:pointer;margin:0;flex:0 0 auto}
 
 .row{display:flex;gap:8px;align-items:end;flex-wrap:wrap}
 .row>*{flex:1;min-width:130px}
 
 .btn{
- min-height:44px;border:1px solid rgba(255,255,255,.16);border-radius:13px;
- padding:10px 14px;font-weight:750;font-size:14px;cursor:pointer;
- background:linear-gradient(135deg,var(--green),var(--green-2));color:#fff;
- box-shadow:0 6px 16px rgba(18,104,70,.22);transition:transform .14s ease,filter .14s ease;
+ min-height:40px;border:1px solid transparent;border-radius:10px;
+ padding:8px 14px;font-weight:600;font-size:13.5px;cursor:pointer;
+ background:var(--primary);color:var(--primary-fg);
+ transition:background-color .15s ease,border-color .15s ease,opacity .15s ease;
 }
-.btn:active:not(:disabled){transform:scale(.98)}
-.btn.secondary{background:var(--glass-input);color:var(--ink-strong);border:1px solid var(--edge-soft);box-shadow:none}
-.btn.outline{background:var(--green-soft);color:var(--green-2);border:1px solid rgba(45,184,127,.32);box-shadow:none}
-html:not(.dark) .btn.outline{color:var(--green)}
-.btn.danger{background:var(--red-soft);color:var(--red);border:1px solid rgba(181,53,48,.28);box-shadow:none}
-.btn.small{min-height:36px;padding:7px 11px;font-size:12px;border-radius:11px}
-.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn:hover:not(:disabled){background:var(--primary-hover)}
+.btn.secondary{background:var(--surface);color:var(--ink);border-color:var(--border-strong)}
+.btn.secondary:hover:not(:disabled){background:var(--surface-subtle)}
+.btn.outline{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.btn.outline:hover:not(:disabled){border-color:var(--accent)}
+.btn.danger{background:var(--danger-soft);color:var(--danger);border-color:transparent}
+.btn.danger:hover:not(:disabled){border-color:var(--danger)}
+.btn.small{min-height:34px;padding:6px 10px;font-size:12px;border-radius:8px}
+.btn:disabled{opacity:.42;cursor:not-allowed}
 
 .person-btn{
- display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:12px;
- border:1px solid var(--edge-soft);background:var(--glass-input);color:var(--ink-strong);
- font-weight:750;font-size:12px;cursor:pointer;
+ display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:10px;
+ border:1px solid var(--border);background:var(--surface);color:var(--ink);
+ font-weight:600;font-size:12.5px;cursor:pointer;transition:border-color .15s ease,background-color .15s ease;
 }
+.person-btn:hover{border-color:var(--border-strong);background:var(--surface-subtle)}
 .person-btn .num-pill{
- font-family:monospace,system-ui,sans-serif;font-size:11px;padding:2px 6px;border-radius:8px;
- background:var(--accent-soft);color:var(--accent);
+ font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;padding:1px 6px;border-radius:6px;
+ background:var(--surface-subtle);color:var(--muted);
 }
-.person-btn.absent-btn .num-pill{background:var(--red-soft);color:var(--red)}
-.person-btn.advance-btn .num-pill{background:var(--amber-soft);color:var(--amber)}
+.person-btn.absent-btn .num-pill{background:var(--danger-soft);color:var(--danger)}
+.person-btn.advance-btn .num-pill{background:var(--warning-soft);color:var(--warning)}
 .status-chip-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
 
 .actions{display:flex;gap:8px;flex-wrap:wrap}
-.actions>*{flex:1;min-width:96px}
+.actions>*{flex:1;min-width:92px}
 .hidden{display:none!important}
 
 #video{
- width:100%;max-height:290px;object-fit:cover;background:#0e1914;
- border-radius:16px;display:none;margin-top:10px;border:1px solid var(--edge);
+ width:100%;max-height:280px;object-fit:cover;background:#090d16;
+ border-radius:12px;display:none;margin-top:12px;border:1px solid var(--border);
 }
 .result{
- padding:13px 14px;border-radius:15px;background:var(--glass-well);
- border:1px solid var(--edge-soft);margin-top:10px;min-height:50px;
+ padding:12px 14px;border-radius:12px;background:var(--surface-subtle);
+ border:1px solid var(--border);margin-top:12px;min-height:48px;font-size:13.5px;
 }
-.result.success{background:rgba(35,156,107,.16);border-color:rgba(45,184,127,.38)}
-.result.warn{background:rgba(234,176,82,.16);border-color:rgba(234,176,82,.38)}
-html:not(.dark) .result.success{background:rgba(222,247,232,.9);border-color:rgba(18,104,70,.28)}
-html:not(.dark) .result.warn{background:rgba(255,245,222,.92);border-color:rgba(148,93,18,.26)}
-.result b.name{font-size:17px;display:block;margin-bottom:2px;color:var(--ink-strong)}
+.result.success{background:var(--success-soft);border-color:rgba(21,128,61,.25)}
+.result.warn{background:var(--warning-soft);border-color:rgba(180,83,9,.25)}
+.result b.name{font-size:16px;display:block;margin-bottom:2px;color:var(--ink)}
 
 table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
-th{text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:9px 8px;border-bottom:1px solid var(--edge-soft)}
-td{padding:10px 8px;border-bottom:1px solid var(--edge-soft);vertical-align:middle}
+th{text-align:left;color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:9px 10px;border-bottom:1px solid var(--border)}
+td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--ink-secondary)}
 tr:last-child td{border:0}
-tr.selected-row td{background:var(--green-soft)}
-.tablewrap{overflow:auto;border-radius:15px;background:var(--glass-table);border:1px solid var(--edge)}
-.tag{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;margin-left:5px;vertical-align:middle}
-.tag.unassigned{background:var(--amber-soft);color:var(--amber)}
-.tag.inactive{background:var(--red-soft);color:var(--red)}
-.tag.cycle{background:var(--accent-soft);color:var(--accent)}
-.tag.advance{background:var(--amber-soft);color:var(--amber)}
-.tag.paid{background:var(--green-soft);color:var(--green-2)}
-.tag.seq{background:var(--glass-well);color:var(--ink-strong);border:1px solid var(--edge-soft);font-family:monospace,system-ui,sans-serif}
-.empty{text-align:center;padding:22px 12px;color:var(--muted);font-size:13px}
+tr.selected-row td{background:var(--accent-soft)}
+.tablewrap{overflow:auto;border-radius:12px;background:var(--surface);border:1px solid var(--border)}
+.tag{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:999px;margin-left:5px;vertical-align:middle}
+.tag.unassigned{background:var(--warning-soft);color:var(--warning)}
+.tag.inactive{background:var(--danger-soft);color:var(--danger)}
+.tag.cycle{background:var(--surface-subtle);color:var(--muted)}
+.tag.advance{background:var(--warning-soft);color:var(--warning)}
+.tag.paid{background:var(--success-soft);color:var(--success)}
+.tag.seq{background:var(--surface-subtle);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.empty{text-align:center;padding:20px 12px;color:var(--muted);font-size:13px}
 
 #qrOutput{
- display:flex;justify-content:center;align-items:center;padding:14px;min-height:184px;
- background:var(--glass-well);border:1.5px dashed rgba(45,184,127,.35);border-radius:16px;margin-top:12px;
+ display:flex;justify-content:center;align-items:center;padding:16px;min-height:180px;
+ background:var(--surface-subtle);border:1px dashed var(--border-strong);border-radius:12px;margin-top:12px;
 }
-#qrOutput canvas{max-width:220px;height:auto;border-radius:12px}
+#qrOutput canvas{max-width:210px;height:auto;border-radius:10px}
 
-#batchPreview{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:9px;margin-top:11px}
+#batchPreview{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:12px}
 .batch-card{
- background:var(--glass-well);border:1px solid var(--edge);border-radius:12px;
- padding:7px;text-align:center;cursor:pointer;
+ background:var(--surface-subtle);border:1px solid var(--border);border-radius:10px;
+ padding:8px;text-align:center;cursor:pointer;transition:border-color .15s ease;
 }
+.batch-card:hover{border-color:var(--border-strong)}
 .batch-num{
- display:inline-block;font-size:11px;font-weight:800;font-family:monospace,system-ui,sans-serif;
- padding:2px 7px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-bottom:5px;
+ display:inline-block;font-size:11px;font-weight:700;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+ padding:2px 7px;border-radius:999px;background:var(--surface);color:var(--ink);border:1px solid var(--border);margin-bottom:6px;
 }
-.batch-card canvas{width:100%;height:auto;border-radius:7px;display:block}
+.batch-card canvas{width:100%;height:auto;border-radius:6px;display:block}
 
-.bulkbar,.lookupbox{background:var(--glass-well);border:1px solid var(--edge);border-radius:15px;padding:11px}
+.bulkbar,.lookupbox{background:var(--surface-subtle);border:1px solid var(--border);border-radius:12px;padding:11px}
 .lookupbox{margin-bottom:10px}
-.bulkbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:9px}
-.chklabel{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:750;color:var(--ink);cursor:pointer}
+.bulkbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chklabel{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
 
 .nexus-badge{display:inline-flex;align-items:center;gap:7px;vertical-align:middle}
 .nexus-word{font-weight:700;letter-spacing:.14em;color:var(--brand-word);font-size:13px;line-height:1}
@@ -302,45 +293,39 @@ tr.selected-row td{background:var(--green-soft)}
 .note{font-size:12px;color:var(--muted);margin-top:8px}
 .toast{
  position:fixed;bottom:calc(78px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
- background:rgba(10,25,19,.95);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
- border:1px solid rgba(255,255,255,.18);color:#fff;padding:10px 15px;border-radius:14px;
- z-index:60;max-width:92vw;font-size:13px;font-weight:650;box-shadow:0 12px 28px rgba(0,0,0,.35);
+ background:var(--primary);color:var(--primary-fg);padding:10px 16px;border-radius:10px;
+ z-index:60;max-width:92vw;font-size:13px;font-weight:600;box-shadow:var(--shadow-md);
 }
-.money{font-weight:850;color:var(--green-2)}
-html:not(.dark) .money{color:var(--green)}
-hr{border:0;border-top:1px solid var(--edge-soft);margin:14px 0}
+.money{font-weight:700;color:var(--success)}
+hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 
-/* Fixed Mobile Bottom Navigation Bar */
+/* Clean Bottom Navigation Bar */
 .bottom-nav{
  position:fixed;left:0;right:0;bottom:0;z-index:30;
- background:var(--nav-bg);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
- border-top:1px solid var(--edge-soft);
+ background:var(--nav-bg);border-top:1px solid var(--border);
  padding:6px 8px calc(6px + env(safe-area-inset-bottom));
  display:grid;grid-template-columns:repeat(5,1fr);align-items:center;gap:4px;
- box-shadow:0 -8px 24px rgba(0,0,0,.12);
 }
 .nav-item{
  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
- min-height:50px;border:0;background:transparent;color:var(--muted);
- font:700 10.5px/1.1 system-ui,-apple-system,sans-serif;cursor:pointer;border-radius:12px;
+ min-height:48px;border:0;background:transparent;color:var(--muted);
+ font:600 10.5px/1.1 -apple-system,BlinkMacSystemFont,"Inter",sans-serif;cursor:pointer;border-radius:10px;
 }
-.nav-item svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.nav-item.active{color:var(--green-2);background:var(--green-soft)}
-html:not(.dark) .nav-item.active{color:var(--green)}
+.nav-item svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.nav-item.active{color:var(--ink);background:var(--surface-subtle)}
 
 .nav-scan-fab{
  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
- height:52px;margin-top:-10px;border-radius:16px;border:1px solid rgba(255,255,255,.25);
- background:linear-gradient(135deg,var(--green),var(--green-2));color:#fff;
- font:800 10.5px/1 system-ui,-apple-system,sans-serif;cursor:pointer;
- box-shadow:0 8px 20px rgba(18,104,70,.34);
+ height:48px;border-radius:12px;border:0;
+ background:var(--primary);color:var(--primary-fg);
+ font:650 10.5px/1 -apple-system,BlinkMacSystemFont,"Inter",sans-serif;cursor:pointer;
 }
-.nav-scan-fab svg{width:21px;height:21px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.nav-scan-fab svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 @media print{
  header,.bottom-nav,.no-print,.note,.lock-screen,.modal-backdrop{display:none!important}
- body{background:#fff;color:#0f2118;padding-bottom:0}
- .panel,.stat{background:#fff;backdrop-filter:none;box-shadow:none;border-color:#ddd}
+ body{background:#fff;color:#0f172a;padding-bottom:0}
+ .panel,.stat{background:#fff;box-shadow:none;border-color:#e4e7ec}
 }
 </style>
 </head>
@@ -351,31 +336,31 @@ html:not(.dark) .nav-item.active{color:var(--green)}
  <div class="lock-card">
   <div class="lock-brand">
    <span class="nexus-badge" aria-label="NEXUS">
-    <svg width="20" height="18" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-     <circle cx="5.5" cy="5.5" r="3.5" fill="#1738ff"/>
-     <rect x="13.2" y="3.2" width="6.6" height="17.6" rx="3.3" transform="rotate(24 13.2 3.2)" fill="#1738ff"/>
+    <svg width="18" height="16" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+     <circle cx="5.5" cy="5.5" r="3.5" fill="#1d4ed8"/>
+     <rect x="13.2" y="3.2" width="6.6" height="17.6" rx="3.3" transform="rotate(24 13.2 3.2)" fill="#1d4ed8"/>
     </svg>
     <span class="nexus-word">NEXUS</span>
    </span>
   </div>
-  <div class="admin-chip">Admin Authentication</div>
-  <h1 id="lockTitle" class="lock-title">NEXUS Admin Login</h1>
-  <p class="lock-sub">Workforce & Payroll OS · Enter admin passcode</p>
+  <div class="admin-chip">Admin Passcode</div>
+  <h1 id="lockTitle" class="lock-title">Sign in to NEXUS</h1>
+  <p class="lock-sub">Enter your admin passcode to continue</p>
   <form id="loginForm">
-   <label for="passcodeInput" style="margin-top:0;text-align:left">Admin passcode</label>
+   <label for="passcodeInput" style="margin-top:0;text-align:left">Passcode</label>
    <input id="passcodeInput" class="passcode-input" type="password" inputmode="numeric" autocomplete="current-password" placeholder="••••" required>
-   <button class="btn" type="submit" style="width:100%;margin-top:12px">Unlock NEXUS</button>
+   <button class="btn" type="submit" style="width:100%;margin-top:12px">Unlock</button>
    <div id="loginError" class="lock-err" aria-live="polite"></div>
   </form>
-  <button class="btn secondary small" id="toggleLockChangeBtn" type="button" style="width:100%;margin-top:6px">Change admin passcode</button>
+  <button class="btn secondary small" id="toggleLockChangeBtn" type="button" style="width:100%;margin-top:6px">Change passcode</button>
   <div id="lockChangeBox" class="lock-change-box hidden">
    <label for="lockOldPass" style="margin-top:0">Current passcode</label>
    <input id="lockOldPass" type="password" placeholder="Current passcode">
    <label for="lockNewPass">New passcode (min 4 chars)</label>
    <input id="lockNewPass" type="password" placeholder="New passcode">
-   <button class="btn outline small" id="lockSaveNewPassBtn" type="button" style="width:100%;margin-top:10px">Save new passcode</button>
+   <button class="btn secondary small" id="lockSaveNewPassBtn" type="button" style="width:100%;margin-top:10px">Save new passcode</button>
   </div>
-  <div class="tiny" style="margin-top:10px">Default passcode: <b>2026</b></div>
+  <div class="tiny" style="margin-top:12px">Default passcode: <b>2026</b></div>
  </div>
 </div>
 
@@ -384,7 +369,7 @@ html:not(.dark) .nav-item.active{color:var(--green)}
  <div class="modal-card">
   <div class="modal-head">
    <div>
-    <div class="admin-chip" id="payModalBadge">Cash / Wage Advance</div>
+    <div class="admin-chip" id="payModalBadge">Advance</div>
     <h2 id="payModalTitle">Record advance</h2>
    </div>
    <button type="button" class="btn secondary small" id="closePayModalBtn" aria-label="Close modal">Close</button>
@@ -395,7 +380,7 @@ html:not(.dark) .nav-item.active{color:var(--green)}
   </div>
   <div class="modal-meta" id="payModalSummary"></div>
   <form id="payModalForm">
-   <label for="payTypeSelect" style="margin-top:4px">Entry type</label>
+   <label for="payTypeSelect" style="margin-top:4px">Type</label>
    <select id="payTypeSelect">
     <option value="advance">Advance (subtracted from balance)</option>
     <option value="regular">Regular pay</option>
@@ -412,7 +397,7 @@ html:not(.dark) .nav-item.active{color:var(--green)}
    <input id="payNoteInput" maxlength="120" placeholder="e.g. Cash advance or weekly wage">
 
    <div id="payModalError" class="modal-err" aria-live="polite"></div>
-   <div class="actions" style="margin-top:12px">
+   <div class="actions" style="margin-top:14px">
     <button type="button" class="btn secondary" id="cancelPayModalBtn">Cancel</button>
     <button type="submit" class="btn" id="submitPayModalBtn">Save advance</button>
    </div>
@@ -423,18 +408,16 @@ html:not(.dark) .nav-item.active{color:var(--green)}
 <header>
  <div class="brand-wrap">
   <div class="nx-mark" aria-hidden="true">
-   <svg width="22" height="19" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="5.5" cy="5.5" r="3.5" fill="#1738ff"/>
-    <rect x="13.2" y="3.2" width="6.6" height="17.6" rx="3.3" transform="rotate(24 13.2 3.2)" fill="#1738ff"/>
+   <svg width="18" height="16" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="5.5" cy="5.5" r="3.5" fill="#1d4ed8"/>
+    <rect x="13.2" y="3.2" width="6.6" height="17.6" rx="3.3" transform="rotate(24 13.2 3.2)" fill="#1d4ed8"/>
    </svg>
   </div>
-  <div>
-   <div class="brand">NEXUS <span>Workforce & Payroll OS</span></div>
-  </div>
+  <div class="brand">NEXUS <span>Workforce & Payroll</span></div>
  </div>
  <div class="header-right">
   <button class="pill warn hidden" id="backupBadge" title="Open Backup & Security">Backup</button>
-  <div class="pill">● OFFLINE</div>
+  <div class="pill">Offline</div>
   <button class="btn secondary small no-print" id="themeBtn" type="button">Dark</button>
   <button class="btn secondary small no-print" id="lockBtn" type="button">Lock</button>
  </div>
@@ -460,11 +443,11 @@ html:not(.dark) .nav-item.active{color:var(--green)}
  <section id="tab-home" class="tabpage">
   <button type="button" class="scan-hero" id="homeOpenScannerBtn">
    <div>
-    <strong>Scan Employee QR Camera</strong>
-    <span>Tap to open camera scanner and record today's attendance</span>
+    <strong>Scan QR attendance</strong>
+    <span>Open camera to record today's check-in</span>
    </div>
    <div class="scan-icon-box" aria-hidden="true">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
      <circle cx="12" cy="13" r="4"/>
     </svg>
@@ -473,30 +456,30 @@ html:not(.dark) .nav-item.active{color:var(--green)}
 
   <div class="app-shortcuts">
    <button type="button" class="app-tile" data-jump="employees">
-    <strong>QR Cards (#1–#n)</strong>
-    <span>Create, batch & print cards</span>
+    <strong>QR cards (#1–#n)</strong>
+    <span>Batch create, edit & print</span>
    </button>
    <button type="button" class="app-tile" data-jump="payroll">
-    <strong>Payroll & Advances</strong>
-    <span>Record advance & pay</span>
+    <strong>Payroll & advances</strong>
+    <span>Record advance & balances</span>
    </button>
    <button type="button" class="app-tile" id="homeNextUnassigned">
-    <strong>Assign Unassigned</strong>
-    <span>Name next QR card</span>
+    <strong>Assign QR card</strong>
+    <span>Add name to next card</span>
    </button>
    <button type="button" class="app-tile" data-jump="more">
-    <strong>Reports & Backup</strong>
-    <span>CSV, JSON backup & lock</span>
+    <strong>Reports & backup</strong>
+    <span>CSV, JSON & security</span>
    </button>
   </div>
 
-  <div class="two-col" style="margin-top:12px">
+  <div class="two-col" style="margin-top:14px">
    <div class="panel">
-    <h2>Recent Scans Today</h2>
+    <h2>Recent scans</h2>
     <div id="homeRecentList"></div>
    </div>
    <div class="panel" id="homeAbsentPanel">
-    <h2>Absent Today (Tap to Mark Present)</h2>
+    <h2>Absent today</h2>
     <div id="homeAbsentButtons"></div>
    </div>
   </div>
@@ -508,11 +491,11 @@ html:not(.dark) .nav-item.active{color:var(--green)}
    <div class="panel">
     <button class="scan-hero" id="startScan" type="button">
      <div>
-      <strong>Open QR Camera Scanner</strong>
-      <span>Point camera at employee NEXUS QR card</span>
+      <strong>Start QR camera</strong>
+      <span>Hold QR pass in front of camera</span>
      </div>
      <div class="scan-icon-box" aria-hidden="true">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
        <circle cx="12" cy="13" r="4"/>
       </svg>
@@ -520,7 +503,7 @@ html:not(.dark) .nav-item.active{color:var(--green)}
     </button>
     <button class="btn danger hidden" id="stopScan" type="button" style="width:100%;margin-top:8px">Stop camera</button>
     <video id="video" playsinline muted></video>
-    <div class="result" id="scanResult">Ready. Tap camera above or type a QR ID below.</div>
+    <div class="result" id="scanResult">Ready. Use camera or enter a QR ID below.</div>
 
     <label for="manualId">Manual QR ID</label>
     <div class="row">
@@ -530,10 +513,10 @@ html:not(.dark) .nav-item.active{color:var(--green)}
    </div>
 
    <div class="panel">
-    <h2>Present Today</h2>
+    <h2>Present today</h2>
     <div id="todayList"></div>
     <hr>
-    <h2>Absent Today</h2>
+    <h2>Absent today</h2>
     <div id="scanAbsentButtons"></div>
    </div>
   </div>
@@ -547,9 +530,9 @@ html:not(.dark) .nav-item.active{color:var(--green)}
     <input id="editId" type="hidden">
     <input id="editBatchNum" type="hidden">
     <input id="editBatchTotal" type="hidden">
-    <label for="newName">Full name (optional now)</label>
-    <input id="newName" placeholder="Leave blank to assign name later" autocomplete="name">
-    <label for="newExtra">Phone / staff number (optional)</label>
+    <label for="newName">Full name (optional)</label>
+    <input id="newName" placeholder="Leave blank to assign later" autocomplete="name">
+    <label for="newExtra">Phone / staff ID (optional)</label>
     <input id="newExtra" placeholder="e.g. 09... or #12">
     <label for="newWage">Daily wage (ETB)</label>
     <input id="newWage" type="number" min="0" step="0.01" placeholder="e.g. 400">
@@ -567,7 +550,7 @@ html:not(.dark) .nav-item.active{color:var(--green)}
     <button class="btn" id="saveEmployee" type="button" style="width:100%;margin-top:12px">Save & generate QR</button>
     <button class="btn secondary hidden" id="cancelEdit" type="button" style="width:100%;margin-top:8px">Cancel edit</button>
 
-    <div id="qrOutput"><span class="muted">QR card preview appears here</span></div>
+    <div id="qrOutput"><span class="muted">QR card preview</span></div>
     <div class="row" style="margin-top:8px">
      <div>
       <label for="printMode" style="margin-top:0">Print layout</label>
@@ -579,7 +562,7 @@ html:not(.dark) .nav-item.active{color:var(--green)}
     </div>
     <div class="actions" style="margin-top:8px">
      <button class="btn secondary" id="printQr" type="button" disabled>Print</button>
-     <button class="btn outline" id="downloadQr" type="button" disabled>Save PNG</button>
+     <button class="btn secondary" id="downloadQr" type="button" disabled>Save PNG</button>
      <button class="btn secondary" id="quickNextCard" type="button">New ID</button>
     </div>
 
@@ -605,20 +588,20 @@ html:not(.dark) .nav-item.active{color:var(--green)}
     </div>
     <div class="actions" style="margin-top:10px">
      <button class="btn" id="generateBatchBtn" type="button">Generate batch (#1–#n)</button>
-     <button class="btn outline" id="printBatchPreviewBtn" type="button" disabled>Print batch</button>
+     <button class="btn secondary" id="printBatchPreviewBtn" type="button" disabled>Print batch</button>
     </div>
     <div id="batchStatus" class="note">Creates 1–50 cards tagged #1 to #n.</div>
     <div id="batchPreview"></div>
    </div>
 
    <div class="panel">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-     <h2 style="margin:0">Directory</h2>
-     <button class="btn outline small" id="nextUnassignedBtn" type="button">Unassigned (<span id="unassignedCount">0</span>)</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+     <h2 style="margin:0">Staff directory</h2>
+     <button class="btn secondary small" id="nextUnassignedBtn" type="button">Unassigned (<span id="unassignedCount">0</span>)</button>
     </div>
 
     <div class="lookupbox">
-     <label for="lookupQrInput" style="margin-top:0">Quick edit by QR ID</label>
+     <label for="lookupQrInput" style="margin-top:0">Edit by QR ID</label>
      <div class="row">
       <input id="lookupQrInput" maxlength="17" placeholder="e.g. NX-8A2F41C9">
       <button class="btn secondary" id="lookupQrBtn" type="button" style="flex:0 0 auto">Edit</button>
@@ -627,17 +610,17 @@ html:not(.dark) .nav-item.active{color:var(--green)}
 
     <div class="row">
      <div style="flex:3"><input id="employeeSearch" placeholder="Search name, #tag, QR ID..."></div>
-     <button class="btn secondary small" id="clearSearch" type="button" style="flex:0 0 auto;min-height:44px">Clear</button>
+     <button class="btn secondary small" id="clearSearch" type="button" style="flex:0 0 auto;min-height:42px">Clear</button>
     </div>
 
     <div class="bulkbar">
      <label class="chklabel"><input type="checkbox" id="selectAllQr"> All (<span id="selectedCount">0</span>)</label>
      <div style="display:flex;gap:6px;flex-wrap:wrap">
       <button class="btn small" id="downloadSelectedQr" type="button" disabled>Save PNGs</button>
-      <button class="btn outline small" id="printSelectedQr" type="button" disabled>Print</button>
+      <button class="btn secondary small" id="printSelectedQr" type="button" disabled>Print</button>
      </div>
     </div>
-    <div id="employeeList" style="margin-top:10px"></div>
+    <div id="employeeList" style="margin-top:12px"></div>
    </div>
   </div>
  </section>
@@ -646,7 +629,7 @@ html:not(.dark) .nav-item.active{color:var(--green)}
  <section id="tab-payroll" class="tabpage hidden">
   <div class="panel">
    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-    <h2 style="margin:0">Payroll & Advances</h2>
+    <h2 style="margin:0">Payroll & advances</h2>
     <button class="btn" id="quickRecordAdvanceBtn" type="button">Record advance</button>
    </div>
    <div class="row">
@@ -675,21 +658,21 @@ html:not(.dark) .nav-item.active{color:var(--green)}
     <button class="btn secondary small" id="preset7Days" type="button">7 days</button>
     <button class="btn secondary small" id="preset14Days" type="button">14 days</button>
     <button class="btn secondary small" id="presetMonth" type="button">This month</button>
-    <button class="btn outline small" id="jumpPaidListBtn" type="button">Who got paid</button>
+    <button class="btn secondary small" id="jumpPaidListBtn" type="button">Who got paid</button>
     <button class="btn danger small" id="jumpAbsentListBtn" type="button">Who is absent</button>
    </div>
    <div class="row" style="margin-top:10px">
     <button class="btn" id="runPayroll" type="button">Calculate</button>
     <button class="btn secondary" id="payExport" type="button">Export CSV</button>
    </div>
-   <div id="payrollSummary" style="margin-top:12px"></div>
+   <div id="payrollSummary" style="margin-top:14px"></div>
   </div>
  </section>
 
  <!-- MORE: REPORTS, BACKUP & SECURITY -->
  <section id="tab-more" class="tabpage hidden">
   <div class="panel">
-   <h2>Attendance Report</h2>
+   <h2>Attendance report</h2>
    <div class="row">
     <div><label for="fromDate">From</label><input type="date" id="fromDate"></div>
     <div><label for="toDate">To</label><input type="date" id="toDate"></div>
@@ -700,12 +683,12 @@ html:not(.dark) .nav-item.active{color:var(--green)}
    </div>
    <div id="reportOutput" style="margin-top:12px"></div>
    <hr>
-   <h2>Attendance Log</h2>
+   <h2>Attendance log</h2>
    <div id="attendanceEntriesList"></div>
   </div>
 
   <div class="panel">
-   <h2>Theme & Admin Passcode</h2>
+   <h2>Theme & passcode</h2>
    <button class="btn secondary" id="backupThemeBtn" type="button" style="width:100%">Switch Dark / Light Mode</button>
    <div class="row">
     <div>
@@ -720,7 +703,7 @@ html:not(.dark) .nav-item.active{color:var(--green)}
    </div>
 
    <hr>
-   <h2>Backup & Data</h2>
+   <h2>Backup & data</h2>
    <div class="actions">
     <button class="btn" id="backupBtn" type="button">Download backup</button>
     <button class="btn secondary" id="restoreBtn" type="button">Restore backup</button>
@@ -732,7 +715,7 @@ html:not(.dark) .nav-item.active{color:var(--green)}
  </section>
 </main>
 
-<!-- Bottom Mobile Navigation Bar -->
+<!-- Bottom Navigation Bar -->
 <nav class="bottom-nav no-print" aria-label="Main mobile navigation">
  <button type="button" class="nav-item active" data-tab="home">
   <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
@@ -779,7 +762,7 @@ function makeOfflineQr(text){
  for(let right=n-1;right>=1;right-=2){if(right===6)right=5;for(let v=0;v<n;v++){let y=up?n-1-v:v;for(let j=0;j<2;j++){let x=right-j;if(m[y][x]===null){let val=bit<code.length*8?((code[Math.floor(bit/8)]>>>(7-bit%8))&1):0;if((x+y)%2===0)val^=1;set(x,y,val);bit++}}}up=!up}
  let fmt=8,rf=fmt;for(let i=0;i<10;i++)rf=(rf<<1)^(((rf>>>9)&1)?0x537:0);let f=((fmt<<10)|rf)^0x5412;
  for(let i=0;i<15;i++){let v=((f>>>i)&1)!==0,a=i<6?[8,i]:i<8?[8,i+1]:i===8?[7,8]:[14-i,8],b=i<8?[n-1-i,8]:[8,n-15+i];set(a[0],a[1],v);set(b[0],b[1],v)}set(8,n-8,true);
- const c=document.createElement('canvas'),s=9,q=4;c.width=c.height=(n+q*2)*s;const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#10251f';for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(m[y][x])ctx.fillRect((x+q)*s,(y+q)*s,s,s);return c;
+ const c=document.createElement('canvas'),s=9,q=4;c.width=c.height=(n+q*2)*s;const ctx=c.getContext('2d');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0f172a';for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(m[y][x])ctx.fillRect((x+q)*s,(y+q)*s,s,s);return c;
 }
 
 function roundRectPath(ctx,x,y,w,h,r){
@@ -791,13 +774,13 @@ function roundRectPath(ctx,x,y,w,h,r){
 }
 
 function drawNexusBrand(ctx,centerX,centerY,scale=1){
- const blue='#1738ff';
+ const blue='#1d4ed8';
  ctx.save();ctx.translate(centerX,centerY);ctx.scale(scale,scale);
  ctx.fillStyle=blue;ctx.beginPath();ctx.arc(-62,-6.5,4.2,0,Math.PI*2);ctx.fill();
  ctx.save();ctx.translate(-42,-1);ctx.rotate(24*Math.PI/180);
  roundRectPath(ctx,-3.8,-10.5,7.6,21,3.8);ctx.fill();ctx.restore();
- ctx.fillStyle='#111111';ctx.textAlign='left';ctx.textBaseline='middle';
- ctx.font='700 22px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+ ctx.fillStyle='#0f172a';ctx.textAlign='left';ctx.textBaseline='middle';
+ ctx.font='700 22px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
  const letters=['N','E','X','U','S'];let lx=-24;
  for(const ch of letters){ctx.fillText(ch,lx,0);lx+=ctx.measureText(ch).width+4.5}
  ctx.restore();
@@ -810,65 +793,65 @@ function makeBrandedCardCanvas(emp){
  const ctx=c.getContext('2d');
 
  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
- ctx.fillStyle='#10251f';ctx.fillRect(0,0,W,94);
+ ctx.fillStyle='#0f172a';ctx.fillRect(0,0,W,92);
 
- drawNexusBrand(ctx,W/2+14,36,0.95);
+ drawNexusBrand(ctx,W/2+14,35,0.95);
  ctx.textAlign='center';
- ctx.fillStyle='#9ce3be';
- ctx.font='700 11px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
- ctx.fillText('NEXUS WORKFORCE & PAYROLL OS',W/2,69);
+ ctx.fillStyle='#cbd5e1';
+ ctx.font='600 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+ ctx.fillText('NEXUS WORKFORCE & PAYROLL',W/2,68);
 
  if(emp.batchNum){
   const badgeTxt=emp.batchTotal?`#${emp.batchNum} OF ${emp.batchTotal}`:`#${emp.batchNum}`;
-  ctx.fillStyle='#eef2ff';
+  ctx.fillStyle='#f1f3f6';
   roundRectPath(ctx,W-128,104,108,26,13);
   ctx.fill();
-  ctx.strokeStyle='#c7d2fe';ctx.lineWidth=1.5;ctx.stroke();
-  ctx.fillStyle='#1738ff';
-  ctx.font='800 11px monospace,system-ui,sans-serif';
+  ctx.strokeStyle='#d0d5dd';ctx.lineWidth=1.2;ctx.stroke();
+  ctx.fillStyle='#0f172a';
+  ctx.font='700 11px ui-monospace,SFMono-Regular,Menlo,monospace';
   ctx.fillText(badgeTxt,W-74,118);
  }
 
  const qrSize=244,qrX=(W-qrSize)/2,qrY=116;
- ctx.fillStyle='#f7faf8';ctx.fillRect(qrX-10,qrY-10,qrSize+20,qrSize+20);
- ctx.strokeStyle='#dce5de';ctx.lineWidth=2;ctx.strokeRect(qrX-10,qrY-10,qrSize+20,qrSize+20);
+ ctx.fillStyle='#f8fafc';ctx.fillRect(qrX-10,qrY-10,qrSize+20,qrSize+20);
+ ctx.strokeStyle='#e4e7ec';ctx.lineWidth=1.5;ctx.strokeRect(qrX-10,qrY-10,qrSize+20,qrSize+20);
  ctx.drawImage(qrCanvas,qrX,qrY,qrSize,qrSize);
 
  const displayName=emp.name||emp.qrId;
- ctx.fillStyle='#17251f';
- let fontSize=26;
+ ctx.fillStyle='#0f172a';
+ let fontSize=25;
  do{
-  ctx.font=`800 ${fontSize}px system-ui,-apple-system,Segoe UI,Roboto,sans-serif`;
+  ctx.font=`700 ${fontSize}px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif`;
   if(ctx.measureText(displayName).width<=W-48)break;
   fontSize--;
  }while(fontSize>15);
  ctx.fillText(displayName,W/2,412);
 
- ctx.fillStyle='#e7f3ec';ctx.fillRect((W-210)/2,434,210,30);
- ctx.fillStyle='#126846';ctx.font='800 15px monospace,system-ui,sans-serif';
+ ctx.fillStyle='#f1f3f6';ctx.fillRect((W-210)/2,434,210,30);
+ ctx.fillStyle='#0f172a';ctx.font='700 15px ui-monospace,SFMono-Regular,Menlo,monospace';
  ctx.fillText(emp.qrId,W/2,450);
 
  const seqPart=emp.batchNum?`#${emp.batchNum}`:'';
  const cycleTxt=cycleLabel(emp.payCycle);
  const subLine=[seqPart,emp.extra,cycleTxt+' pay'].filter(Boolean).join(' · ');
  if(subLine){
-  ctx.fillStyle='#62756c';
-  ctx.font='600 12px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+  ctx.fillStyle='#667085';
+  ctx.font='500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
   ctx.fillText(subLine,W/2,482);
  }
 
- ctx.fillStyle='#f6f9f7';ctx.fillRect(0,H-82,W,82);
- ctx.strokeStyle='#e3eae4';ctx.lineWidth=1;
- ctx.beginPath();ctx.moveTo(0,H-82);ctx.lineTo(W,H-82);ctx.stroke();
+ ctx.fillStyle='#f8fafc';ctx.fillRect(0,H-80,W,80);
+ ctx.strokeStyle='#e4e7ec';ctx.lineWidth=1;
+ ctx.beginPath();ctx.moveTo(0,H-80);ctx.lineTo(W,H-80);ctx.stroke();
 
- ctx.textAlign='center';ctx.fillStyle='#17251f';
- ctx.font='800 12px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
- ctx.fillText('NEXUS · WORKFORCE & PAYROLL OS',W/2,H-46);
- ctx.fillStyle='#62756c';
- ctx.font='600 10px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+ ctx.textAlign='center';ctx.fillStyle='#0f172a';
+ ctx.font='700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+ ctx.fillText('NEXUS · WORKFORCE & PAYROLL',W/2,H-46);
+ ctx.fillStyle='#667085';
+ ctx.font='500 10px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
  ctx.fillText('Employee Attendance Pass',W/2,H-22);
 
- ctx.strokeStyle='#10251f';ctx.lineWidth=4;ctx.strokeRect(2,2,W-4,H-4);
+ ctx.strokeStyle='#e4e7ec';ctx.lineWidth=2;ctx.strokeRect(1,1,W-2,H-2);
  return c;
 }
 </script>
@@ -897,7 +880,7 @@ function applyTheme(mode,notify=false){
  const isDark=mode==='dark';
  document.documentElement.classList.toggle('dark',isDark);
  const metaTheme=document.querySelector('meta[name="theme-color"]');
- if(metaTheme)metaTheme.setAttribute('content',isDark?'#07100d':'#0c1f18');
+ if(metaTheme)metaTheme.setAttribute('content',isDark?'#0d121d':'#0f172a');
  if($('themeBtn'))$('themeBtn').textContent=isDark?'Light':'Dark';
  try{localStorage.setItem(THEME_KEY,isDark?'dark':'light')}catch(e){}
  if(notify)toast(isDark?'Dark mode enabled':'Light mode enabled');
@@ -1098,7 +1081,7 @@ function openPayModal({mode='create',employeeId=null,paymentId=null,defaultType=
    $('payModalEmployeeWrap').classList.add('hidden');
   }
   const emp=db.employees.find(x=>x.id===chosenId);
-  $('payModalBadge').textContent=pType==='advance'?'Cash / Wage Advance':'Payroll Payment';
+  $('payModalBadge').textContent=pType==='advance'?'Advance':'Payment';
   $('payModalTitle').textContent=allowSelectEmployee
    ?(pType==='advance'?'Record advance':'Record payment')
    :(pType==='advance'?`Advance · ${emp.name}`:`Pay · ${emp.name}`);
@@ -1245,7 +1228,7 @@ function renderEmployees(){
    const inactive=e.active===false;
    const cLabel=cycleLabel(e.payCycle);
    const seqBadge=e.batchNum?`<span class="tag seq">#${e.batchNum}${e.batchTotal?'/'+e.batchTotal:''}</span>`:'';
-   return `<tr class="${sel?'selected-row':''}"><td><input type="checkbox" ${sel?'checked':''} onchange="toggleSelectEmp('${e.id}',this.checked)"></td><td>${seqBadge}<b>${esc(e.name)}</b><span class="tag cycle">${esc(cLabel)}</span>${unassigned?'<span class="tag unassigned">Needs name</span>':''}${inactive?'<span class="tag inactive">Inactive</span>':''}<div class="tiny">${esc(e.qrId)}${e.extra?' · '+esc(e.extra):''}</div></td><td>${money(e.dailyWage)}</td><td><div class="actions"><button class="btn secondary small" onclick="editEmployee('${e.id}')">Edit</button><button class="btn outline small" onclick="cardFor('${e.id}')">QR</button><button class="btn small" onclick="downloadOneQr('${e.id}')">PNG</button><button class="btn ${inactive?'secondary':'danger'} small" onclick="toggleEmployee('${e.id}')">${inactive?'On':'Off'}</button></div></td></tr>`;
+   return `<tr class="${sel?'selected-row':''}"><td><input type="checkbox" ${sel?'checked':''} onchange="toggleSelectEmp('${e.id}',this.checked)"></td><td>${seqBadge}<b>${esc(e.name)}</b><span class="tag cycle">${esc(cLabel)}</span>${unassigned?'<span class="tag unassigned">Needs name</span>':''}${inactive?'<span class="tag inactive">Inactive</span>':''}<div class="tiny">${esc(e.qrId)}${e.extra?' · '+esc(e.extra):''}</div></td><td>${money(e.dailyWage)}</td><td><div class="actions"><button class="btn secondary small" onclick="editEmployee('${e.id}')">Edit</button><button class="btn secondary small" onclick="cardFor('${e.id}')">QR</button><button class="btn small" onclick="downloadOneQr('${e.id}')">PNG</button><button class="btn ${inactive?'secondary':'danger'} small" onclick="toggleEmployee('${e.id}')">${inactive?'On':'Off'}</button></div></td></tr>`;
   }).join('')}</tbody></table></div>`
   :'<div class="empty">No staff match filter.</div>';
  updateSelectionUI();
@@ -1314,7 +1297,7 @@ function resetEmployeeForm(clearQr=true){
 
 function clearQrPreview(){
  currentQr='';
- $('qrOutput').innerHTML='<span class="muted">QR card preview appears here</span>';
+ $('qrOutput').innerHTML='<span class="muted">QR card preview</span>';
  $('printQr').disabled=true;$('downloadQr').disabled=true;
 }
 
@@ -1458,7 +1441,7 @@ function printCardsList(emps){
   const tagTxt=emp.batchNum?`#${emp.batchNum}${emp.batchTotal?'/'+emp.batchTotal:''}`:`#${i+1}`;
   return `<div class="card"><div class="seq">${esc(tagTxt)}</div><img src="${c.toDataURL('image/png')}" alt="${esc(emp.name)}"></div>`;
  }).join('');
- w.document.write(`<!doctype html><html><head><title>NEXUS Cards</title><style>body{font-family:system-ui,Arial;margin:14px;background:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(${isGrid?'175px':'240px'},1fr));gap:${isGrid?'10px':'16px'};justify-items:center}.card{break-inside:avoid;text-align:center}.seq{font-family:monospace,sans-serif;font-weight:800;font-size:12px;margin-bottom:4px;color:#1738ff}.card img{width:${isGrid?'175px':'240px'};height:auto;border-radius:8px}</style></head><body><div class="grid">${imgs}</div><script>window.onload=()=>window.print()<\/script></body></html>`);
+ w.document.write(`<!doctype html><html><head><title>NEXUS Cards</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:14px;background:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(${isGrid?'175px':'240px'},1fr));gap:${isGrid?'10px':'16px'};justify-items:center}.card{break-inside:avoid;text-align:center}.seq{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700;font-size:12px;margin-bottom:4px;color:#1d4ed8}.card img{width:${isGrid?'175px':'240px'};height:auto;border-radius:8px}</style></head><body><div class="grid">${imgs}</div><script>window.onload=()=>window.print()<\/script></body></html>`);
  w.document.close();
 }
 function printCard(){const emp=getActiveCardEmployee();if(emp)printCardsList([emp])}
@@ -1511,18 +1494,18 @@ function runPayroll(){
  const periodPayments=allPeriodPayments.filter(p=>cycleFilter==='all'||allowedEmpIds.has(p.employeeId));
 
  $('payrollSummary').innerHTML=`<div class="stats"><div class="stat"><small>Earned</small><strong>${money(totalEarned)}</strong></div><div class="stat"><small>Advances</small><strong>${money(totalAdvance)}</strong></div><div class="stat"><small>Paid</small><strong>${money(totalPaid)}</strong></div><div class="stat"><small>Balance</small><strong>${money(balance)}</strong></div></div>
- <div class="two-col" style="margin-bottom:12px">
-  <div class="panel" style="margin-bottom:0;padding:13px" id="whoGotPaidCard">
+ <div class="two-col" style="margin-bottom:14px">
+  <div class="panel" style="margin-bottom:0;padding:14px" id="whoGotPaidCard">
    <h2 style="margin:0 0 4px">Who got paid (${paidPeople.length})</h2>
    ${paidPeople.length?`<div class="status-chip-wrap">${paidPeople.map(p=>renderPersonButton(p,money(p.paid),false,`openEmployeeCard('${p.id}','edit')`)).join('')}</div>`:'<div class="empty">None paid in range.</div>'}
   </div>
-  <div class="panel" style="margin-bottom:0;padding:13px" id="whoIsAbsentCard">
+  <div class="panel" style="margin-bottom:0;padding:14px" id="whoIsAbsentCard">
    <h2 style="margin:0 0 4px">Who is absent (${absentInPeriod.length})</h2>
    ${absentInPeriod.length?`<div class="status-chip-wrap">${absentInPeriod.map(a=>renderPersonButton(a,'0d','absent',`openEmployeeCard('${a.id}','edit')`)).join('')}</div>`:'<div class="empty">No 0-day staff.</div>'}
   </div>
  </div>
- <div class="tablewrap"><table><thead><tr><th>Staff</th><th>Days</th><th>Earned</th><th>Adv.</th><th>Paid</th><th>Balance</th><th></th></tr></thead><tbody>${payrollRows.map(r=>`<tr><td>${renderPersonButton(r,'',false,`openEmployeeCard('${r.id}','edit')`)}<div class="tiny">${esc(r.payStatus)}</div></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${r.advance>0?`<span class="tag advance">-${money(r.advance)}</span>`:money(0)}</td><td class="money">${money(r.paid)}</td><td><b>${money(r.balance)}</b></td><td><div class="actions"><button class="btn secondary small" onclick="addPayment('${r.id}','regular')">+ Pay</button><button class="btn outline small" onclick="addPayment('${r.id}','advance')">+ Advance</button></div></td></tr>`).join('')||'<tr><td colspan="7" class="empty">No matching staff.</td></tr>'}</tbody></table></div>
- <h2 style="margin-top:16px">Advances & payments log</h2>
+ <div class="tablewrap"><table><thead><tr><th>Staff</th><th>Days</th><th>Earned</th><th>Adv.</th><th>Paid</th><th>Balance</th><th></th></tr></thead><tbody>${payrollRows.map(r=>`<tr><td>${renderPersonButton(r,'',false,`openEmployeeCard('${r.id}','edit')`)}<div class="tiny">${esc(r.payStatus)}</div></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${r.advance>0?`<span class="tag advance">-${money(r.advance)}</span>`:money(0)}</td><td class="money">${money(r.paid)}</td><td><b>${money(r.balance)}</b></td><td><div class="actions"><button class="btn secondary small" onclick="addPayment('${r.id}','regular')">+ Pay</button><button class="btn secondary small" onclick="addPayment('${r.id}','advance')">+ Advance</button></div></td></tr>`).join('')||'<tr><td colspan="7" class="empty">No matching staff.</td></tr>'}</tbody></table></div>
+ <h2 style="margin-top:18px">Advances & payments log</h2>
  <div class="tablewrap"><table><thead><tr><th>Staff</th><th>Type</th><th>Date</th><th>Amount</th><th>Note</th><th></th></tr></thead><tbody>${periodPayments.map(p=>{
   const e=db.employees.find(x=>x.id===p.employeeId);
   const pType=normalizePayType(p.type);
@@ -1660,7 +1643,7 @@ $('payModal').addEventListener('click',e=>{if(e.target===$('payModal'))closePayM
 $('payTypeSelect').addEventListener('change',()=>{
  const t=normalizePayType($('payTypeSelect').value);
  if(modalState.mode==='create'){
-  $('payModalBadge').textContent=t==='advance'?'Cash / Wage Advance':'Payroll Payment';
+  $('payModalBadge').textContent=t==='advance'?'Advance':'Payment';
   $('submitPayModalBtn').textContent=t==='advance'?'Save advance':'Save payment';
   if(t==='advance'&&!$('payNoteInput').value.trim())$('payNoteInput').value='Advance payment';
   else if(t!=='advance'&&$('payNoteInput').value.trim()==='Advance payment')$('payNoteInput').value='';
