@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#0284c7">
 <meta name="description" content="NEXUS — Workforce & Payroll OS. Offline employee attendance, QR cards, advances, and payroll.">
 <meta name="application-name" content="NEXUS">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,6 +11,34 @@
 <title>NEXUS — Workforce & Payroll OS</title>
 <style>
 :root{
+ --bg:#f0f7fc;
+ --surface:#ffffff;
+ --surface-subtle:#e6f2fa;
+ --surface-elevated:#ffffff;
+ --border:#cfe2f0;
+ --border-strong:#b3d2e8;
+ --ink:#0c233b;
+ --ink-secondary:#274766;
+ --muted:#5a7590;
+ --primary:#0284c7;
+ --primary-hover:#0369a1;
+ --primary-fg:#ffffff;
+ --accent:#0284c7;
+ --accent-soft:#e0f2fe;
+ --success:#0f766e;
+ --success-soft:#e6f7f5;
+ --warning:#b45309;
+ --warning-soft:#fef3c7;
+ --danger:#b91c1c;
+ --danger-soft:#fee2e2;
+ --header-bg:#ffffff;
+ --nav-bg:rgba(255,255,255,.97);
+ --brand-word:#0c233b;
+ --shadow-sm:0 1px 2px rgba(12,35,59,.05);
+ --shadow-md:0 8px 24px rgba(12,35,59,.08);
+}
+
+html[data-palette="slate"]{
  --bg:#f6f7f9;
  --surface:#ffffff;
  --surface-subtle:#f1f3f6;
@@ -32,13 +60,37 @@
  --danger:#b91c1c;
  --danger-soft:#fef2f2;
  --header-bg:#ffffff;
- --nav-bg:rgba(255,255,255,.96);
+ --nav-bg:rgba(255,255,255,.97);
  --brand-word:#0f172a;
- --shadow-sm:0 1px 2px rgba(15,23,42,.04);
- --shadow-md:0 6px 20px rgba(15,23,42,.06);
 }
 
-html.dark{
+html[data-palette="stone"]{
+ --bg:#f7f6f3;
+ --surface:#ffffff;
+ --surface-subtle:#f0ede7;
+ --surface-elevated:#ffffff;
+ --border:#e5e0d8;
+ --border-strong:#d4cdc0;
+ --ink:#18181b;
+ --ink-secondary:#3f3f46;
+ --muted:#71717a;
+ --primary:#18181b;
+ --primary-hover:#27272a;
+ --primary-fg:#ffffff;
+ --accent:#9a5b13;
+ --accent-soft:#fef3c7;
+ --success:#15803d;
+ --success-soft:#ecfdf3;
+ --warning:#b45309;
+ --warning-soft:#fffbeb;
+ --danger:#b91c1c;
+ --danger-soft:#fef2f2;
+ --header-bg:#ffffff;
+ --nav-bg:rgba(255,255,255,.97);
+ --brand-word:#18181b;
+}
+
+html[data-palette="midnight"]{
  --bg:#090d16;
  --surface:#111622;
  --surface-subtle:#171d2c;
@@ -48,11 +100,11 @@ html.dark{
  --ink:#f8fafc;
  --ink-secondary:#cbd5e1;
  --muted:#94a3b8;
- --primary:#f8fafc;
- --primary-hover:#e2e8f0;
- --primary-fg:#090d16;
- --accent:#60a5fa;
- --accent-soft:rgba(96,165,250,.14);
+ --primary:#38bdf8;
+ --primary-hover:#7dd3fc;
+ --primary-fg:#082f49;
+ --accent:#38bdf8;
+ --accent-soft:rgba(56,189,248,.14);
  --success:#4ade80;
  --success-soft:rgba(74,222,128,.12);
  --warning:#fbbf24;
@@ -60,7 +112,7 @@ html.dark{
  --danger:#f87171;
  --danger-soft:rgba(248,113,113,.12);
  --header-bg:#0d121d;
- --nav-bg:rgba(13,18,29,.96);
+ --nav-bg:rgba(13,18,29,.97);
  --brand-word:#f8fafc;
  --shadow-sm:0 1px 2px rgba(0,0,0,.25);
  --shadow-md:0 12px 28px rgba(0,0,0,.45);
@@ -89,12 +141,12 @@ body{
 }
 .lock-brand{
  display:inline-flex;align-items:center;justify-content:center;
- padding:7px 14px;border-radius:999px;background:var(--surface-subtle);
+ padding:7px 14px;border-radius:999px;background:var(--accent-soft);
  border:1px solid var(--border);margin-bottom:14px;
 }
 .admin-chip{
  display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
- padding:3px 9px;border-radius:999px;background:var(--surface-subtle);color:var(--muted);margin-bottom:8px;
+ padding:3px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-bottom:8px;
 }
 .lock-title{font-size:20px;font-weight:700;letter-spacing:-.02em;margin:0 0 4px;color:var(--ink)}
 .lock-sub{font-size:13px;color:var(--muted);margin:0 0 18px}
@@ -105,7 +157,7 @@ body{
 /* In-app Payment / Advance Modal */
 .modal-backdrop{
  position:fixed;inset:0;z-index:55;display:flex;align-items:flex-end;justify-content:center;
- padding:12px;overflow:auto;background:rgba(15,23,42,.48);
+ padding:12px;overflow:auto;background:rgba(12,35,59,.45);
 }
 @media(min-width:640px){.modal-backdrop{align-items:center;padding:20px}}
 .modal-card{
@@ -130,7 +182,7 @@ header{
 }
 .brand-wrap{display:flex;align-items:center;gap:10px}
 .nx-mark{
- width:32px;height:32px;border-radius:9px;background:var(--surface-subtle);
+ width:32px;height:32px;border-radius:9px;background:var(--accent-soft);
  border:1px solid var(--border);display:grid;place-items:center;flex:0 0 auto;
 }
 .brand{font-size:15px;font-weight:750;letter-spacing:.1em;line-height:1.15;color:var(--ink)}
@@ -159,7 +211,7 @@ h2{font-size:15px;margin:0 0 12px;letter-spacing:-.015em;font-weight:700;color:v
 }
 .stat{padding:14px 16px}
 .stat.clickable{cursor:pointer;transition:border-color .15s ease}
-.stat.clickable:hover{border-color:var(--border-strong)}
+.stat.clickable:hover{border-color:var(--accent)}
 .stat small{color:var(--muted);font-weight:600;font-size:12px;display:block}
 .stat strong{display:block;font-size:20px;margin-top:4px;letter-spacing:-.02em;font-weight:750;font-variant-numeric:tabular-nums;color:var(--ink)}
 
@@ -169,11 +221,11 @@ h2{font-size:15px;margin:0 0 12px;letter-spacing:-.015em;font-weight:700;color:v
 /* Clean Scanner CTA */
 .scan-hero{
  width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;
- padding:16px 18px;border-radius:16px;border:1px solid var(--border-strong);
+ padding:16px 18px;border-radius:16px;border:1px solid var(--border);
  background:var(--surface);color:var(--ink);cursor:pointer;
  box-shadow:var(--shadow-sm);text-align:left;transition:border-color .15s ease,background-color .15s ease;
 }
-.scan-hero:hover{border-color:var(--accent)}
+.scan-hero:hover{border-color:var(--accent);background:var(--surface-subtle)}
 .scan-hero strong{display:block;font-size:15px;font-weight:700;color:var(--ink)}
 .scan-hero span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
 .scan-icon-box{
@@ -187,9 +239,18 @@ h2{font-size:15px;margin:0 0 12px;letter-spacing:-.015em;font-weight:700;color:v
  border:1px solid var(--border);cursor:pointer;color:var(--ink);box-shadow:var(--shadow-sm);
  transition:border-color .15s ease,background-color .15s ease;
 }
-.app-tile:hover{border-color:var(--border-strong);background:var(--surface-subtle)}
+.app-tile:hover{border-color:var(--accent);background:var(--surface-subtle)}
 .app-tile strong{display:block;font-size:13.5px;font-weight:650;color:var(--ink)}
 .app-tile span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+
+.palette-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.palette-btn{
+ display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:10px;
+ border:1px solid var(--border);background:var(--surface);color:var(--ink);
+ font-size:12.5px;font-weight:600;cursor:pointer;transition:border-color .15s ease,background-color .15s ease;
+}
+.palette-btn.active{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.swatch-dot{width:11px;height:11px;border-radius:999px;border:1px solid rgba(0,0,0,.15)}
 
 label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-secondary);margin:12px 0 5px}
 input:not([type="checkbox"]),select{
@@ -224,7 +285,7 @@ input[type="checkbox"]{width:17px;height:17px;accent-color:var(--accent);cursor:
  border:1px solid var(--border);background:var(--surface);color:var(--ink);
  font-weight:600;font-size:12.5px;cursor:pointer;transition:border-color .15s ease,background-color .15s ease;
 }
-.person-btn:hover{border-color:var(--border-strong);background:var(--surface-subtle)}
+.person-btn:hover{border-color:var(--accent);background:var(--surface-subtle)}
 .person-btn .num-pill{
  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;padding:1px 6px;border-radius:6px;
  background:var(--surface-subtle);color:var(--muted);
@@ -245,7 +306,7 @@ input[type="checkbox"]{width:17px;height:17px;accent-color:var(--accent);cursor:
  padding:12px 14px;border-radius:12px;background:var(--surface-subtle);
  border:1px solid var(--border);margin-top:12px;min-height:48px;font-size:13.5px;
 }
-.result.success{background:var(--success-soft);border-color:rgba(21,128,61,.25)}
+.result.success{background:var(--success-soft);border-color:rgba(15,118,110,.25)}
 .result.warn{background:var(--warning-soft);border-color:rgba(180,83,9,.25)}
 .result b.name{font-size:16px;display:block;margin-bottom:2px;color:var(--ink)}
 
@@ -261,7 +322,7 @@ tr.selected-row td{background:var(--accent-soft)}
 .tag.cycle{background:var(--surface-subtle);color:var(--muted)}
 .tag.advance{background:var(--warning-soft);color:var(--warning)}
 .tag.paid{background:var(--success-soft);color:var(--success)}
-.tag.seq{background:var(--surface-subtle);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.tag.seq{background:var(--accent-soft);color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .empty{text-align:center;padding:20px 12px;color:var(--muted);font-size:13px}
 
 #qrOutput{
@@ -275,10 +336,10 @@ tr.selected-row td{background:var(--accent-soft)}
  background:var(--surface-subtle);border:1px solid var(--border);border-radius:10px;
  padding:8px;text-align:center;cursor:pointer;transition:border-color .15s ease;
 }
-.batch-card:hover{border-color:var(--border-strong)}
+.batch-card:hover{border-color:var(--accent)}
 .batch-num{
  display:inline-block;font-size:11px;font-weight:700;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
- padding:2px 7px;border-radius:999px;background:var(--surface);color:var(--ink);border:1px solid var(--border);margin-bottom:6px;
+ padding:2px 7px;border-radius:999px;background:var(--surface);color:var(--accent);border:1px solid var(--border);margin-bottom:6px;
 }
 .batch-card canvas{width:100%;height:auto;border-radius:6px;display:block}
 
@@ -293,7 +354,7 @@ tr.selected-row td{background:var(--accent-soft)}
 .note{font-size:12px;color:var(--muted);margin-top:8px}
 .toast{
  position:fixed;bottom:calc(78px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
- background:var(--primary);color:var(--primary-fg);padding:10px 16px;border-radius:10px;
+ background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:10px;
  z-index:60;max-width:92vw;font-size:13px;font-weight:600;box-shadow:var(--shadow-md);
 }
 .money{font-weight:700;color:var(--success)}
@@ -312,7 +373,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
  font:600 10.5px/1.1 -apple-system,BlinkMacSystemFont,"Inter",sans-serif;cursor:pointer;border-radius:10px;
 }
 .nav-item svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.nav-item.active{color:var(--ink);background:var(--surface-subtle)}
+.nav-item.active{color:var(--accent);background:var(--accent-soft)}
 
 .nav-scan-fab{
  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
@@ -324,8 +385,8 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 
 @media print{
  header,.bottom-nav,.no-print,.note,.lock-screen,.modal-backdrop{display:none!important}
- body{background:#fff;color:#0f172a;padding-bottom:0}
- .panel,.stat{background:#fff;box-shadow:none;border-color:#e4e7ec}
+ body{background:#fff;color:#0c233b;padding-bottom:0}
+ .panel,.stat{background:#fff;box-shadow:none;border-color:#cfe2f0}
 }
 </style>
 </head>
@@ -337,8 +398,8 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   <div class="lock-brand">
    <span class="nexus-badge" aria-label="NEXUS">
     <svg width="18" height="16" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-     <circle cx="5.5" cy="5.5" r="3.5" fill="#1d4ed8"/>
-     <rect x="13.2" y="3.2" width="6.6" height="17.6" rx="3.3" transform="rotate(24 13.2 3.2)" fill="#1d4ed8"/>
+     <circle cx="5.5" cy="5.5" r="3.5" fill="#0284c7"/>
+     <rect x="13.2" y="3.2" width="6.6" height="17.6" rx="3.3" transform="rotate(24 13.2 3.2)" fill="#0284c7"/>
     </svg>
     <span class="nexus-word">NEXUS</span>
    </span>
@@ -409,8 +470,8 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
  <div class="brand-wrap">
   <div class="nx-mark" aria-hidden="true">
    <svg width="18" height="16" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="5.5" cy="5.5" r="3.5" fill="#1d4ed8"/>
-    <rect x="13.2" y="3.2" width="6.6" height="17.6" rx="3.3" transform="rotate(24 13.2 3.2)" fill="#1d4ed8"/>
+    <circle cx="5.5" cy="5.5" r="3.5" fill="#0284c7"/>
+    <rect x="13.2" y="3.2" width="6.6" height="17.6" rx="3.3" transform="rotate(24 13.2 3.2)" fill="#0284c7"/>
    </svg>
   </div>
   <div class="brand">NEXUS <span>Workforce & Payroll</span></div>
@@ -418,7 +479,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
  <div class="header-right">
   <button class="pill warn hidden" id="backupBadge" title="Open Backup & Security">Backup</button>
   <div class="pill">Offline</div>
-  <button class="btn secondary small no-print" id="themeBtn" type="button">Dark</button>
+  <button class="btn secondary small no-print" id="themeBtn" type="button">Palette</button>
   <button class="btn secondary small no-print" id="lockBtn" type="button">Lock</button>
  </div>
 </header>
@@ -672,6 +733,15 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
  <!-- MORE: REPORTS, BACKUP & SECURITY -->
  <section id="tab-more" class="tabpage hidden">
   <div class="panel">
+   <h2>Color palette</h2>
+   <div class="palette-row" role="group" aria-label="Color palette options">
+    <button type="button" class="palette-btn active" data-set-palette="lightblue"><span class="swatch-dot" style="background:#0284c7"></span>Light Blue</button>
+    <button type="button" class="palette-btn" data-set-palette="slate"><span class="swatch-dot" style="background:#1d4ed8"></span>Slate & Cobalt</button>
+    <button type="button" class="palette-btn" data-set-palette="stone"><span class="swatch-dot" style="background:#9a5b13"></span>Warm Stone</button>
+    <button type="button" class="palette-btn" data-set-palette="midnight"><span class="swatch-dot" style="background:#38bdf8"></span>Deep Midnight</button>
+   </div>
+
+   <hr>
    <h2>Attendance report</h2>
    <div class="row">
     <div><label for="fromDate">From</label><input type="date" id="fromDate"></div>
@@ -688,8 +758,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   </div>
 
   <div class="panel">
-   <h2>Theme & passcode</h2>
-   <button class="btn secondary" id="backupThemeBtn" type="button" style="width:100%">Switch Dark / Light Mode</button>
+   <h2>Admin passcode</h2>
    <div class="row">
     <div>
      <label for="currentPasscodeInput">Current passcode</label>
@@ -762,7 +831,7 @@ function makeOfflineQr(text){
  for(let right=n-1;right>=1;right-=2){if(right===6)right=5;for(let v=0;v<n;v++){let y=up?n-1-v:v;for(let j=0;j<2;j++){let x=right-j;if(m[y][x]===null){let val=bit<code.length*8?((code[Math.floor(bit/8)]>>>(7-bit%8))&1):0;if((x+y)%2===0)val^=1;set(x,y,val);bit++}}}up=!up}
  let fmt=8,rf=fmt;for(let i=0;i<10;i++)rf=(rf<<1)^(((rf>>>9)&1)?0x537:0);let f=((fmt<<10)|rf)^0x5412;
  for(let i=0;i<15;i++){let v=((f>>>i)&1)!==0,a=i<6?[8,i]:i<8?[8,i+1]:i===8?[7,8]:[14-i,8],b=i<8?[n-1-i,8]:[8,n-15+i];set(a[0],a[1],v);set(b[0],b[1],v)}set(8,n-8,true);
- const c=document.createElement('canvas'),s=9,q=4;c.width=c.height=(n+q*2)*s;const ctx=c.getContext('2d');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0f172a';for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(m[y][x])ctx.fillRect((x+q)*s,(y+q)*s,s,s);return c;
+ const c=document.createElement('canvas'),s=9,q=4;c.width=c.height=(n+q*2)*s;const ctx=c.getContext('2d');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0c233b';for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(m[y][x])ctx.fillRect((x+q)*s,(y+q)*s,s,s);return c;
 }
 
 function roundRectPath(ctx,x,y,w,h,r){
@@ -774,12 +843,12 @@ function roundRectPath(ctx,x,y,w,h,r){
 }
 
 function drawNexusBrand(ctx,centerX,centerY,scale=1){
- const blue='#1d4ed8';
+ const blue='#0284c7';
  ctx.save();ctx.translate(centerX,centerY);ctx.scale(scale,scale);
  ctx.fillStyle=blue;ctx.beginPath();ctx.arc(-62,-6.5,4.2,0,Math.PI*2);ctx.fill();
  ctx.save();ctx.translate(-42,-1);ctx.rotate(24*Math.PI/180);
  roundRectPath(ctx,-3.8,-10.5,7.6,21,3.8);ctx.fill();ctx.restore();
- ctx.fillStyle='#0f172a';ctx.textAlign='left';ctx.textBaseline='middle';
+ ctx.fillStyle='#0c233b';ctx.textAlign='left';ctx.textBaseline='middle';
  ctx.font='700 22px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
  const letters=['N','E','X','U','S'];let lx=-24;
  for(const ch of letters){ctx.fillText(ch,lx,0);lx+=ctx.measureText(ch).width+4.5}
@@ -793,32 +862,32 @@ function makeBrandedCardCanvas(emp){
  const ctx=c.getContext('2d');
 
  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
- ctx.fillStyle='#0f172a';ctx.fillRect(0,0,W,92);
+ ctx.fillStyle='#0c233b';ctx.fillRect(0,0,W,92);
 
  drawNexusBrand(ctx,W/2+14,35,0.95);
  ctx.textAlign='center';
- ctx.fillStyle='#cbd5e1';
+ ctx.fillStyle='#bae6fd';
  ctx.font='600 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
  ctx.fillText('NEXUS WORKFORCE & PAYROLL',W/2,68);
 
  if(emp.batchNum){
   const badgeTxt=emp.batchTotal?`#${emp.batchNum} OF ${emp.batchTotal}`:`#${emp.batchNum}`;
-  ctx.fillStyle='#f1f3f6';
+  ctx.fillStyle='#e0f2fe';
   roundRectPath(ctx,W-128,104,108,26,13);
   ctx.fill();
-  ctx.strokeStyle='#d0d5dd';ctx.lineWidth=1.2;ctx.stroke();
-  ctx.fillStyle='#0f172a';
+  ctx.strokeStyle='#bae6fd';ctx.lineWidth=1.2;ctx.stroke();
+  ctx.fillStyle='#0284c7';
   ctx.font='700 11px ui-monospace,SFMono-Regular,Menlo,monospace';
   ctx.fillText(badgeTxt,W-74,118);
  }
 
  const qrSize=244,qrX=(W-qrSize)/2,qrY=116;
- ctx.fillStyle='#f8fafc';ctx.fillRect(qrX-10,qrY-10,qrSize+20,qrSize+20);
- ctx.strokeStyle='#e4e7ec';ctx.lineWidth=1.5;ctx.strokeRect(qrX-10,qrY-10,qrSize+20,qrSize+20);
+ ctx.fillStyle='#f0f7fc';ctx.fillRect(qrX-10,qrY-10,qrSize+20,qrSize+20);
+ ctx.strokeStyle='#cfe2f0';ctx.lineWidth=1.5;ctx.strokeRect(qrX-10,qrY-10,qrSize+20,qrSize+20);
  ctx.drawImage(qrCanvas,qrX,qrY,qrSize,qrSize);
 
  const displayName=emp.name||emp.qrId;
- ctx.fillStyle='#0f172a';
+ ctx.fillStyle='#0c233b';
  let fontSize=25;
  do{
   ctx.font=`700 ${fontSize}px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif`;
@@ -827,31 +896,31 @@ function makeBrandedCardCanvas(emp){
  }while(fontSize>15);
  ctx.fillText(displayName,W/2,412);
 
- ctx.fillStyle='#f1f3f6';ctx.fillRect((W-210)/2,434,210,30);
- ctx.fillStyle='#0f172a';ctx.font='700 15px ui-monospace,SFMono-Regular,Menlo,monospace';
+ ctx.fillStyle='#e0f2fe';ctx.fillRect((W-210)/2,434,210,30);
+ ctx.fillStyle='#0284c7';ctx.font='700 15px ui-monospace,SFMono-Regular,Menlo,monospace';
  ctx.fillText(emp.qrId,W/2,450);
 
  const seqPart=emp.batchNum?`#${emp.batchNum}`:'';
  const cycleTxt=cycleLabel(emp.payCycle);
  const subLine=[seqPart,emp.extra,cycleTxt+' pay'].filter(Boolean).join(' · ');
  if(subLine){
-  ctx.fillStyle='#667085';
+  ctx.fillStyle='#5a7590';
   ctx.font='500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
   ctx.fillText(subLine,W/2,482);
  }
 
- ctx.fillStyle='#f8fafc';ctx.fillRect(0,H-80,W,80);
- ctx.strokeStyle='#e4e7ec';ctx.lineWidth=1;
+ ctx.fillStyle='#f0f7fc';ctx.fillRect(0,H-80,W,80);
+ ctx.strokeStyle='#cfe2f0';ctx.lineWidth=1;
  ctx.beginPath();ctx.moveTo(0,H-80);ctx.lineTo(W,H-80);ctx.stroke();
 
- ctx.textAlign='center';ctx.fillStyle='#0f172a';
+ ctx.textAlign='center';ctx.fillStyle='#0c233b';
  ctx.font='700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
  ctx.fillText('NEXUS · WORKFORCE & PAYROLL',W/2,H-46);
- ctx.fillStyle='#667085';
+ ctx.fillStyle='#5a7590';
  ctx.font='500 10px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
  ctx.fillText('Employee Attendance Pass',W/2,H-22);
 
- ctx.strokeStyle='#e4e7ec';ctx.lineWidth=2;ctx.strokeRect(1,1,W-2,H-2);
+ ctx.strokeStyle='#cfe2f0';ctx.lineWidth=2;ctx.strokeRect(1,1,W-2,H-2);
  return c;
 }
 </script>
@@ -861,33 +930,43 @@ function makeBrandedCardCanvas(emp){
 const KEY='nexus_workforce_payroll_v5';
 const LEGACY_KEYS=['workday_local_payroll_v5','workday_local_payroll_v4'];
 const PASS_KEY='nexus_workforce_passcode_v1';
-const THEME_KEY='nexus_workforce_theme_v1';
+const PALETTE_KEY='nexus_workforce_palette_v1';
 const DEFAULT_PASSCODE='2026';
+const PALETTES=['lightblue','slate','stone','midnight'];
+const PALETTE_META={
+ lightblue:{label:'Light Blue',themeColor:'#0284c7'},
+ slate:{label:'Slate & Cobalt',themeColor:'#0f172a'},
+ stone:{label:'Warm Stone',themeColor:'#18181b'},
+ midnight:{label:'Deep Midnight',themeColor:'#090d16'}
+};
 
 let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='', lastScanAt=0, reportRows=[], payrollRows=[], batchDraftCards=[];
 let modalState={mode:'create',employeeId:null,paymentId:null,allowSelectEmployee:false};
 const selectedIds=new Set();
 const $=id=>document.getElementById(id);
 
-function getSavedTheme(){
+function getSavedPalette(){
  try{
-  const saved=localStorage.getItem(THEME_KEY);
-  if(saved==='dark'||saved==='light')return saved;
+  const saved=localStorage.getItem(PALETTE_KEY);
+  if(saved&&PALETTES.includes(saved))return saved;
  }catch(e){}
- return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+ return 'lightblue';
 }
-function applyTheme(mode,notify=false){
- const isDark=mode==='dark';
- document.documentElement.classList.toggle('dark',isDark);
+function applyPalette(mode,notify=false){
+ const pal=PALETTES.includes(mode)?mode:'lightblue';
+ document.documentElement.setAttribute('data-palette',pal);
  const metaTheme=document.querySelector('meta[name="theme-color"]');
- if(metaTheme)metaTheme.setAttribute('content',isDark?'#0d121d':'#0f172a');
- if($('themeBtn'))$('themeBtn').textContent=isDark?'Light':'Dark';
- try{localStorage.setItem(THEME_KEY,isDark?'dark':'light')}catch(e){}
- if(notify)toast(isDark?'Dark mode enabled':'Light mode enabled');
+ if(metaTheme)metaTheme.setAttribute('content',PALETTE_META[pal].themeColor);
+ document.querySelectorAll('[data-set-palette]').forEach(btn=>{
+  btn.classList.toggle('active',btn.dataset.setPalette===pal);
+ });
+ try{localStorage.setItem(PALETTE_KEY,pal)}catch(e){}
+ if(notify)toast(`Palette: ${PALETTE_META[pal].label}`);
 }
-function toggleTheme(){
- const next=document.documentElement.classList.contains('dark')?'light':'dark';
- applyTheme(next,true);
+function cyclePalette(){
+ const cur=getSavedPalette();
+ const next=PALETTES[(PALETTES.indexOf(cur)+1)%PALETTES.length];
+ applyPalette(next,true);
 }
 
 function normalizeCycle(c){
@@ -1441,7 +1520,7 @@ function printCardsList(emps){
   const tagTxt=emp.batchNum?`#${emp.batchNum}${emp.batchTotal?'/'+emp.batchTotal:''}`:`#${i+1}`;
   return `<div class="card"><div class="seq">${esc(tagTxt)}</div><img src="${c.toDataURL('image/png')}" alt="${esc(emp.name)}"></div>`;
  }).join('');
- w.document.write(`<!doctype html><html><head><title>NEXUS Cards</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:14px;background:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(${isGrid?'175px':'240px'},1fr));gap:${isGrid?'10px':'16px'};justify-items:center}.card{break-inside:avoid;text-align:center}.seq{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700;font-size:12px;margin-bottom:4px;color:#1d4ed8}.card img{width:${isGrid?'175px':'240px'};height:auto;border-radius:8px}</style></head><body><div class="grid">${imgs}</div><script>window.onload=()=>window.print()<\/script></body></html>`);
+ w.document.write(`<!doctype html><html><head><title>NEXUS Cards</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:14px;background:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(${isGrid?'175px':'240px'},1fr));gap:${isGrid?'10px':'16px'};justify-items:center}.card{break-inside:avoid;text-align:center}.seq{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700;font-size:12px;margin-bottom:4px;color:#0284c7}.card img{width:${isGrid?'175px':'240px'};height:auto;border-radius:8px}</style></head><body><div class="grid">${imgs}</div><script>window.onload=()=>window.print()<\/script></body></html>`);
  w.document.close();
 }
 function printCard(){const emp=getActiveCardEmployee();if(emp)printCardsList([emp])}
@@ -1632,8 +1711,8 @@ $('quickRecordAdvanceBtn').onclick=()=>openPayModal({mode:'create',defaultType:'
 $('payEmployeeSelect').addEventListener('change',()=>{modalState.employeeId=$('payEmployeeSelect').value;refreshModalSummary(modalState.employeeId)});
 $('homeNextUnassigned').onclick=editNextUnassigned;
 $('backupBadge').onclick=()=>openTab('more');
-$('themeBtn').onclick=toggleTheme;
-$('backupThemeBtn').onclick=toggleTheme;
+$('themeBtn').onclick=cyclePalette;
+document.querySelectorAll('[data-set-palette]').forEach(btn=>btn.addEventListener('click',()=>applyPalette(btn.dataset.setPalette,true)));
 $('lockBtn').onclick=lockScreen;
 
 $('payModalForm').addEventListener('submit',submitPayModal);
@@ -1717,7 +1796,7 @@ $('clearData').onclick=()=>{
  }
 };
 window.addEventListener('beforeunload',stopCamera);
-applyTheme(getSavedTheme(),false);
+applyPalette(getSavedPalette(),false);
 renderAll();
 setTimeout(()=>$('passcodeInput').focus(),60);
 if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});
