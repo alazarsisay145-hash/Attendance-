@@ -172,7 +172,6 @@ main{max-width:1180px;margin:auto;padding:22px 14px 56px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
 h1{font-size:26px;margin:0 0 3px;letter-spacing:-.75px;font-weight:850}
 h2{font-size:17px;margin:0 0 13px;letter-spacing:-.25px;font-weight:800}
-h3{font-size:14px;margin:0 0 8px;letter-spacing:-.15px;font-weight:800}
 .muted{color:var(--muted)}
 .tiny{font-size:12px;color:var(--muted)}
 
@@ -260,8 +259,8 @@ input:not([type="checkbox"]):focus,select:focus{
 }
 input[type="checkbox"]{width:19px;height:19px;accent-color:var(--green);cursor:pointer;margin:0;flex:0 0 auto}
 
-.row{display:flex;gap:8px;align-items:end}
-.row>*{flex:1;min-width:0}
+.row{display:flex;gap:8px;align-items:end;flex-wrap:wrap}
+.row>*{flex:1;min-width:140px}
 
 .btn{
  min-height:44px;
@@ -319,6 +318,7 @@ tr.selected-row td{background:rgba(18,104,70,.07)}
 .tag{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;margin-left:6px;vertical-align:middle}
 .tag.unassigned{background:var(--amber-soft);color:var(--amber)}
 .tag.inactive{background:var(--red-soft);color:var(--red)}
+.tag.cycle{background:var(--accent-soft);color:var(--accent)}
 .empty{text-align:center;padding:28px;color:var(--muted)}
 
 #qrOutput{
@@ -467,8 +467,8 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
       <span>Edit next unnamed card</span>
      </button>
      <button class="quick-tile" data-jump="payroll">
-      <strong>Payroll & Payments</strong>
-      <span>Calculate wages & balances</span>
+      <strong>Payroll & Pay Cycles</strong>
+      <span>Weekly, 2-week & monthly pay</span>
      </button>
      <button class="quick-tile" data-jump="reports">
       <strong>Attendance Reports</strong>
@@ -527,6 +527,12 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
     <input id="newExtra" placeholder="Optional">
     <label for="newWage">Daily wage (ETB)</label>
     <input id="newWage" type="number" min="0" step="0.01" placeholder="e.g. 400">
+    <label for="newPayCycle">Pay cycle</label>
+    <select id="newPayCycle">
+     <option value="weekly">Weekly (every 7 days)</option>
+     <option value="biweekly">Biweekly (every 2 weeks / 14 days)</option>
+     <option value="monthly" selected>Monthly</option>
+    </select>
     <label for="newQrId">QR card ID (max 17 chars)</label>
     <div class="row">
      <input id="newQrId" maxlength="17" placeholder="Click Generate or type ID">
@@ -592,13 +598,27 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
    <div class="row">
     <div><label for="payFrom">From date</label><input type="date" id="payFrom"></div>
     <div><label for="payTo">To date</label><input type="date" id="payTo"></div>
+    <div>
+     <label for="payCycleFilter">Pay cycle</label>
+     <select id="payCycleFilter">
+      <option value="all">All cycles</option>
+      <option value="weekly">Weekly</option>
+      <option value="biweekly">Biweekly (2 weeks)</option>
+      <option value="monthly">Monthly</option>
+     </select>
+    </div>
+   </div>
+   <div class="actions" style="margin-top:10px">
+    <button class="btn secondary small" id="preset7Days" type="button">Last 7 days</button>
+    <button class="btn secondary small" id="preset14Days" type="button">Last 14 days</button>
+    <button class="btn secondary small" id="presetMonth" type="button">This month</button>
    </div>
    <div class="row" style="margin-top:12px">
     <button class="btn" id="runPayroll">Calculate payroll</button>
     <button class="btn secondary" id="payExport">Export payroll CSV</button>
    </div>
    <div id="payrollSummary" style="margin-top:14px"></div>
-   <div class="note">Earnings equal the sum of each recorded attendance day's wage. Payments are tracked separately and can be edited or removed if entered by mistake.</div>
+   <div class="note">Earnings equal the sum of each recorded attendance day's wage within the chosen dates. Payments are tracked separately and can be edited or removed if entered by mistake.</div>
   </div>
  </section>
 
@@ -664,7 +684,7 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
    <span class="nexus-word">NEXUS</span>
   </span>
  </div>
- <div style="font-weight:750;color:#173427">NEXUS v5.2 · Workforce & Payroll OS</div>
+ <div style="font-weight:750;color:#173427">NEXUS v5.3 · Workforce & Payroll OS</div>
  <div style="margin-top:6px;font-size:11px;color:#566960">Offline local records · Export backups regularly</div>
 </footer>
 
@@ -750,10 +770,12 @@ function makeBrandedCardCanvas(emp){
  ctx.fillStyle='#126846';ctx.font='800 15px monospace,system-ui,sans-serif';
  ctx.fillText(emp.qrId,W/2,450);
 
- if(emp.extra){
+ const cycleTxt=cycleLabel(emp.payCycle);
+ const subLine=[emp.extra,cycleTxt+' pay'].filter(Boolean).join(' · ');
+ if(subLine){
   ctx.fillStyle='#62756c';
   ctx.font='600 12px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
-  ctx.fillText(emp.extra,W/2,482);
+  ctx.fillText(subLine,W/2,482);
  }
 
  ctx.fillStyle='#f6f9f7';ctx.fillRect(0,H-82,W,82);
@@ -782,6 +804,17 @@ const DEFAULT_PASSCODE='2026';
 let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='', lastScanAt=0, reportRows=[], payrollRows=[];
 const selectedIds=new Set();
 const $=id=>document.getElementById(id);
+
+function normalizeCycle(c){
+ if(c==='weekly'||c==='biweekly'||c==='monthly')return c;
+ return 'monthly';
+}
+function cycleLabel(c){
+ const norm=normalizeCycle(c);
+ if(norm==='weekly')return 'Weekly';
+ if(norm==='biweekly')return 'Biweekly';
+ return 'Monthly';
+}
 
 function getPasscode(){
  try{return localStorage.getItem(PASS_KEY)||DEFAULT_PASSCODE}catch(e){return DEFAULT_PASSCODE}
@@ -830,7 +863,8 @@ function loadDB(){
   if(!raw)return blankDB();
   const x=JSON.parse(raw);
   if(!x||!Array.isArray(x.employees)||!Array.isArray(x.attendance))return blankDB();
-  return {...blankDB(),...x,payments:Array.isArray(x.payments)?x.payments:[]};
+  const employees=x.employees.map(e=>({...e,payCycle:normalizeCycle(e.payCycle)}));
+  return {...blankDB(),...x,employees,payments:Array.isArray(x.payments)?x.payments:[]};
  }catch(e){return blankDB()}
 }
 function persist(rollbackFn=null){
@@ -920,7 +954,7 @@ function renderAll(){
 
 function getFilteredEmployees(){
  const q=($('employeeSearch').value||'').trim().toLowerCase();
- return db.employees.filter(e=>(e.name+' '+e.qrId+' '+(e.extra||'')).toLowerCase().includes(q));
+ return db.employees.filter(e=>(e.name+' '+e.qrId+' '+(e.extra||'')+' '+cycleLabel(e.payCycle)).toLowerCase().includes(q));
 }
 function updateSelectionUI(){
  const validIds=new Set(db.employees.map(e=>e.id));
@@ -949,7 +983,8 @@ function renderEmployees(){
    const sel=selectedIds.has(e.id);
    const unassigned=e.name===e.qrId;
    const inactive=e.active===false;
-   return `<tr class="${sel?'selected-row':''}"><td><input type="checkbox" ${sel?'checked':''} onchange="toggleSelectEmp('${e.id}',this.checked)" aria-label="Select ${esc(e.name)}"></td><td><b>${esc(e.name)}</b>${unassigned?'<span class="tag unassigned">Needs name</span>':''}${inactive?'<span class="tag inactive">Inactive</span>':''}<div class="tiny">${esc(e.qrId)}${e.extra?' · '+esc(e.extra):''}</div></td><td>${money(e.dailyWage)}</td><td><div class="actions"><button class="btn secondary small" onclick="editEmployee('${e.id}')">Edit</button><button class="btn outline small" onclick="cardFor('${e.id}')">QR</button><button class="btn small" onclick="downloadOneQr('${e.id}')">↓ QR</button><button class="btn ${inactive?'secondary':'danger'} small" onclick="toggleEmployee('${e.id}')">${inactive?'Activate':'Deactivate'}</button></div></td></tr>`;
+   const cLabel=cycleLabel(e.payCycle);
+   return `<tr class="${sel?'selected-row':''}"><td><input type="checkbox" ${sel?'checked':''} onchange="toggleSelectEmp('${e.id}',this.checked)" aria-label="Select ${esc(e.name)}"></td><td><b>${esc(e.name)}</b><span class="tag cycle">${esc(cLabel)}</span>${unassigned?'<span class="tag unassigned">Needs name</span>':''}${inactive?'<span class="tag inactive">Inactive</span>':''}<div class="tiny">${esc(e.qrId)}${e.extra?' · '+esc(e.extra):''}</div></td><td>${money(e.dailyWage)}</td><td><div class="actions"><button class="btn secondary small" onclick="editEmployee('${e.id}')">Edit</button><button class="btn outline small" onclick="cardFor('${e.id}')">QR</button><button class="btn small" onclick="downloadOneQr('${e.id}')">↓ QR</button><button class="btn ${inactive?'secondary':'danger'} small" onclick="toggleEmployee('${e.id}')">${inactive?'Activate':'Deactivate'}</button></div></td></tr>`;
   }).join('')}</tbody></table></div>`
   :'<div class="empty">No employees match your filter.</div>';
  updateSelectionUI();
@@ -981,7 +1016,7 @@ window.deleteAttendance=attId=>{
 };
 
 function saveEmployee(){
- const editId=$('editId').value,rawName=$('newName').value.trim(),extra=$('newExtra').value.trim(),qrId=$('newQrId').value.trim().toUpperCase(),rawWage=$('newWage').value;
+ const editId=$('editId').value,rawName=$('newName').value.trim(),extra=$('newExtra').value.trim(),qrId=$('newQrId').value.trim().toUpperCase(),rawWage=$('newWage').value,payCycle=normalizeCycle($('newPayCycle').value);
  const wage=rawWage===''?0:Number(rawWage);
  if(!qrId||!Number.isFinite(wage)||wage<0){toast('Enter a QR ID and a valid daily wage.');return}
  if(new TextEncoder().encode(qrId).length>17){toast('QR ID must be 17 bytes or fewer.');return}
@@ -989,12 +1024,12 @@ function saveEmployee(){
  const name=rawName||qrId;
  if(editId){
   const emp=db.employees.find(e=>e.id===editId);if(!emp)return;
-  const prev={name:emp.name,extra:emp.extra,qrId:emp.qrId,dailyWage:emp.dailyWage};
-  emp.name=name;emp.extra=extra;emp.qrId=qrId;emp.dailyWage=wage;emp.updatedAt=new Date().toISOString();
+  const prev={name:emp.name,extra:emp.extra,qrId:emp.qrId,dailyWage:emp.dailyWage,payCycle:emp.payCycle};
+  emp.name=name;emp.extra=extra;emp.qrId=qrId;emp.dailyWage=wage;emp.payCycle=payCycle;emp.updatedAt=new Date().toISOString();
   if(!persist(()=>Object.assign(emp,prev)))return;
   toast('Employee updated. Past attendance wages stay unchanged.');
  }else{
-  const emp={id:crypto.randomUUID(),name,extra,qrId,dailyWage:wage,active:true,createdAt:new Date().toISOString()};
+  const emp={id:crypto.randomUUID(),name,extra,qrId,dailyWage:wage,payCycle,active:true,createdAt:new Date().toISOString()};
   db.employees.push(emp);
   if(!persist(()=>db.employees.pop()))return;
   toast(rawName?'Employee registered.':'QR card assigned with ID '+qrId+'. Add name anytime.');
@@ -1006,6 +1041,7 @@ function saveEmployee(){
 
 function resetEmployeeForm(clearQr=true){
  $('editId').value='';$('newName').value='';$('newExtra').value='';$('newWage').value='';
+ $('newPayCycle').value='monthly';
  $('newQrId').disabled=false;if(clearQr)$('newQrId').value='';
  $('employeeFormTitle').textContent='Create / assign NEXUS QR card';
  $('saveEmployee').textContent='Save & generate NEXUS QR';
@@ -1023,6 +1059,7 @@ function loadEmployeeIntoForm(e){
  $('newName').value=e.name===e.qrId?'':e.name;
  $('newExtra').value=e.extra||'';
  $('newWage').value=e.dailyWage;
+ $('newPayCycle').value=normalizeCycle(e.payCycle);
  $('newQrId').value=e.qrId;
  $('newQrId').disabled=true;
  $('employeeFormTitle').textContent='Edit employee ('+e.qrId+')';
@@ -1103,23 +1140,43 @@ function printCard(){const emp=empByQr(currentQr);if(emp)printCardsList([emp])}
 function printSelectedQrs(){printCardsList(db.employees.filter(e=>selectedIds.has(e.id)))}
 
 function dateRange(prefix){return [$(prefix+'From').value||'0000-01-01',$(prefix+'To').value||'9999-12-31']}
+function setPayrollPreset(mode){
+ const today=new Date();
+ const to=localDate(today);
+ if(mode==='month'){
+  $('payFrom').value=to.slice(0,7)+'-01';
+ }else{
+  const start=new Date(today);
+  start.setDate(today.getDate()-(Number(mode)-1));
+  $('payFrom').value=localDate(start);
+ }
+ $('payTo').value=to;
+ runPayroll();
+}
+
 function runPayroll(){
  const [from,to]=dateRange('pay');
+ const cycleFilter=$('payCycleFilter')?.value||'all';
  payrollRows=db.employees
+  .filter(e=>cycleFilter==='all'||normalizeCycle(e.payCycle)===cycleFilter)
   .filter(e=>e.active!==false||attendanceFor(e.id,from,to).length>0||db.payments.some(p=>p.employeeId===e.id&&p.date>=from&&p.date<=to))
   .map(e=>{
    const days=attendanceFor(e.id,from,to);
    const earned=days.reduce((s,a)=>s+Number(a.dailyWage||0),0);
    const paid=paidAmount(e.id,from,to);
-   return {id:e.id,name:e.name,qrId:e.qrId,days:days.length,earned,paid,balance:earned-paid};
+   const cycle=normalizeCycle(e.payCycle);
+   return {id:e.id,name:e.name,qrId:e.qrId,payCycle:cycle,cycleLabel:cycleLabel(cycle),days:days.length,earned,paid,balance:earned-paid};
   });
  const totalEarned=payrollRows.reduce((s,r)=>s+r.earned,0);
  const totalPaid=payrollRows.reduce((s,r)=>s+r.paid,0);
  const balance=totalEarned-totalPaid;
- const periodPayments=db.payments.filter(p=>p.date>=from&&p.date<=to).sort((a,b)=>b.date.localeCompare(a.date));
+ const allowedEmpIds=new Set(payrollRows.map(r=>r.id));
+ const periodPayments=db.payments
+  .filter(p=>p.date>=from&&p.date<=to&&(cycleFilter==='all'||allowedEmpIds.has(p.employeeId)))
+  .sort((a,b)=>b.date.localeCompare(a.date));
 
  $('payrollSummary').innerHTML=`<div class="stats"><div class="stat"><small>Total earned</small><strong>${money(totalEarned)}</strong></div><div class="stat"><small>Paid</small><strong>${money(totalPaid)}</strong></div><div class="stat"><small>Outstanding</small><strong>${money(balance)}</strong></div><div class="stat"><small>Period</small><strong>${from===to?dateLabel(from):esc(from)+' – '+esc(to)}</strong></div></div>
- <div class="tablewrap"><table><thead><tr><th>Employee</th><th>Days</th><th>Earned</th><th>Paid</th><th>Balance</th><th>Payment</th></tr></thead><tbody>${payrollRows.map(r=>`<tr><td><b>${esc(r.name)}</b></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${money(r.paid)}</td><td><b>${money(r.balance)}</b></td><td><button class="btn secondary small" onclick="addPayment('${r.id}')">Add payment</button></td></tr>`).join('')}</tbody></table></div>
+ <div class="tablewrap"><table><thead><tr><th>Employee</th><th>Cycle</th><th>Days</th><th>Earned</th><th>Paid</th><th>Balance</th><th>Payment</th></tr></thead><tbody>${payrollRows.map(r=>`<tr><td><b>${esc(r.name)}</b></td><td><span class="tag cycle">${esc(r.cycleLabel)}</span></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${money(r.paid)}</td><td><b>${money(r.balance)}</b></td><td><button class="btn secondary small" onclick="addPayment('${r.id}')">Add payment</button></td></tr>`).join('')||'<tr><td colspan="7" class="empty">No employees match this pay cycle filter.</td></tr>'}</tbody></table></div>
  <h2 style="margin-top:18px">Payment history in this period</h2>
  <div class="tablewrap"><table><thead><tr><th>Employee</th><th>Date</th><th>Amount</th><th>Actions</th></tr></thead><tbody>${periodPayments.map(p=>{
   const e=db.employees.find(x=>x.id===p.employeeId);
@@ -1129,7 +1186,7 @@ function runPayroll(){
 
 window.addPayment=id=>{
  const e=db.employees.find(x=>x.id===id);if(!e)return;
- const amount=prompt(`Enter payment amount in ETB for ${e.name}:`);if(amount===null)return;
+ const amount=prompt(`Enter payment amount in ETB for ${e.name} (${cycleLabel(e.payCycle)}):`);if(amount===null)return;
  const n=Number(amount);if(!Number.isFinite(n)||n<=0){toast('Enter an amount greater than zero.');return}
  const date=prompt('Payment date (YYYY-MM-DD):',localDate());if(date===null)return;
  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number.isNaN(Date.parse(date+'T00:00:00'))){toast('Invalid date.');return}
@@ -1162,11 +1219,11 @@ window.deletePayment=payId=>{
 function runReport(){
  const from=$('fromDate').value||'0000-01-01',to=$('toDate').value||'9999-12-31';
  reportRows=db.employees
-  .map(e=>{const rows=attendanceFor(e.id,from,to);return {id:e.id,name:e.name,qrId:e.qrId,active:e.active!==false,days:rows.length,earned:rows.reduce((s,a)=>s+Number(a.dailyWage||0),0)}})
+  .map(e=>{const rows=attendanceFor(e.id,from,to);return {id:e.id,name:e.name,qrId:e.qrId,payCycle:cycleLabel(e.payCycle),active:e.active!==false,days:rows.length,earned:rows.reduce((s,a)=>s+Number(a.dailyWage||0),0)}})
   .filter(e=>e.days||e.active);
 
  $('reportOutput').innerHTML=reportRows.length
-  ?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Days</th><th>Earned</th><th>Status</th></tr></thead><tbody>${reportRows.map(r=>`<tr><td><b>${esc(r.name)}</b><div class="tiny">${esc(r.qrId)}</div></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${r.active?'Active':'Inactive'}</td></tr>`).join('')}</tbody></table></div>`
+  ?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Cycle</th><th>Days</th><th>Earned</th><th>Status</th></tr></thead><tbody>${reportRows.map(r=>`<tr><td><b>${esc(r.name)}</b><div class="tiny">${esc(r.qrId)}</div></td><td><span class="tag cycle">${esc(r.payCycle)}</span></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${r.active?'Active':'Inactive'}</td></tr>`).join('')}</tbody></table></div>`
   :'<div class="empty">No employees in this report.</div>';
 
  const entries=db.attendance.filter(a=>a.date>=from&&a.date<=to).sort((a,b)=>b.date.localeCompare(a.date)||b.timestamp.localeCompare(a.timestamp));
@@ -1181,8 +1238,8 @@ function download(name,content,type='text/csv;charset=utf-8'){
  a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
  setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
-function exportPayroll(){const [from,to]=dateRange('pay');download(`nexus-payroll-${from}-to-${to}.csv`,csv([['Employee','QR ID','Working days','Earned ETB','Paid ETB','Balance ETB'],...payrollRows.map(r=>[r.name,r.qrId,r.days,r.earned,r.paid,r.balance])]))}
-function exportReport(){runReport();const from=$('fromDate').value,to=$('toDate').value;download(`nexus-attendance-${from}-to-${to}.csv`,csv([['Employee','QR ID','Working days','Earned ETB','Active'],...reportRows.map(r=>[r.name,r.qrId,r.days,r.earned,r.active?'Yes':'No'])]))}
+function exportPayroll(){const [from,to]=dateRange('pay');download(`nexus-payroll-${from}-to-${to}.csv`,csv([['Employee','QR ID','Pay cycle','Working days','Earned ETB','Paid ETB','Balance ETB'],...payrollRows.map(r=>[r.name,r.qrId,r.cycleLabel,r.days,r.earned,r.paid,r.balance])]))}
+function exportReport(){runReport();const from=$('fromDate').value,to=$('toDate').value;download(`nexus-attendance-${from}-to-${to}.csv`,csv([['Employee','QR ID','Pay cycle','Working days','Earned ETB','Active'],...reportRows.map(r=>[r.name,r.qrId,r.payCycle,r.days,r.earned,r.active?'Yes':'No'])]))}
 function exportToday(){download(`nexus-attendance-${localDate()}.csv`,csv([['Employee','QR ID','Date','Time','Daily wage ETB'],...todayPresent().map(a=>[a.nameSnapshot,a.qrId,a.date,a.time,a.dailyWage])]))}
 
 function validBackup(x){
@@ -1206,7 +1263,8 @@ function restoreFile(file){
    if(!validBackup(x))throw Error('Backup file format is invalid');
    if(!confirm('Replace current employees, attendance, and payments on this device with this backup?'))return;
    const snapshot=JSON.parse(JSON.stringify(db));
-   db={...blankDB(),...x,payments:x.payments||[],lastBackupAt:new Date().toISOString()};
+   const employees=(x.employees||[]).map(e=>({...e,payCycle:normalizeCycle(e.payCycle)}));
+   db={...blankDB(),...x,employees,payments:x.payments||[],lastBackupAt:new Date().toISOString()};
    selectedIds.clear();
    if(!persist(()=>{db=snapshot}))return;
    toast('Backup restored successfully.');
@@ -1329,6 +1387,10 @@ $('selectAllQr').onchange=e=>{
 $('downloadSelectedQr').onclick=downloadSelectedQrs;
 $('printSelectedQr').onclick=printSelectedQrs;
 $('payFrom').value=localDate().slice(0,7)+'-01';$('payTo').value=localDate();
+$('payCycleFilter').onchange=runPayroll;
+$('preset7Days').onclick=()=>setPayrollPreset(7);
+$('preset14Days').onclick=()=>setPayrollPreset(14);
+$('presetMonth').onclick=()=>setPayrollPreset('month');
 $('fromDate').value=localDate().slice(0,7)+'-01';$('toDate').value=localDate();
 $('runPayroll').onclick=runPayroll;$('payExport').onclick=exportPayroll;
 $('runReport').onclick=runReport;$('exportReport').onclick=exportReport;
