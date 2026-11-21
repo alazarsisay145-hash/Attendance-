@@ -645,13 +645,20 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
     </button>
     <button class="btn danger hidden" id="stopScan" type="button" style="width:100%;margin-top:10px">Stop camera</button>
     <video id="video" playsinline muted></video>
+
+    <div class="row" style="margin-top:10px;align-items:center">
+     <button class="btn secondary small" id="toggleScanSoundBtn" type="button" style="flex:0 0 auto">Sound: On</button>
+     <button class="btn outline small" id="testPingBtn" type="button" style="flex:0 0 auto">Test ping</button>
+     <span class="tiny" id="soundStatusHint">Ping + vibration on check-in</span>
+    </div>
+
     <div class="result" id="scanResult">
      <div class="confirm-banner">
       <div class="confirm-icon-wrap"><div class="confirm-icon-big" style="background:var(--accent-soft);color:var(--accent)">QR</div></div>
       <div class="confirm-body">
        <div class="confirm-status" style="background:var(--accent-soft);color:var(--accent)">Ready to scan</div>
        <b class="name" style="font-size:16px">Scan a pass or enter QR ID</b>
-       <div class="confirm-meta">Animated confirmation with check mark and sound appears here.</div>
+       <div class="confirm-meta">Animated confirmation with check mark, ping, and vibration appears here.</div>
       </div>
      </div>
     </div>
@@ -1021,6 +1028,7 @@ const KEY='nexus_workforce_payroll_v5';
 const LEGACY_KEYS=['workday_local_payroll_v5','workday_local_payroll_v4'];
 const PASS_KEY='nexus_workforce_passcode_v1';
 const PALETTE_KEY='nexus_workforce_palette_v1';
+const SOUND_KEY='nexus_workforce_sound_v1';
 const DEFAULT_PASSCODE='2026';
 const PALETTES=['lightblue','slate','stone','midnight'];
 const PALETTE_META={
@@ -1031,32 +1039,87 @@ const PALETTE_META={
 };
 
 let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='', lastScanAt=0, reportRows=[], payrollRows=[], batchDraftCards=[], audioCtx=null;
+let soundEnabled=getSavedSoundEnabled();
 let modalState={mode:'create',employeeId:null,paymentId:null,allowSelectEmployee:false};
 const selectedIds=new Set();
 const $=id=>document.getElementById(id);
 
-function playScanSound(kind='success'){
+function getSavedSoundEnabled(){
  try{
-  const Ctx=window.AudioContext||window.webkitAudioContext;
-  if(!Ctx)return;
-  if(!audioCtx)audioCtx=new Ctx();
-  if(audioCtx.state==='suspended')audioCtx.resume().catch(()=>{});
-  const now=audioCtx.currentTime;
-  const notes=kind==='success'?[523.25,783.99]:[392.0,329.63];
-  notes.forEach((freq,i)=>{
-   const osc=audioCtx.createOscillator();
-   const gain=audioCtx.createGain();
-   osc.type=kind==='success'?'sine':'triangle';
-   osc.frequency.setValueAtTime(freq,now+i*0.09);
-   gain.gain.setValueAtTime(0.001,now+i*0.09);
-   gain.gain.exponentialRampToValueAtTime(0.16,now+i*0.09+0.02);
-   gain.gain.exponentialRampToValueAtTime(0.0008,now+i*0.09+0.24);
-   osc.connect(gain);
-   gain.connect(audioCtx.destination);
-   osc.start(now+i*0.09);
-   osc.stop(now+i*0.09+0.26);
-  });
+  const v=localStorage.getItem(SOUND_KEY);
+  if(v==='0'||v==='false')return false;
  }catch(e){}
+ return true;
+}
+function saveSoundEnabled(val){
+ try{localStorage.setItem(SOUND_KEY,val?'1':'0')}catch(e){}
+}
+function updateSoundUI(){
+ if($('toggleScanSoundBtn'))$('toggleScanSoundBtn').textContent=soundEnabled?'Sound: On':'Sound: Off';
+ if($('soundStatusHint'))$('soundStatusHint').textContent=soundEnabled?'Ping + vibration on check-in':'Sound muted (vibration active)';
+}
+
+function getAudioContext(){
+ const Ctx=window.AudioContext||window.webkitAudioContext;
+ if(!Ctx)return null;
+ if(!audioCtx)audioCtx=new Ctx();
+ if(audioCtx.state==='suspended'){
+  audioCtx.resume().catch(()=>{});
+ }
+ return audioCtx;
+}
+
+function unlockAudio(){
+ try{getAudioContext()}catch(e){}
+}
+
+function playTone(ctx,{freqStart,freqEnd,type='sine',startTime,duration,peakGain=0.24}){
+ const osc=ctx.createOscillator();
+ const gain=ctx.createGain();
+ osc.type=type;
+ osc.frequency.setValueAtTime(freqStart,startTime);
+ if(freqEnd&&freqEnd!==freqStart){
+  osc.frequency.exponentialRampToValueAtTime(freqEnd,startTime+duration);
+ }
+ gain.gain.setValueAtTime(0.0001,startTime);
+ gain.gain.linearRampToValueAtTime(peakGain,startTime+0.012);
+ gain.gain.exponentialRampToValueAtTime(0.0001,startTime+duration);
+ osc.connect(gain);
+ gain.connect(ctx.destination);
+ osc.start(startTime);
+ osc.stop(startTime+duration+0.02);
+}
+
+function vibrateScan(kind='success'){
+ try{
+  if(typeof navigator.vibrate!=='function')return;
+  if(kind==='success')navigator.vibrate([70,40,90]);
+  else navigator.vibrate([140,60,140]);
+ }catch(e){}
+}
+
+function playScanSound(kind='success'){
+ if(!soundEnabled)return;
+ try{
+  const ctx=getAudioContext();
+  if(!ctx)return;
+  const now=ctx.currentTime+0.01;
+  if(kind==='success'){
+   // Crisp dual-stage scanner "ping" (E6 -> A6 + soft octave shimmer)
+   playTone(ctx,{freqStart:1318.5,freqEnd:1318.5,type:'sine',startTime:now,duration:0.09,peakGain:0.24});
+   playTone(ctx,{freqStart:1760.0,freqEnd:1790.0,type:'sine',startTime:now+0.075,duration:0.22,peakGain:0.26});
+   playTone(ctx,{freqStart:2637.0,freqEnd:2637.0,type:'triangle',startTime:now+0.075,duration:0.14,peakGain:0.06});
+  }else{
+   // Distinct two-note alert for unknown / inactive / duplicate scan
+   playTone(ctx,{freqStart:360.0,freqEnd:310.0,type:'triangle',startTime:now,duration:0.12,peakGain:0.22});
+   playTone(ctx,{freqStart:277.18,freqEnd:233.08,type:'triangle',startTime:now+0.13,duration:0.18,peakGain:0.22});
+  }
+ }catch(e){}
+}
+
+function triggerScanFeedback(kind='success'){
+ vibrateScan(kind);
+ playScanSound(kind);
 }
 
 function getSavedPalette(){
@@ -1216,6 +1279,7 @@ window.openEmployeeCard=(id,action='edit')=>{
  else loadEmployeeIntoForm(emp);
 };
 window.quickMarkPresentById=id=>{
+ unlockAudio();
  const emp=db.employees.find(x=>x.id===id);
  if(!emp)return;
  openTab('scan');
@@ -1438,27 +1502,28 @@ function renderEmployees(){
 }
 
 function recordAttendance(raw){
+ unlockAudio();
  const id=String(raw||'').trim().toUpperCase(),emp=empByQr(id);
  if(!id){
   renderScanBanner('warn','Missing ID','!','Enter or scan a QR ID','No code was detected.',true);
-  playScanSound('warn');
+  triggerScanFeedback('warn');
   return;
  }
  if(!emp){
   renderScanBanner('warn','Unknown Card','?','QR ID not recognized',`Code <b>${esc(id)}</b> is not assigned to staff.`,true);
-  playScanSound('warn');
+  triggerScanFeedback('warn');
   toast('Unknown QR ID');
   return;
  }
  if(emp.active===false){
   renderScanBanner('warn','Inactive Staff','!',emp.name,'This employee account is currently inactive.',true);
-  playScanSound('warn');
+  triggerScanFeedback('warn');
   return;
  }
  const date=localDate(),existing=db.attendance.find(a=>a.employeeId===emp.id&&a.date===date);
  if(existing){
   renderScanBanner('warn','Already Checked In','✓',emp.name,`Already registered today at <b>${esc(existing.time)}</b>.`,true);
-  playScanSound('warn');
+  triggerScanFeedback('warn');
   toast('Already scanned today');
   return;
  }
@@ -1473,7 +1538,7 @@ function recordAttendance(raw){
   `Successfully registered for <b>${esc(dateLabel(date))}</b> at <b>${esc(entry.time)}</b> · <span class="money">${esc(money(entry.dailyWage))}</span>`,
   true
  );
- playScanSound('success');
+ triggerScanFeedback('success');
  $('manualId').value='';lastScanned=id;lastScanAt=Date.now();toast(`${emp.name} — successfully registered`);
 }
 
@@ -1810,6 +1875,7 @@ function restoreFile(file){
 }
 
 async function startCamera(){
+ unlockAudio();
  if(!window.isSecureContext){toast('Camera needs HTTPS. Use manual QR ID.');return}
  if(!navigator.mediaDevices?.getUserMedia){toast('Camera unavailable. Use manual QR ID.');return}
  if(!('BarcodeDetector'in window)){toast('QR detector unavailable. Use manual QR ID.');return}
@@ -1864,6 +1930,24 @@ $('themeBtn').onclick=cyclePalette;
 document.querySelectorAll('[data-set-palette]').forEach(btn=>btn.addEventListener('click',()=>applyPalette(btn.dataset.setPalette,true)));
 $('lockBtn').onclick=lockScreen;
 
+$('toggleScanSoundBtn').onclick=()=>{
+ soundEnabled=!soundEnabled;
+ saveSoundEnabled(soundEnabled);
+ updateSoundUI();
+ if(soundEnabled){
+  unlockAudio();
+  triggerScanFeedback('success');
+ }else{
+  vibrateScan('warn');
+ }
+ toast(soundEnabled?'Scan sound enabled':'Scan sound muted');
+};
+$('testPingBtn').onclick=()=>{
+ unlockAudio();
+ triggerScanFeedback('success');
+ renderScanBanner('success','Ping & Vibe Check','✓','Scanner Ready','Confirmed ping, animation, and vibration.',true);
+};
+
 $('payModalForm').addEventListener('submit',submitPayModal);
 $('closePayModalBtn').onclick=closePayModal;
 $('cancelPayModalBtn').onclick=closePayModal;
@@ -1881,6 +1965,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('payModal').clas
 
 $('loginForm').addEventListener('submit',e=>{
  e.preventDefault();
+ unlockAudio();
  if($('passcodeInput').value===getPasscode()){unlockScreen();toast('Unlocked')}
  else{$('loginError').textContent='Wrong passcode.';$('passcodeInput').select()}
 });
@@ -1946,6 +2031,7 @@ $('clearData').onclick=()=>{
 };
 window.addEventListener('beforeunload',stopCamera);
 applyPalette(getSavedPalette(),false);
+updateSoundUI();
 renderAll();
 setTimeout(()=>$('passcodeInput').focus(),60);
 if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});
