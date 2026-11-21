@@ -10,42 +10,298 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>WorkDay — Offline Attendance & Payroll</title>
 <style>
-:root{--bg:#f3f6f3;--card:#fff;--ink:#17251f;--muted:#718078;--green:#176b4a;--green2:#e7f3ec;--line:#e3eae4;--red:#b33a35;--amber:#966116;--shadow:0 10px 28px #1836290b}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-header{background:#10251f;color:#fff;padding:18px max(16px,calc((100% - 1180px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px}
-.brand{font-size:22px;font-weight:850;letter-spacing:-.7px}.brand span{color:#9cdbb8}.sub{font-size:12px;color:#b9c9c0}
-main{max-width:1180px;margin:auto;padding:20px 14px 60px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-h1{font-size:25px;margin:0 0 3px;letter-spacing:-.7px}h2{font-size:17px;margin:0 0 13px}.muted{color:var(--muted)}.tiny{font-size:12px;color:var(--muted)}
-.pill{border-radius:99px;padding:6px 10px;background:#e7f4eb;color:#176b4a;font-size:12px;font-weight:800;white-space:nowrap}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}.stat,.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}.stat{padding:14px}.stat small{color:var(--muted);font-weight:650}.stat strong{display:block;font-size:26px;margin-top:3px;letter-spacing:-.7px}.layout{display:grid;grid-template-columns:1fr 1.25fr;gap:14px}.panel{padding:16px;margin-bottom:14px}
-.tabs{display:flex;gap:7px;overflow:auto;padding:2px 0 12px}.tab{border:1px solid var(--line);background:#fff;padding:9px 13px;border-radius:99px;font-weight:750;color:#526158;white-space:nowrap}.tab.active{background:#173d2e;color:#fff;border-color:#173d2e}
-label{display:block;font-size:12px;font-weight:750;color:#506158;margin:11px 0 5px}input,select{width:100%;border:1px solid #dce5de;border-radius:10px;padding:11px;background:#fff;font:inherit;color:var(--ink);min-width:0}input:focus,select:focus{outline:2px solid #cce8d5;border-color:#4d9872}
-.row{display:flex;gap:8px;align-items:end}.row>*{flex:1;min-width:0}.btn{border:0;border-radius:10px;padding:11px 13px;font-weight:750;font-size:14px;cursor:pointer;background:var(--green);color:#fff}.btn.secondary{background:#edf3ef;color:#244437}.btn.outline{background:white;color:var(--green);border:1px solid #c9d9ce}.btn.danger{background:#fff0ef;color:var(--red)}.btn.small{padding:7px 9px;font-size:12px}.btn:disabled{opacity:.45;cursor:not-allowed}
-.actions{display:flex;gap:8px;flex-wrap:wrap}.actions>*{flex:1}.hidden{display:none!important}
-#video{width:100%;max-height:300px;object-fit:cover;background:#101b16;border-radius:12px;display:none;margin-top:10px}
-.result{padding:13px;border-radius:12px;background:#f0f5f1;margin-top:10px;min-height:50px}.result.success{background:#e7f5eb;border:1px solid #c9e8d2}.result.warn{background:#fff6e8;border:1px solid #f1dfbb}.result b.name{font-size:18px;display:block}
-table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;color:#7a8980;font-size:10px;text-transform:uppercase;letter-spacing:.45px;padding:9px 7px;border-bottom:1px solid var(--line)}td{padding:10px 7px;border-bottom:1px solid #eff2ef;vertical-align:middle}tr:last-child td{border:0}.tablewrap{overflow:auto}.status{font-size:11px;font-weight:800;border-radius:99px;padding:4px 7px;background:#e8f5ed;color:#176b4a;white-space:nowrap}.empty{text-align:center;padding:25px;color:var(--muted)}
-#qrOutput{display:flex;justify-content:center;align-items:center;padding:12px;min-height:160px;background:#fff;border:1px dashed #cbd8ce;border-radius:12px;margin-top:12px}#qrOutput canvas{width:180px;height:180px;max-width:100%}
-.note{font-size:12px;color:var(--muted);margin-top:9px}.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#14281f;color:white;padding:11px 15px;border-radius:12px;z-index:20;max-width:92vw;box-shadow:0 8px 30px #0003}
-.cardpreview{border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;background:#fff}.money{font-weight:850;color:#176b4a}.dangertext{color:var(--red)}
+:root{
+ --bg-a:#e7f1ec;
+ --bg-b:#f4f7f5;
+ --bg-c:#dcebe3;
+ --glass:rgba(255,255,255,.72);
+ --glass-strong:rgba(255,255,255,.88);
+ --glass-soft:rgba(241,247,244,.65);
+ --glass-border:rgba(255,255,255,.78);
+ --line:rgba(23,50,38,.11);
+ --ink:#112119;
+ --muted:#5c6e65;
+ --green:#136947;
+ --green-bright:#1c845a;
+ --green-tint:rgba(19,105,71,.12);
+ --red:#b53631;
+ --red-tint:rgba(181,54,49,.11);
+ --shadow:0 14px 34px rgba(13,37,26,.08), inset 0 1px 0 rgba(255,255,255,.85);
+ --blur:blur(16px);
+}
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100dvh;
+ color:var(--ink);
+ font:15px/1.48 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+ background:
+  radial-gradient(circle at 12% 8%, rgba(28,132,90,.16), transparent 42%),
+  radial-gradient(circle at 88% 14%, rgba(23,56,255,.10), transparent 38%),
+  radial-gradient(circle at 50% 92%, rgba(19,105,71,.12), transparent 48%),
+  linear-gradient(160deg, var(--bg-a) 0%, var(--bg-b) 48%, var(--bg-c) 100%);
+ background-attachment:fixed;
+}
+header{
+ position:sticky;
+ top:0;
+ z-index:15;
+ background:rgba(15,36,29,.82);
+ backdrop-filter:var(--blur);
+ -webkit-backdrop-filter:var(--blur);
+ border-bottom:1px solid rgba(255,255,255,.14);
+ color:#fff;
+ padding:15px max(16px,calc((100% - 1180px)/2));
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:12px;
+}
+.brand{font-size:22px;font-weight:850;letter-spacing:-.7px;display:flex;align-items:center;gap:6px}
+.brand span{color:#9be2bc}
+.sub{font-size:12px;color:#c5d4cc}
+main{max-width:1180px;margin:auto;padding:20px 14px 56px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+h1{font-size:25px;margin:0 0 3px;letter-spacing:-.7px}
+h2{font-size:17px;margin:0 0 12px;letter-spacing:-.2px}
+.muted{color:var(--muted)}
+.tiny{font-size:12px;color:var(--muted)}
+.pill{
+ border-radius:999px;
+ padding:7px 12px;
+ background:rgba(155,226,188,.16);
+ border:1px solid rgba(155,226,188,.32);
+ color:#b8f0d1;
+ font-size:11px;
+ font-weight:800;
+ letter-spacing:.04em;
+ white-space:nowrap;
+}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:16px}
+.stat,.panel{
+ background:var(--glass);
+ backdrop-filter:var(--blur);
+ -webkit-backdrop-filter:var(--blur);
+ border:1px solid var(--glass-border);
+ border-radius:20px;
+ box-shadow:var(--shadow);
+}
+.stat{padding:15px}
+.stat small{color:var(--muted);font-weight:700;font-size:12px}
+.stat strong{display:block;font-size:26px;margin-top:4px;letter-spacing:-.7px}
+.layout{display:grid;grid-template-columns:1fr 1.25fr;gap:14px}
+.panel{padding:18px;margin-bottom:14px}
+.tabs{
+ display:flex;
+ gap:8px;
+ overflow:auto;
+ padding:4px 2px 14px;
+ scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+ border:1px solid var(--glass-border);
+ background:var(--glass);
+ backdrop-filter:var(--blur);
+ -webkit-backdrop-filter:var(--blur);
+ padding:10px 15px;
+ border-radius:999px;
+ font-weight:750;
+ font-size:13px;
+ color:#36483f;
+ white-space:nowrap;
+ cursor:pointer;
+ transition:all .18s ease;
+ box-shadow:0 4px 14px rgba(13,37,26,.04);
+}
+.tab:hover{background:var(--glass-strong);transform:translateY(-1px)}
+.tab.active{
+ background:linear-gradient(135deg,#134231,#1b6b4b);
+ color:#fff;
+ border-color:rgba(255,255,255,.28);
+ box-shadow:0 8px 20px rgba(19,105,71,.24);
+}
+label{display:block;font-size:12px;font-weight:750;color:#3c4f45;margin:12px 0 5px}
+input:not([type="checkbox"]),select{
+ width:100%;
+ min-height:44px;
+ border:1px solid rgba(17,33,25,.14);
+ border-radius:12px;
+ padding:10px 12px;
+ background:var(--glass-strong);
+ font:inherit;
+ color:var(--ink);
+ min-width:0;
+ transition:border-color .16s ease, box-shadow .16s ease, background .16s ease;
+}
+input:not([type="checkbox"]):focus,select:focus{
+ outline:none;
+ background:#fff;
+ border-color:var(--green-bright);
+ box-shadow:0 0 0 3px rgba(28,132,90,.16);
+}
+input[type="checkbox"]{width:19px;height:19px;accent-color:var(--green);cursor:pointer;margin:0;flex:0 0 auto}
+.row{display:flex;gap:8px;align-items:end}
+.row>*{flex:1;min-width:0}
+.btn{
+ min-height:42px;
+ border:1px solid rgba(255,255,255,.2);
+ border-radius:12px;
+ padding:10px 14px;
+ font-weight:750;
+ font-size:14px;
+ cursor:pointer;
+ background:linear-gradient(135deg,var(--green),var(--green-bright));
+ color:#fff;
+ box-shadow:0 6px 16px rgba(19,105,71,.2);
+ transition:transform .14s ease, filter .14s ease, box-shadow .14s ease;
+}
+.btn:hover:not(:disabled){filter:brightness(1.04);transform:translateY(-1px)}
+.btn:active:not(:disabled){transform:translateY(0)}
+.btn.secondary{
+ background:var(--glass-strong);
+ color:#1a3629;
+ border:1px solid rgba(17,33,25,.12);
+ box-shadow:0 3px 10px rgba(13,37,26,.04);
+}
+.btn.outline{
+ background:var(--green-tint);
+ color:var(--green);
+ border:1px solid rgba(19,105,71,.28);
+ box-shadow:none;
+}
+.btn.danger{
+ background:var(--red-tint);
+ color:var(--red);
+ border:1px solid rgba(181,54,49,.22);
+ box-shadow:none;
+}
+.btn.small{min-height:36px;padding:7px 10px;font-size:12px;border-radius:10px}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.actions>*{flex:1;min-width:110px}
+.hidden{display:none!important}
+#video{width:100%;max-height:300px;object-fit:cover;background:#101b16;border-radius:14px;display:none;margin-top:10px;border:1px solid var(--glass-border)}
+.result{
+ padding:14px;
+ border-radius:14px;
+ background:var(--glass-soft);
+ border:1px solid var(--line);
+ margin-top:10px;
+ min-height:52px;
+}
+.result.success{background:rgba(225,246,233,.82);border-color:rgba(19,105,71,.28)}
+.result.warn{background:rgba(255,245,224,.88);border-color:rgba(150,97,22,.26)}
+.result b.name{font-size:18px;display:block}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:#66786f;font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:10px 8px;border-bottom:1px solid var(--line)}
+td{padding:11px 8px;border-bottom:1px solid rgba(17,33,25,.06);vertical-align:middle}
+tr:last-child td{border:0}
+tr.selected-row td{background:rgba(19,105,71,.06)}
+.tablewrap{overflow:auto;border-radius:14px;background:rgba(255,255,255,.45);border:1px solid var(--line)}
+.empty{text-align:center;padding:26px;color:var(--muted)}
+#qrOutput{
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ padding:16px;
+ min-height:190px;
+ background:rgba(255,255,255,.55);
+ border:1.5px dashed rgba(19,105,71,.28);
+ border-radius:16px;
+ margin-top:12px;
+}
+#qrOutput canvas{max-width:230px;height:auto;border-radius:12px;box-shadow:0 10px 24px rgba(13,37,26,.14)}
+.bulkbar{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:8px;
+ flex-wrap:wrap;
+ background:var(--glass-soft);
+ border:1px solid var(--line);
+ padding:10px 12px;
+ border-radius:14px;
+ margin-top:10px;
+}
+.lookupbox{
+ background:var(--glass-soft);
+ border:1px solid var(--line);
+ border-radius:14px;
+ padding:12px;
+ margin-bottom:12px;
+}
+.chklabel{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:750;color:var(--ink);cursor:pointer;min-height:36px}
+.nexus-badge{display:inline-flex;align-items:center;gap:7px;vertical-align:middle}
+.nexus-word{font-weight:700;letter-spacing:.14em;color:#111;font-size:14px;line-height:1}
+.note{font-size:12px;color:var(--muted);margin-top:9px}
+.toast{
+ position:fixed;
+ bottom:18px;
+ left:50%;
+ transform:translateX(-50%);
+ background:rgba(16,37,31,.9);
+ backdrop-filter:var(--blur);
+ -webkit-backdrop-filter:var(--blur);
+ border:1px solid rgba(255,255,255,.18);
+ color:#fff;
+ padding:11px 16px;
+ border-radius:14px;
+ z-index:25;
+ max-width:92vw;
+ font-weight:600;
+ box-shadow:0 12px 30px rgba(0,0,0,.22);
+}
+.money{font-weight:850;color:var(--green)}
 hr{border:0;border-top:1px solid var(--line);margin:16px 0}
-@media(max-width:760px){header{padding:16px}.stats{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}main{padding:16px 11px 45px}.stat{padding:12px}.stat strong{font-size:23px}}
-@media print{header,.no-print,.tabs,.note{display:none!important}body{background:white}.panel,.stat{box-shadow:none}}
+@media(max-width:760px){
+ header{padding:14px 16px}
+ .stats{grid-template-columns:repeat(2,1fr)}
+ .layout{grid-template-columns:1fr}
+ main{padding:16px 11px 45px}
+ .panel,.stat{border-radius:18px}
+ .stat{padding:13px}
+ .stat strong{font-size:23px}
+}
+@media print{
+ header,.no-print,.tabs,.note{display:none!important}
+ body{background:#fff}
+ .panel,.stat{background:#fff;backdrop-filter:none;box-shadow:none;border-color:#ddd}
+}
 </style>
 </head>
 <body>
-<header><div><div class="brand">Work<span>Day</span></div><div class="sub">Offline employee attendance & payroll</div></div><div class="pill">● ONE-DEVICE MODE</div></header>
+<header>
+ <div>
+  <div class="brand">Work<span>Day</span></div>
+  <div class="sub">Offline employee attendance & payroll</div>
+ </div>
+ <div class="pill">● GLASS OFFLINE</div>
+</header>
 <main>
- <div class="top"><div><h1>Workplace overview</h1><div class="muted" id="todayLabel"></div></div><button class="btn secondary no-print" id="exportToday">Export today</button></div>
+ <div class="top">
+  <div>
+   <h1>Workplace overview</h1>
+   <div class="muted" id="todayLabel"></div>
+  </div>
+  <button class="btn secondary no-print" id="exportToday">Export today CSV</button>
+ </div>
+
  <section class="stats">
   <div class="stat"><small>Active employees</small><strong id="totalEmployees">0</strong></div>
   <div class="stat"><small>Present today</small><strong id="presentToday">0</strong></div>
   <div class="stat"><small>Absent today</small><strong id="absentToday">0</strong></div>
   <div class="stat"><small>Today's wage total</small><strong id="todayWages">0 ETB</strong></div>
  </section>
- <nav class="tabs no-print">
-  <button class="tab active" data-tab="scan">Scan attendance</button><button class="tab" data-tab="employees">Employees</button><button class="tab" data-tab="payroll">Payroll</button><button class="tab" data-tab="reports">Reports</button><button class="tab" data-tab="backup">Backup</button>
+
+ <nav class="tabs no-print" aria-label="Sections">
+  <button class="tab active" data-tab="scan">Scan attendance</button>
+  <button class="tab" data-tab="employees">Employees & QR</button>
+  <button class="tab" data-tab="payroll">Payroll</button>
+  <button class="tab" data-tab="reports">Reports</button>
+  <button class="tab" data-tab="backup">Backup</button>
  </nav>
+
  <section id="tab-scan" class="tabpage">
   <div class="layout">
    <div class="panel">
@@ -57,86 +313,146 @@ hr{border:0;border-top:1px solid var(--line);margin:16px 0}
     <div class="note">Only one attendance record per employee per local calendar day. Re-scanning does not add another day.</div>
     <hr>
     <h2>Manual QR ID entry</h2>
-    <label>Employee QR ID</label><div class="row"><input id="manualId" placeholder="Example: WD-8A2F41C9"><button class="btn secondary" id="manualScan">Record</button></div>
-    <div class="note">Use if camera scanning is unavailable. The ID must match a registered employee.</div>
+    <label for="manualId">Employee QR ID</label>
+    <div class="row">
+     <input id="manualId" maxlength="17" placeholder="Example: WD-8A2F41C9">
+     <button class="btn secondary" id="manualScan" style="flex:0 0 auto">Record</button>
+    </div>
+    <div class="note">Use if camera scanning is unavailable. The ID must match a registered employee (up to 17 characters).</div>
    </div>
-   <div class="panel"><h2>Today's attendance</h2><div id="todayList"></div></div>
+   <div class="panel">
+    <h2>Today's attendance</h2>
+    <div id="todayList"></div>
+   </div>
   </div>
  </section>
+
  <section id="tab-employees" class="tabpage hidden">
   <div class="layout">
    <div class="panel">
-    <h2 id="employeeFormTitle">Register employee</h2>
+    <h2 id="employeeFormTitle">Create / assign QR card</h2>
     <input id="editId" type="hidden">
-    <label>Full name</label><input id="newName" placeholder="Employee full name" autocomplete="name">
-    <label>Phone / staff reference (optional)</label><input id="newExtra" placeholder="Optional">
-    <label>Daily wage (ETB)</label><input id="newWage" type="number" min="0" step="0.01" placeholder="e.g. 100">
-    <label>QR card ID</label><div class="row"><input id="newQrId" placeholder="Generate unique ID"><button class="btn secondary" id="makeId" style="flex:0 0 auto">Generate</button></div>
-    <button class="btn" id="saveEmployee" style="width:100%;margin-top:14px">Save employee & generate QR</button>
-    <button class="btn secondary hidden" id="cancelEdit" style="width:100%;margin-top:7px">Cancel editing</button>
-    <div id="qrOutput"><span class="muted">Employee QR card appears here after saving</span></div>
-    <div class="actions" style="margin-top:9px"><button class="btn secondary" id="printQr" disabled>Print card</button><button class="btn outline" id="downloadQr" disabled>Download QR</button></div>
-    <div class="note">Employee IDs are permanent. Changing a wage affects future attendance only; earlier attendance keeps its original wage rate.</div>
+    <label for="newName">Full name (optional now — edit after assigning QR ID)</label>
+    <input id="newName" placeholder="Leave blank to use QR ID for now" autocomplete="name">
+    <label for="newExtra">Phone / staff reference (optional)</label>
+    <input id="newExtra" placeholder="Optional">
+    <label for="newWage">Daily wage (ETB)</label>
+    <input id="newWage" type="number" min="0" step="0.01" placeholder="e.g. 400">
+    <label for="newQrId">QR card ID (max 17 chars)</label>
+    <div class="row">
+     <input id="newQrId" maxlength="17" placeholder="Click Generate or type ID">
+     <button class="btn secondary" id="makeId" style="flex:0 0 auto">Generate</button>
+    </div>
+    <button class="btn" id="saveEmployee" style="width:100%;margin-top:14px">Save & generate branded QR</button>
+    <button class="btn secondary hidden" id="cancelEdit" style="width:100%;margin-top:8px">Cancel editing</button>
+
+    <div id="qrOutput"><span class="muted">Branded employee QR card appears here</span></div>
+    <div class="actions" style="margin-top:10px">
+     <button class="btn secondary" id="printQr" disabled>Print card</button>
+     <button class="btn outline" id="downloadQr" disabled>Download card</button>
+     <button class="btn secondary" id="quickNextCard">New QR card</button>
+    </div>
+    <div class="note">Assign & print QR IDs first, then give the card and edit the employee's name anytime. Changing a wage affects future attendance only.</div>
    </div>
-   <div class="panel"><h2>Employee directory</h2><input id="employeeSearch" placeholder="Search by name or QR ID"><div id="employeeList" style="margin-top:10px"></div></div>
+
+   <div class="panel">
+    <h2>Employee directory</h2>
+    <div class="lookupbox">
+     <label for="lookupQrInput" style="margin-top:0">Quick assign / edit by QR ID</label>
+     <div class="row">
+      <input id="lookupQrInput" maxlength="17" placeholder="Enter QR ID e.g. WD-8A2F41C9">
+      <button class="btn secondary" id="lookupQrBtn" style="flex:0 0 auto">Load to edit</button>
+     </div>
+    </div>
+
+    <div class="row">
+     <div style="flex:3"><input id="employeeSearch" placeholder="Search by name or QR ID"></div>
+     <button class="btn secondary small" id="clearSearch" style="flex:0 0 auto;min-height:44px">Clear</button>
+    </div>
+
+    <div class="bulkbar">
+     <label class="chklabel"><input type="checkbox" id="selectAllQr"> Select all (<span id="selectedCount">0</span>)</label>
+     <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn small" id="downloadSelectedQr" disabled>Download selected</button>
+      <button class="btn outline small" id="printSelectedQr" disabled>Print selected</button>
+     </div>
+    </div>
+    <div class="note">Tip: Some mobile browsers pause after multiple automatic downloads—use <b>Print selected</b> to print or save multiple cards as one sheet/PDF.</div>
+    <div id="employeeList" style="margin-top:10px"></div>
+   </div>
   </div>
  </section>
+
  <section id="tab-payroll" class="tabpage hidden">
   <div class="panel">
    <h2>Payroll calculation</h2>
-   <div class="row"><div><label>From date</label><input type="date" id="payFrom"></div><div><label>To date</label><input type="date" id="payTo"></div></div>
-   <div class="row" style="margin-top:12px"><button class="btn" id="runPayroll">Calculate payroll</button><button class="btn secondary" id="payExport">Export payroll CSV</button></div>
+   <div class="row">
+    <div><label for="payFrom">From date</label><input type="date" id="payFrom"></div>
+    <div><label for="payTo">To date</label><input type="date" id="payTo"></div>
+   </div>
+   <div class="row" style="margin-top:12px">
+    <button class="btn" id="runPayroll">Calculate payroll</button>
+    <button class="btn secondary" id="payExport">Export payroll CSV</button>
+   </div>
    <div id="payrollSummary" style="margin-top:14px"></div>
    <div class="note">Earnings = sum of each recorded attendance day's wage. Payments are tracked separately and do not change attendance or earned wages.</div>
   </div>
  </section>
+
  <section id="tab-reports" class="tabpage hidden">
   <div class="panel">
    <h2>Attendance report</h2>
-   <div class="row"><div><label>From</label><input type="date" id="fromDate"></div><div><label>To</label><input type="date" id="toDate"></div></div>
-   <div class="row" style="margin-top:12px"><button class="btn" id="runReport">Generate report</button><button class="btn secondary" id="exportReport">Export CSV</button></div>
+   <div class="row">
+    <div><label for="fromDate">From</label><input type="date" id="fromDate"></div>
+    <div><label for="toDate">To</label><input type="date" id="toDate"></div>
+   </div>
+   <div class="row" style="margin-top:12px">
+    <button class="btn" id="runReport">Generate report</button>
+    <button class="btn secondary" id="exportReport">Export CSV</button>
+   </div>
    <div id="reportOutput" style="margin-top:14px"></div>
   </div>
  </section>
+
  <section id="tab-backup" class="tabpage hidden">
   <div class="panel">
    <h2>Backup & restore</h2>
    <p class="muted">All employee, attendance and payment data is saved only in this browser on this device. Export a backup frequently, and keep a copy somewhere safe.</p>
-   <div class="actions"><button class="btn" id="backupBtn">Download full backup</button><button class="btn secondary" id="restoreBtn">Restore backup</button></div>
+   <div class="actions">
+    <button class="btn" id="backupBtn">Download full backup</button>
+    <button class="btn secondary" id="restoreBtn">Restore backup</button>
+   </div>
    <input type="file" id="restoreFile" accept=".json,application/json" class="hidden">
    <p class="note">Restore replaces current records. Export a backup first. There is no multi-phone sync or cloud copy.</p>
-   <hr><h2>Data health</h2><div id="storageInfo" class="result"></div>
+   <hr>
+   <h2>Data health</h2>
+   <div id="storageInfo" class="result"></div>
    <button class="btn danger" id="clearData" style="margin-top:12px">Delete all local data</button>
   </div>
  </section>
- <footer class="note" style="text-align:center;margin-top:20px;padding:15px 10px">
-  <div>WorkDay v4 · Offline local records</div>
-  <div style="margin-top:9px;color:#718078">
-    Powered by <strong style="color:#176b4a;letter-spacing:1.5px">NEXUS</strong>
-  </div>
-  <div style="margin-top:4px;font-size:11px;color:#718078">
-    Made by Alazar
-  </div>
-  <div style="margin-top:5px;font-size:10px;color:#9aa69f">
-    Export backups regularly
-  </div>
- </footer>
-  <div>WorkDay v4 · Offline local records</div>
-  <div style="margin-top:9px;color:#718078">
-    Powered by <strong style="color:#176b4a;letter-spacing:1.5px">NEXUS</strong>
-  </div>
-  <div style="margin-top:4px;font-size:11px;color:#718078">
-    Made by Alazar
-  </div>
-  <div style="margin-top:5px;font-size:10px;color:#9aa69f">
-    Export backups regularly
-  </div>
+</main>
+
+<footer class="note" style="text-align:center;margin-top:10px;padding:16px 10px 32px">
+ <div>WorkDay v4.3 · Offline local records</div>
+ <div style="margin-top:10px">
+  <span class="nexus-badge" aria-label="NEXUS">
+   <svg width="24" height="22" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="5.5" cy="5.5" r="3.5" fill="#1738ff"/>
+    <rect x="13.2" y="3.2" width="6.6" height="17.6" rx="3.3" transform="rotate(24 13.2 3.2)" fill="#1738ff"/>
+   </svg>
+   <span class="nexus-word">NEXUS</span>
+  </span>
+ </div>
+ <div style="margin-top:6px;font-size:11px;color:#5c6e65">Made by Alazar</div>
+ <div style="margin-top:5px;font-size:10px;color:#788a81">Export backups regularly</div>
 </footer>
+
 <div id="toast" class="toast hidden"></div>
+
 <script>
 /* Offline QR encoder: QR Model 2, Version 1-L, byte mode. IDs are <=17 UTF-8 bytes. */
 function makeOfflineQr(text){
- const bytes=Array.from(new TextEncoder().encode(text)); if(bytes.length>17)throw Error("QR ID is too long.");
+ const bytes=Array.from(new TextEncoder().encode(text)); if(bytes.length>17)throw Error("QR ID is too long (max 17 bytes).");
  const bits=[],push=(v,n)=>{for(let i=n-1;i>=0;i--)bits.push((v>>>i)&1)};
  push(4,4);push(bytes.length,8);bytes.forEach(b=>push(b,8));
  for(let i=0;i<Math.min(4,152-bits.length);i++)bits.push(0);while(bits.length%8)bits.push(0);
@@ -156,11 +472,142 @@ function makeOfflineQr(text){
  for(let i=0;i<15;i++){let v=((f>>>i)&1)!==0,a=i<6?[8,i]:i<8?[8,i+1]:i===8?[7,8]:[14-i,8],b=i<8?[n-1-i,8]:[8,n-15+i];set(a[0],a[1],v);set(b[0],b[1],v)}set(8,n-8,true);
  const c=document.createElement('canvas'),s=9,q=4;c.width=c.height=(n+q*2)*s;const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#10251f';for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(m[y][x])ctx.fillRect((x+q)*s,(y+q)*s,s,s);return c;
 }
+
+function roundRectPath(ctx, x, y, w, h, r){
+ if(typeof ctx.roundRect==='function'){
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, h, r);
+  return;
+ }
+ const rad=Math.min(r, w/2, h/2);
+ ctx.beginPath();
+ ctx.moveTo(x+rad, y);
+ ctx.arcTo(x+w, y, x+w, y+h, rad);
+ ctx.arcTo(x+w, y+h, x, y+h, rad);
+ ctx.arcTo(x, y+h, x, y, rad);
+ ctx.arcTo(x, y, x+w, y, rad);
+ ctx.closePath();
+}
+
+function drawNexusBrand(ctx, centerX, centerY, scale=1){
+ const blue='#1738ff';
+ ctx.save();
+ ctx.translate(centerX, centerY);
+ ctx.scale(scale, scale);
+
+ ctx.fillStyle=blue;
+ ctx.beginPath();
+ ctx.arc(-62, -6.5, 4.2, 0, Math.PI*2);
+ ctx.fill();
+
+ ctx.save();
+ ctx.translate(-42, -1);
+ ctx.rotate(24 * Math.PI / 180);
+ roundRectPath(ctx, -3.8, -10.5, 7.6, 21, 3.8);
+ ctx.fill();
+ ctx.restore();
+
+ ctx.fillStyle='#111111';
+ ctx.textAlign='left';
+ ctx.textBaseline='middle';
+ ctx.font='700 22px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+ const letters=['N','E','X','U','S'];
+ let lx=-24;
+ const tracking=4.5;
+ for(const ch of letters){
+  ctx.fillText(ch, lx, 0);
+  lx += ctx.measureText(ch).width + tracking;
+ }
+
+ ctx.restore();
+}
+
+function makeBrandedCardCanvas(emp){
+ const qrCanvas=makeOfflineQr(emp.qrId);
+ const W=440, H=596;
+ const c=document.createElement('canvas');
+ c.width=W; c.height=H;
+ const ctx=c.getContext('2d');
+
+ ctx.fillStyle='#ffffff';
+ ctx.fillRect(0,0,W,H);
+
+ ctx.fillStyle='#10251f';
+ ctx.fillRect(0,0,W,92);
+
+ ctx.font='800 32px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+ ctx.textBaseline='middle';
+ const w1='Work', w2='Day';
+ const totalW=ctx.measureText(w1).width + ctx.measureText(w2).width;
+ const startX=(W - totalW)/2;
+ ctx.textAlign='left';
+ ctx.fillStyle='#ffffff';
+ ctx.fillText(w1, startX, 36);
+ ctx.fillStyle='#9cdbb8';
+ ctx.fillText(w2, startX + ctx.measureText(w1).width, 36);
+
+ ctx.textAlign='center';
+ ctx.fillStyle='#b9c9c0';
+ ctx.font='600 12px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+ ctx.fillText('EMPLOYEE ATTENDANCE CARD', W/2, 68);
+
+ const qrSize=250;
+ const qrX=(W-qrSize)/2, qrY=112;
+ ctx.fillStyle='#f8fbf9';
+ ctx.fillRect(qrX-10, qrY-10, qrSize+20, qrSize+20);
+ ctx.strokeStyle='#dce5de';
+ ctx.lineWidth=2;
+ ctx.strokeRect(qrX-10, qrY-10, qrSize+20, qrSize+20);
+ ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+
+ const displayName = emp.name || emp.qrId;
+ ctx.fillStyle='#17251f';
+ let fontSize=26;
+ do {
+  ctx.font=`800 ${fontSize}px system-ui,-apple-system,Segoe UI,Roboto,sans-serif`;
+  if(ctx.measureText(displayName).width <= W - 48) break;
+  fontSize--;
+ } while(fontSize > 15);
+ ctx.fillText(displayName, W/2, 412);
+
+ ctx.fillStyle='#e7f3ec';
+ ctx.fillRect((W-210)/2, 434, 210, 30);
+ ctx.fillStyle='#176b4a';
+ ctx.font='800 15px monospace,system-ui,sans-serif';
+ ctx.fillText(emp.qrId, W/2, 450);
+
+ if(emp.extra){
+  ctx.fillStyle='#718078';
+  ctx.font='600 12px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+  ctx.fillText(emp.extra, W/2, 482);
+ }
+
+ ctx.fillStyle='#f7f9f8';
+ ctx.fillRect(0, H-86, W, 86);
+ ctx.strokeStyle='#e3eae4';
+ ctx.lineWidth=1;
+ ctx.beginPath(); ctx.moveTo(0, H-86); ctx.lineTo(W, H-86); ctx.stroke();
+
+ drawNexusBrand(ctx, W/2 + 12, H-50, 0.92);
+
+ ctx.textAlign='center';
+ ctx.fillStyle='#718078';
+ ctx.font='600 10px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+ ctx.fillText('Made by Alazar · WorkDay Offline System', W/2, H-16);
+
+ ctx.strokeStyle='#10251f';
+ ctx.lineWidth=4;
+ ctx.strokeRect(2,2,W-4,H-4);
+
+ return c;
+}
 </script>
+
 <script>
 'use strict';
 const KEY='workday_local_payroll_v4';
 let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='', lastScanAt=0, reportRows=[], payrollRows=[];
+const selectedIds=new Set();
 const $=id=>document.getElementById(id);
 function blankDB(){return {version:4,employees:[],attendance:[],payments:[],createdAt:new Date().toISOString()}}
 function loadDB(){try{const x=JSON.parse(localStorage.getItem(KEY));if(!x||!Array.isArray(x.employees)||!Array.isArray(x.attendance))return blankDB();return {...blankDB(),...x,payments:Array.isArray(x.payments)?x.payments:[]}}catch(e){return blankDB()}}
@@ -172,13 +619,12 @@ function toast(s){$('toast').textContent=s;$('toast').classList.remove('hidden')
 function makeId(){let id;do{id='WD-'+Array.from(crypto.getRandomValues(new Uint8Array(4)),b=>b.toString(16).padStart(2,'0')).join('').toUpperCase()}while(db.employees.some(e=>e.qrId===id));return id}
 function empByQr(id){return db.employees.find(e=>String(e.qrId).toUpperCase()===String(id).trim().toUpperCase())}
 function attendanceFor(empId,from='0000-01-01',to='9999-12-31'){return db.attendance.filter(a=>a.employeeId===empId&&a.date>=from&&a.date<=to)}
-function totalEarned(empId,from='0000-01-01',to='9999-12-31'){return attendanceFor(empId,from,to).reduce((s,a)=>s+Number(a.dailyWage||0),0)}
 function paidAmount(empId,from='0000-01-01',to='9999-12-31'){return db.payments.filter(p=>p.employeeId===empId&&p.date>=from&&p.date<=to).reduce((s,p)=>s+Number(p.amount||0),0)}
 function todayPresent(){return db.attendance.filter(a=>a.date===localDate())}
 function dateLabel(d){return new Date(d+'T00:00:00').toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})}
 function renderAll(){
  $('todayLabel').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'});
- const active=db.employees.filter(e=>e.active!==false),today= todayPresent(),present=today.length;
+ const active=db.employees.filter(e=>e.active!==false),today=todayPresent(),present=today.length;
  $('totalEmployees').textContent=active.length;$('presentToday').textContent=present;$('absentToday').textContent=Math.max(0,active.length-present);
  $('todayWages').textContent=money(today.reduce((s,a)=>s+Number(a.dailyWage||0),0));
  const sorted=[...today].sort((a,b)=>b.timestamp.localeCompare(a.timestamp));
@@ -186,10 +632,30 @@ function renderAll(){
  renderEmployees();runReport();runPayroll();
  $('storageInfo').textContent=`${db.employees.length} employee records · ${db.attendance.length} attendance records · ${db.payments.length} payment records. Last saved locally in this browser.`;
 }
-function renderEmployees(){
+function getFilteredEmployees(){
  const q=($('employeeSearch').value||'').trim().toLowerCase();
- const list=db.employees.filter(e=>(e.name+' '+e.qrId+' '+(e.extra||'')).toLowerCase().includes(q));
- $('employeeList').innerHTML=list.length?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Daily wage</th><th>Actions</th></tr></thead><tbody>${list.map(e=>`<tr><td><b>${esc(e.name)}</b><div class="tiny">${esc(e.qrId)} · ${e.active===false?'Inactive':'Active'}</div></td><td>${money(e.dailyWage)}</td><td><div class="actions"><button class="btn secondary small" onclick="editEmployee('${e.id}')">Edit</button><button class="btn outline small" onclick="cardFor('${e.id}')">QR</button><button class="btn ${e.active===false?'secondary':'danger'} small" onclick="toggleEmployee('${e.id}')">${e.active===false?'Activate':'Deactivate'}</button></div></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No employees found.</div>';
+ return db.employees.filter(e=>(e.name+' '+e.qrId+' '+(e.extra||'')).toLowerCase().includes(q));
+}
+function updateSelectionUI(){
+ const validIds=new Set(db.employees.map(e=>e.id));
+ for(const id of [...selectedIds]) if(!validIds.has(id)) selectedIds.delete(id);
+
+ const filtered=getFilteredEmployees();
+ const allFilteredSelected=filtered.length>0 && filtered.every(e=>selectedIds.has(e.id));
+ $('selectAllQr').checked=allFilteredSelected;
+ $('selectAllQr').indeterminate=filtered.some(e=>selectedIds.has(e.id)) && !allFilteredSelected;
+ $('selectedCount').textContent=selectedIds.size;
+ $('downloadSelectedQr').disabled=selectedIds.size===0;
+ $('printSelectedQr').disabled=selectedIds.size===0;
+}
+window.toggleSelectEmp=(id,checked)=>{
+ if(checked) selectedIds.add(id); else selectedIds.delete(id);
+ renderEmployees();
+};
+function renderEmployees(){
+ const list=getFilteredEmployees();
+ $('employeeList').innerHTML=list.length?`<div class="tablewrap"><table><thead><tr><th style="width:36px">Pick</th><th>Employee</th><th>Daily wage</th><th>Actions</th></tr></thead><tbody>${list.map(e=>{const sel=selectedIds.has(e.id);return `<tr class="${sel?'selected-row':''}"><td><input type="checkbox" ${sel?'checked':''} onchange="toggleSelectEmp('${e.id}',this.checked)" aria-label="Select ${esc(e.name)}"></td><td><b>${esc(e.name)}</b><div class="tiny">${esc(e.qrId)} · ${e.active===false?'Inactive':'Active'}</div></td><td>${money(e.dailyWage)}</td><td><div class="actions"><button class="btn secondary small" onclick="editEmployee('${e.id}')">Edit</button><button class="btn outline small" onclick="cardFor('${e.id}')">QR</button><button class="btn small" onclick="downloadOneQr('${e.id}')" title="Download branded QR card">↓ QR</button><button class="btn ${e.active===false?'secondary':'danger'} small" onclick="toggleEmployee('${e.id}')">${e.active===false?'Activate':'Deactivate'}</button></div></td></tr>`}).join('')}</tbody></table></div>`:'<div class="empty">No employees found.</div>';
+ updateSelectionUI();
 }
 function recordAttendance(raw){
  const id=String(raw||'').trim().toUpperCase(),box=$('scanResult'),emp=empByQr(id);
@@ -205,34 +671,120 @@ function recordAttendance(raw){
  $('manualId').value='';lastScanned=id;lastScanAt=Date.now();toast(emp.name+' marked present');
 }
 function saveEmployee(){
- const editId=$('editId').value,name=$('newName').value.trim(),extra=$('newExtra').value.trim(),qrId=$('newQrId').value.trim().toUpperCase(),wage=Number($('newWage').value);
- if(!name||!qrId||$('newWage').value===''||!Number.isFinite(wage)||wage<0){toast('Enter name, QR ID and a valid daily wage.');return}
+ const editId=$('editId').value,rawName=$('newName').value.trim(),extra=$('newExtra').value.trim(),qrId=$('newQrId').value.trim().toUpperCase(),rawWage=$('newWage').value;
+ const wage=rawWage===''?0:Number(rawWage);
+ if(!qrId||!Number.isFinite(wage)||wage<0){toast('Enter a QR ID and a valid daily wage.');return}
+ if(new TextEncoder().encode(qrId).length>17){toast('QR ID must be 17 bytes or fewer.');return}
  if(db.employees.some(e=>e.qrId.toUpperCase()===qrId&&e.id!==editId)){toast('That QR ID already belongs to another employee.');return}
+ const name=rawName||qrId;
  if(editId){
   const emp=db.employees.find(e=>e.id===editId);if(!emp)return;
   emp.name=name;emp.extra=extra;emp.qrId=qrId;emp.dailyWage=wage;emp.updatedAt=new Date().toISOString();
   toast('Employee updated. Earlier attendance wages remain unchanged.');
  }else{
   const emp={id:crypto.randomUUID(),name,extra,qrId,dailyWage:wage,active:true,createdAt:new Date().toISOString()};
-  db.employees.push(emp);toast('Employee registered.');
+  db.employees.push(emp);toast(rawName?'Employee registered.':'QR card assigned with ID '+qrId+'. Edit name anytime.');
  }
  if(!persist())return;
- const saved=db.employees.find(e=>e.qrId===qrId);showQr(saved);resetEmployeeForm();
+ const saved=db.employees.find(e=>e.qrId===qrId);
+ try{showQr(saved)}catch(err){toast(err.message||'Could not render QR')}
+ resetEmployeeForm();
 }
-function resetEmployeeForm(clearQr=true){$('editId').value='';$('newName').value='';$('newExtra').value='';$('newWage').value='';$('newQrId').disabled=false;if(clearQr)$('newQrId').value='';$('employeeFormTitle').textContent='Register employee';$('saveEmployee').textContent='Save employee & generate QR';$('cancelEdit').classList.add('hidden')}
-window.editEmployee=id=>{const e=db.employees.find(x=>x.id===id);if(!e)return;$('editId').value=e.id;$('newName').value=e.name;$('newExtra').value=e.extra||'';$('newWage').value=e.dailyWage;$('newQrId').value=e.qrId;$('newQrId').disabled=true;$('employeeFormTitle').textContent='Edit employee';$('saveEmployee').textContent='Save changes';$('cancelEdit').classList.remove('hidden');document.querySelector('[data-tab="employees"]').click();window.scrollTo({top:0,behavior:'smooth'})};
-window.cardFor=id=>{const e=db.employees.find(x=>x.id===id);if(e){showQr(e);document.querySelector('[data-tab="employees"]').click()}};
+function resetEmployeeForm(clearQr=true){$('editId').value='';$('newName').value='';$('newExtra').value='';$('newWage').value='';$('newQrId').disabled=false;if(clearQr)$('newQrId').value='';$('employeeFormTitle').textContent='Create / assign QR card';$('saveEmployee').textContent='Save & generate branded QR';$('cancelEdit').classList.add('hidden')}
+function startNextCard(){
+ resetEmployeeForm(true);
+ $('newQrId').value=makeId();
+ $('newName').focus();
+ toast('New QR ID generated');
+}
+function loadEmployeeIntoForm(e){
+ if(!e)return;
+ $('editId').value=e.id;
+ $('newName').value=e.name===e.qrId?'':e.name;
+ $('newExtra').value=e.extra||'';
+ $('newWage').value=e.dailyWage;
+ $('newQrId').value=e.qrId;
+ $('newQrId').disabled=true;
+ $('employeeFormTitle').textContent='Edit employee ('+e.qrId+')';
+ $('saveEmployee').textContent='Save name & details';
+ $('cancelEdit').classList.remove('hidden');
+ showQr(e);
+ $('newName').focus();
+ $('newName').select();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+window.editEmployee=id=>{
+ const e=db.employees.find(x=>x.id===id);
+ if(e)loadEmployeeIntoForm(e);
+};
+function lookupByQrId(){
+ const id=$('lookupQrInput').value.trim().toUpperCase();
+ if(!id){toast('Enter a QR ID first.');return}
+ const emp=empByQr(id);
+ if(!emp){toast('No employee found with QR ID '+id);return}
+ $('lookupQrInput').value='';
+ loadEmployeeIntoForm(emp);
+ toast('Loaded '+emp.qrId+' for editing');
+}
+window.cardFor=id=>{const e=db.employees.find(x=>x.id===id);if(e){showQr(e);document.querySelector('[data-tab="employees"]').click();window.scrollTo({top:0,behavior:'smooth'})}};
 window.toggleEmployee=id=>{const e=db.employees.find(x=>x.id===id);if(!e)return;const next=e.active===false;if(!confirm(`${next?'Activate':'Deactivate'} ${e.name}? ${next?'They can be marked present again.':'They will no longer be accepted by the scanner.'}`))return;e.active=next;e.updatedAt=new Date().toISOString();persist();toast(next?'Employee activated.':'Employee deactivated.')};
+
 function showQr(emp){
- currentQr=emp.qrId;$('qrOutput').innerHTML='';const canvas=makeOfflineQr(emp.qrId);$('qrOutput').appendChild(canvas);
+ currentQr=emp.qrId;$('qrOutput').innerHTML='';
+ const cardCanvas=makeBrandedCardCanvas(emp);
+ $('qrOutput').appendChild(cardCanvas);
  $('printQr').disabled=false;$('downloadQr').disabled=false;
 }
-function printCard(){
- const emp=empByQr(currentQr);if(!emp)return;const c=$('qrOutput').querySelector('canvas');if(!c)return;
- const w=window.open('','_blank');if(!w){toast('Allow pop-ups to print the card, or download the QR image.');return}
- const img=c.toDataURL('image/png');w.document.write(`<!doctype html><html><head><title>WorkDay employee card</title><style>body{font-family:Arial;text-align:center;padding:25px}.card{border:1px solid #aaa;border-radius:14px;padding:22px;display:inline-block;min-width:260px}img{width:210px;height:210px}h2{margin:5px}</style></head><body><div class="card"><h2>WorkDay</h2><img src="${img}"><h2>${esc(emp.name)}</h2><p>${esc(emp.qrId)}</p><small>Employee attendance card</small></div><script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close();
+function safeFileName(str){return String(str||'employee').replace(/[^a-z0-9_-]+/gi,'_').replace(/^_|_$/g,'')}
+function triggerCardDownload(emp){
+ const c=makeBrandedCardCanvas(emp);
+ const a=document.createElement('a');
+ a.href=c.toDataURL('image/png');
+ a.download=`${emp.qrId}-${safeFileName(emp.name)}.png`;
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
 }
-function downloadQr(){const c=$('qrOutput').querySelector('canvas');if(!c||!currentQr)return;const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download=currentQr+'.png';a.click()}
+window.downloadOneQr=id=>{
+ const emp=db.employees.find(x=>x.id===id);
+ if(!emp)return;
+ triggerCardDownload(emp);
+ toast(`Downloaded ${emp.name}'s branded QR card`);
+};
+function downloadQr(){
+ const emp=empByQr(currentQr);
+ if(!emp)return;
+ triggerCardDownload(emp);
+}
+async function downloadSelectedQrs(){
+ const chosen=db.employees.filter(e=>selectedIds.has(e.id));
+ if(!chosen.length)return;
+ toast(`Downloading ${chosen.length} branded QR card(s)...`);
+ for(let i=0;i<chosen.length;i++){
+  triggerCardDownload(chosen[i]);
+  if(i<chosen.length-1) await new Promise(r=>setTimeout(r,320));
+ }
+ toast(`Finished queuing ${chosen.length} card(s).`);
+}
+function printCardsList(emps){
+ if(!emps.length)return;
+ const w=window.open('','_blank');
+ if(!w){toast('Allow pop-ups to print QR cards, or use Download.');return}
+ const imgs=emps.map(emp=>{
+  const c=makeBrandedCardCanvas(emp);
+  return `<div class="card"><img src="${c.toDataURL('image/png')}" alt="${esc(emp.name)}"></div>`;
+ }).join('');
+ w.document.write(`<!doctype html><html><head><title>WorkDay Branded QR Cards</title><style>body{font-family:system-ui,Arial;margin:16px;background:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;justify-items:center}.card{break-inside:avoid;page-break-inside:avoid}.card img{width:240px;height:auto;display:block}@media print{body{margin:8px}}</style></head><body><div class="grid">${imgs}</div><script>window.onload=()=>window.print()<\/script></body></html>`);
+ w.document.close();
+}
+function printCard(){
+ const emp=empByQr(currentQr);if(emp)printCardsList([emp]);
+}
+function printSelectedQrs(){
+ const chosen=db.employees.filter(e=>selectedIds.has(e.id));
+ printCardsList(chosen);
+}
+
 function dateRange(prefix){return [$(prefix+'From').value||'0000-01-01',$(prefix+'To').value||'9999-12-31']}
 function runPayroll(){
  const [from,to]=dateRange('pay');payrollRows=db.employees.filter(e=>e.active!==false||attendanceFor(e.id,from,to).length>0||db.payments.some(p=>p.employeeId===e.id&&p.date>=from&&p.date<=to)).map(e=>{const days=attendanceFor(e.id,from,to),earned=days.reduce((s,a)=>s+Number(a.dailyWage||0),0),paid=paidAmount(e.id,from,to);return {id:e.id,name:e.name,qrId:e.qrId,days:days.length,earned,paid,balance:earned-paid}}); 
@@ -256,7 +808,7 @@ function exportReport(){runReport();const from=$('fromDate').value,to=$('toDate'
 function exportToday(){download(`workday-attendance-${localDate()}.csv`,csv([['Employee','QR ID','Date','Time','Daily wage ETB'],...todayPresent().map(a=>[a.nameSnapshot,a.qrId,a.date,a.time,a.dailyWage])]))}
 function validBackup(x){return x&&Array.isArray(x.employees)&&Array.isArray(x.attendance)&&Array.isArray(x.payments||[])&&x.employees.every(e=>e.id&&e.name&&e.qrId)&&x.attendance.every(a=>a.employeeId&&a.date&&a.qrId)&&((x.payments||[]).every(p=>p.employeeId&&Number(p.amount)>=0))}
 function backup(){download(`workday-backup-${localDate()}.json`,JSON.stringify({...db,backupCreatedAt:new Date().toISOString()},null,2),'application/json')}
-function restoreFile(file){const reader=new FileReader();reader.onload=()=>{try{const x=JSON.parse(reader.result);if(!validBackup(x))throw Error('Backup structure is not valid');if(!confirm('Replace ALL current employees, attendance and payments with this backup?'))return;db={...blankDB(),...x,payments:x.payments||[]};if(persist())toast('Backup restored successfully.')}catch(e){toast(e.message||'Could not read backup.')}};reader.readAsText(file)}
+function restoreFile(file){const reader=new FileReader();reader.onload=()=>{try{const x=JSON.parse(reader.result);if(!validBackup(x))throw Error('Backup structure is not valid');if(!confirm('Replace ALL current employees, attendance and payments with this backup?'))return;db={...blankDB(),...x,payments:x.payments||[]};selectedIds.clear();if(persist())toast('Backup restored successfully.')}catch(e){toast(e.message||'Could not read backup.')}};reader.readAsText(file)}
 async function startCamera(){
  if(!window.isSecureContext){toast('Camera needs a secure HTTPS page. Use manual QR ID entry if unavailable.');return}
  if(!navigator.mediaDevices?.getUserMedia){toast('Camera API is unavailable in this browser. Use manual QR ID entry.');return}
@@ -270,16 +822,28 @@ async function startCamera(){
 }
 function stopCamera(){if(scanLoop)clearTimeout(scanLoop);scanLoop=null;if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null}const v=$('video');v.pause();v.srcObject=null;v.style.display='none';$('startScan').classList.remove('hidden');$('stopScan').classList.add('hidden')}
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.tabpage').forEach(x=>x.classList.toggle('hidden',x.id!=='tab-'+b.dataset.tab));if(b.dataset.tab!=='scan')stopCamera()}));
-$('makeId').onclick=()=>$('newQrId').value=makeId();$('saveEmployee').onclick=saveEmployee;$('cancelEdit').onclick=()=>resetEmployeeForm();
+$('makeId').onclick=()=>$('newQrId').value=makeId();$('saveEmployee').onclick=saveEmployee;$('cancelEdit').onclick=()=>resetEmployeeForm();$('quickNextCard').onclick=startNextCard;
+$('lookupQrBtn').onclick=lookupByQrId;$('lookupQrInput').addEventListener('keydown',e=>{if(e.key==='Enter')lookupByQrId()});
 $('manualScan').onclick=()=>recordAttendance($('manualId').value);$('manualId').addEventListener('keydown',e=>{if(e.key==='Enter')recordAttendance($('manualId').value)});
-$('startScan').onclick=startCamera;$('stopScan').onclick=stopCamera;$('printQr').onclick=printCard;$('downloadQr').onclick=downloadQr;$('employeeSearch').oninput=renderEmployees;
+$('startScan').onclick=startCamera;$('stopScan').onclick=stopCamera;$('printQr').onclick=printCard;$('downloadQr').onclick=downloadQr;
+$('employeeSearch').oninput=renderEmployees;
+$('clearSearch').onclick=()=>{$('employeeSearch').value='';renderEmployees();$('employeeSearch').focus()};
+$('selectAllQr').onchange=e=>{
+ const filtered=getFilteredEmployees();
+ if(e.target.checked) filtered.forEach(emp=>selectedIds.add(emp.id));
+ else filtered.forEach(emp=>selectedIds.delete(emp.id));
+ renderEmployees();
+};
+$('downloadSelectedQr').onclick=downloadSelectedQrs;
+$('printSelectedQr').onclick=printSelectedQrs;
 $('payFrom').value=localDate().slice(0,7)+'-01';$('payTo').value=localDate();$('fromDate').value=localDate().slice(0,7)+'-01';$('toDate').value=localDate();
 $('runPayroll').onclick=runPayroll;$('payExport').onclick=exportPayroll;$('runReport').onclick=runReport;$('exportReport').onclick=exportReport;$('exportToday').onclick=exportToday;
 $('backupBtn').onclick=backup;$('restoreBtn').onclick=()=>$('restoreFile').click();$('restoreFile').onchange=e=>{if(e.target.files[0])restoreFile(e.target.files[0]);e.target.value=''};
-$('clearData').onclick=()=>{if(confirm('PERMANENTLY delete every employee, attendance record and payment stored in this browser? Download a backup first.')){db=blankDB();persist();$('scanResult').textContent='Local records deleted.'}};
+$('clearData').onclick=()=>{if(confirm('PERMANENTLY delete every employee, attendance record and payment stored in this browser? Download a backup first.')){db=blankDB();selectedIds.clear();persist();$('scanResult').textContent='Local records deleted.'}};
 window.addEventListener('beforeunload',stopCamera);
 renderAll();
 if(navigator.storage?.persist)navigator.storage.persist().then(ok=>{if(!ok)console.warn('Persistent storage was not granted. Keep regular backups.')}).catch(()=>{});
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 </script>
-</body></html>
+</body>
+</html>
