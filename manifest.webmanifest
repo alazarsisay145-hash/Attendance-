@@ -1,6 +1,6 @@
 {
   "name": "WorkDay Offline Attendance & Payroll",
-  "short_name": "WorkDay",
+  "short_name": "Nexus WorkDay",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
