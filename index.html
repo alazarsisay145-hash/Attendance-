@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0d221b">
-<meta name="description" content="NEXUS — Workforce & Payroll OS. Offline employee attendance, QR cards, and payroll.">
+<meta name="description" content="NEXUS — Workforce & Payroll OS. Offline employee attendance, QR cards, advances, and payroll.">
 <meta name="application-name" content="NEXUS">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.webmanifest">
@@ -164,6 +164,55 @@ html.dark body{
  text-align:left;
 }
 
+/* In-app Payment / Advance Modal */
+.modal-backdrop{
+ position:fixed;
+ inset:0;
+ z-index:55;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:16px;
+ overflow:auto;
+ background:rgba(6,16,12,.68);
+ backdrop-filter:blur(10px);
+ -webkit-backdrop-filter:blur(10px);
+}
+.modal-card{
+ width:100%;
+ max-width:440px;
+ background:var(--glass-card);
+ backdrop-filter:var(--blur);
+ -webkit-backdrop-filter:var(--blur);
+ border:1px solid var(--edge);
+ border-radius:24px;
+ padding:22px 20px;
+ box-shadow:0 24px 60px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.16);
+}
+.modal-head{
+ display:flex;
+ align-items:flex-start;
+ justify-content:space-between;
+ gap:12px;
+ margin-bottom:10px;
+}
+.modal-head h2{margin:0;font-size:18px}
+.modal-meta{
+ padding:11px 13px;
+ border-radius:14px;
+ background:var(--glass-well);
+ border:1px solid var(--edge-soft);
+ font-size:12px;
+ margin-bottom:10px;
+}
+.modal-err{
+ min-height:18px;
+ margin-top:8px;
+ font-size:12px;
+ font-weight:750;
+ color:var(--red);
+}
+
 header{
  position:sticky;
  top:0;
@@ -231,6 +280,7 @@ h2{font-size:17px;margin:0 0 13px;letter-spacing:-.25px;font-weight:800;color:va
  background:linear-gradient(90deg,var(--green-2),var(--accent));
 }
 .stat:hover{transform:translateY(-2px);background:var(--glass-card)}
+.stat.clickable{cursor:pointer}
 .stat small{color:var(--muted);font-weight:700;font-size:12px;display:block}
 .stat strong{display:block;font-size:25px;margin-top:6px;letter-spacing:-.7px;font-variant-numeric:tabular-nums;color:var(--ink-strong)}
 
@@ -334,6 +384,43 @@ html:not(.dark) .btn.outline{color:var(--green)}
 .btn.small{min-height:36px;padding:7px 11px;font-size:12px;border-radius:11px}
 .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
 
+.person-btn{
+ display:inline-flex;
+ align-items:center;
+ gap:6px;
+ padding:7px 11px;
+ border-radius:12px;
+ border:1px solid var(--edge-soft);
+ background:var(--glass-input);
+ color:var(--ink-strong);
+ font-weight:750;
+ font-size:13px;
+ cursor:pointer;
+ transition:transform .14s ease,border-color .14s ease,background .14s ease;
+}
+.person-btn:hover{
+ transform:translateY(-1px);
+ border-color:rgba(45,184,127,.45);
+ background:var(--green-soft);
+}
+.person-btn .num-pill{
+ font-family:monospace,system-ui,sans-serif;
+ font-size:11px;
+ padding:2px 6px;
+ border-radius:8px;
+ background:var(--accent-soft);
+ color:var(--accent);
+}
+.person-btn.absent-btn:hover{
+ border-color:rgba(181,53,48,.4);
+ background:var(--red-soft);
+}
+.person-btn.advance-btn .num-pill{
+ background:var(--amber-soft);
+ color:var(--amber);
+}
+.status-chip-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+
 .actions{display:flex;gap:8px;flex-wrap:wrap}
 .actions>*{flex:1;min-width:100px}
 .hidden{display:none!important}
@@ -363,6 +450,8 @@ tr.selected-row td{background:var(--green-soft)}
 .tag.unassigned{background:var(--amber-soft);color:var(--amber)}
 .tag.inactive{background:var(--red-soft);color:var(--red)}
 .tag.cycle{background:var(--accent-soft);color:var(--accent)}
+.tag.advance{background:var(--amber-soft);color:var(--amber)}
+.tag.paid{background:var(--green-soft);color:var(--green-2)}
 .empty{text-align:center;padding:28px;color:var(--muted)}
 
 #qrOutput{
@@ -371,6 +460,22 @@ tr.selected-row td{background:var(--green-soft)}
  border-radius:18px;margin-top:13px;
 }
 #qrOutput canvas{max-width:232px;height:auto;border-radius:14px;box-shadow:0 12px 26px rgba(0,0,0,.22)}
+
+#batchPreview{
+ display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(122px,1fr));
+ gap:10px;
+ margin-top:12px;
+}
+.batch-card{
+ background:var(--glass-well);
+ border:1px solid var(--edge);
+ border-radius:12px;
+ padding:8px;
+ text-align:center;
+ cursor:pointer;
+}
+.batch-card canvas{width:100%;height:auto;border-radius:8px;display:block}
 
 .bulkbar,.lookupbox{
  background:var(--glass-well);border:1px solid var(--edge);border-radius:16px;padding:12px;
@@ -404,7 +509,7 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
  .stat strong{font-size:23px}
 }
 @media print{
- header,.no-print,.tabs,.note,.lock-screen{display:none!important}
+ header,.no-print,.tabs,.note,.lock-screen,.modal-backdrop{display:none!important}
  body{background:#fff;color:#0f2118}
  .panel,.stat{background:#fff;backdrop-filter:none;box-shadow:none;border-color:#ddd}
 }
@@ -445,6 +550,43 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
  </div>
 </div>
 
+<!-- In-App Advance & Payment Form Modal -->
+<div id="payModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="payModalTitle">
+ <div class="modal-card">
+  <div class="modal-head">
+   <div>
+    <div class="admin-chip" id="payModalBadge">Payroll Entry</div>
+    <h2 id="payModalTitle">Record payment or advance</h2>
+   </div>
+   <button type="button" class="btn secondary small" id="closePayModalBtn" aria-label="Close modal">Close</button>
+  </div>
+  <div class="modal-meta" id="payModalSummary"></div>
+  <form id="payModalForm">
+   <label for="payTypeSelect" style="margin-top:4px">Entry type</label>
+   <select id="payTypeSelect">
+    <option value="advance">Advance (deducted from balance)</option>
+    <option value="regular">Regular pay</option>
+    <option value="adjustment">Adjustment / bonus</option>
+   </select>
+
+   <label for="payAmountInput">Amount (ETB)</label>
+   <input id="payAmountInput" type="number" min="0.01" step="0.01" placeholder="e.g. 500" required>
+
+   <label for="payDateInput">Date</label>
+   <input id="payDateInput" type="date" required>
+
+   <label for="payNoteInput">Note (optional)</label>
+   <input id="payNoteInput" maxlength="120" placeholder="e.g. Cash advance, Week 3 wage, Harvest bonus">
+
+   <div id="payModalError" class="modal-err" aria-live="polite"></div>
+   <div class="actions" style="margin-top:12px">
+    <button type="button" class="btn secondary" id="cancelPayModalBtn">Cancel</button>
+    <button type="submit" class="btn" id="submitPayModalBtn">Save entry</button>
+   </div>
+  </form>
+ </div>
+</div>
+
 <header>
  <div class="brand-wrap">
   <div class="nx-mark" aria-hidden="true">
@@ -480,7 +622,7 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
  <section class="stats">
   <div class="stat"><small>Active employees</small><strong id="totalEmployees">0</strong></div>
   <div class="stat"><small>Present today</small><strong id="presentToday">0</strong></div>
-  <div class="stat"><small>Absent today</small><strong id="absentToday">0</strong></div>
+  <div class="stat clickable" id="statAbsentCard" title="Tap to see who is absent today"><small>Absent today (Tap)</small><strong id="absentToday">0</strong></div>
   <div class="stat"><small>Today's wage total</small><strong id="todayWages">0 ETB</strong></div>
  </section>
 
@@ -488,7 +630,7 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
   <button class="tab active" data-tab="home">Home</button>
   <button class="tab" data-tab="scan">Scan attendance</button>
   <button class="tab" data-tab="employees">Employees & QR</button>
-  <button class="tab" data-tab="payroll">Payroll</button>
+  <button class="tab" data-tab="payroll">Payroll & Advances</button>
   <button class="tab" data-tab="reports">Reports</button>
   <button class="tab" data-tab="backup">Backup & Security</button>
  </nav>
@@ -506,15 +648,15 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
      </button>
      <button class="quick-tile" data-jump="employees">
       <strong>Create / Assign QR</strong>
-      <span>Generate & print NEXUS cards</span>
+      <span>Generate 1–50 & print NEXUS cards</span>
      </button>
      <button class="quick-tile" id="homeNextUnassigned">
       <strong>Assign Unassigned Name</strong>
       <span>Edit next unnamed card</span>
      </button>
      <button class="quick-tile" data-jump="payroll">
-      <strong>Payroll & Pay Cycles</strong>
-      <span>Weekly, 2-week & monthly pay</span>
+      <strong>Payroll & Advances</strong>
+      <span>Wages, advances & who got paid</span>
      </button>
      <button class="quick-tile" data-jump="reports">
       <strong>Attendance Reports</strong>
@@ -524,6 +666,12 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
       <strong>Backup, Theme & Passcode</strong>
       <span>Dark mode, JSON backup & security</span>
      </button>
+    </div>
+
+    <div id="homeAbsentPanel">
+     <hr>
+     <h2>Who Is Absent Today (Tap Name or Number)</h2>
+     <div id="homeAbsentButtons"></div>
     </div>
    </div>
 
@@ -557,6 +705,9 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
    <div class="panel">
     <h2>Today's attendance</h2>
     <div id="todayList"></div>
+    <hr>
+    <h2>Who Is Absent Today (Tap to mark present)</h2>
+    <div id="scanAbsentButtons"></div>
    </div>
   </div>
  </section>
@@ -569,8 +720,8 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
     <input id="editId" type="hidden">
     <label for="newName">Full name (optional now — edit after assigning QR ID)</label>
     <input id="newName" placeholder="Leave blank to use QR ID for now" autocomplete="name">
-    <label for="newExtra">Phone / staff reference (optional)</label>
-    <input id="newExtra" placeholder="Optional">
+    <label for="newExtra">Phone / staff number / reference (optional)</label>
+    <input id="newExtra" placeholder="e.g. 09... or #12">
     <label for="newWage">Daily wage (ETB)</label>
     <input id="newWage" type="number" min="0" step="0.01" placeholder="e.g. 400">
     <label for="newPayCycle">Pay cycle</label>
@@ -602,7 +753,34 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
      <button class="btn outline" id="downloadQr" disabled>Download card</button>
      <button class="btn secondary" id="quickNextCard">New QR card</button>
     </div>
-    <div class="note">Print QR IDs first, distribute cards, then fill in employee names anytime. Wage updates apply to future attendance only.</div>
+    <div class="note">Click Generate for an instant QR card preview, print or download right away, and assign or update the employee's name anytime.</div>
+
+    <hr>
+    <h2>Batch generate QR cards (1–50)</h2>
+    <div class="row">
+     <div>
+      <label for="batchCount" style="margin-top:0">Count (1–50)</label>
+      <input id="batchCount" type="number" min="1" max="50" value="10" placeholder="1 to 50">
+     </div>
+     <div>
+      <label for="batchWage" style="margin-top:0">Default daily wage (ETB)</label>
+      <input id="batchWage" type="number" min="0" step="0.01" placeholder="e.g. 400">
+     </div>
+     <div>
+      <label for="batchCycle" style="margin-top:0">Pay cycle</label>
+      <select id="batchCycle">
+       <option value="weekly" selected>Weekly</option>
+       <option value="biweekly">Biweekly</option>
+       <option value="monthly">Monthly</option>
+      </select>
+     </div>
+    </div>
+    <div class="actions" style="margin-top:10px">
+     <button class="btn" id="generateBatchBtn" type="button">Generate & save batch</button>
+     <button class="btn outline" id="printBatchPreviewBtn" type="button" disabled>Print batch sheet</button>
+    </div>
+    <div id="batchStatus" class="note">Generates up to 50 unique QR cards ready for assigning names later.</div>
+    <div id="batchPreview"></div>
    </div>
 
    <div class="panel">
@@ -620,7 +798,7 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
     </div>
 
     <div class="row">
-     <div style="flex:3"><input id="employeeSearch" placeholder="Search by name, QR ID, cycle, or reference"></div>
+     <div style="flex:3"><input id="employeeSearch" placeholder="Search by name, QR ID, cycle, or number/reference"></div>
      <button class="btn secondary small" id="clearSearch" style="flex:0 0 auto;min-height:44px">Clear</button>
     </div>
 
@@ -637,10 +815,10 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
   </div>
  </section>
 
- <!-- PAYROLL -->
+ <!-- PAYROLL & ADVANCES -->
  <section id="tab-payroll" class="tabpage hidden">
   <div class="panel">
-   <h2>NEXUS Payroll</h2>
+   <h2>NEXUS Payroll & Advances</h2>
    <div class="row">
     <div><label for="payFrom">From date</label><input type="date" id="payFrom"></div>
     <div><label for="payTo">To date</label><input type="date" id="payTo"></div>
@@ -653,18 +831,29 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
       <option value="monthly">Monthly</option>
      </select>
     </div>
+    <div>
+     <label for="payStatusFilter">Payment status</label>
+     <select id="payStatusFilter">
+      <option value="all" selected>All employees</option>
+      <option value="paid">Who got paid</option>
+      <option value="advance">Has advances</option>
+      <option value="unpaid">Unpaid / balance due</option>
+     </select>
+    </div>
    </div>
    <div class="actions" style="margin-top:10px">
     <button class="btn secondary small" id="preset7Days" type="button">Last 7 days</button>
     <button class="btn secondary small" id="preset14Days" type="button">Last 14 days</button>
     <button class="btn secondary small" id="presetMonth" type="button">This month</button>
+    <button class="btn outline small" id="jumpPaidListBtn" type="button">Who got paid</button>
+    <button class="btn danger small" id="jumpAbsentListBtn" type="button">Who is absent</button>
    </div>
    <div class="row" style="margin-top:12px">
     <button class="btn" id="runPayroll">Calculate payroll</button>
     <button class="btn secondary" id="payExport">Export payroll CSV</button>
    </div>
    <div id="payrollSummary" style="margin-top:14px"></div>
-   <div class="note">Earnings equal the sum of each recorded attendance day's wage within the chosen dates. Payments are tracked separately and can be edited or removed if entered by mistake.</div>
+   <div class="note">Advances reduce what is left to pay (`Balance = Earned - Advances - Regular/Other Payments`). Tap any employee button to open their card or use the in-app form to record an advance or payment.</div>
   </div>
  </section>
 
@@ -711,7 +900,7 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
    </div>
    <hr>
    <h2>Backup & restore</h2>
-   <p class="muted">NEXUS stores all employee, attendance, and payment records locally in this browser on this device. Export a JSON backup regularly and store a copy safely.</p>
+   <p class="muted">NEXUS stores all employee, attendance, and payment/advance records locally in this browser on this device. Export a JSON backup regularly and store a copy safely.</p>
    <div class="actions">
     <button class="btn" id="backupBtn">Download full backup</button>
     <button class="btn secondary" id="restoreBtn">Restore backup</button>
@@ -736,7 +925,7 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
    <span class="nexus-word">NEXUS</span>
   </span>
  </div>
- <div style="font-weight:750;color:var(--ink-strong)">NEXUS v5.4 · Workforce & Payroll OS</div>
+ <div style="font-weight:750;color:var(--ink-strong)">NEXUS v5.6 · Workforce & Payroll OS</div>
  <div style="margin-top:6px;font-size:11px;color:var(--muted)">Offline local records · Export backups regularly</div>
 </footer>
 
@@ -854,7 +1043,8 @@ const PASS_KEY='nexus_workforce_passcode_v1';
 const THEME_KEY='nexus_workforce_theme_v1';
 const DEFAULT_PASSCODE='2026';
 
-let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='', lastScanAt=0, reportRows=[], payrollRows=[];
+let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='', lastScanAt=0, reportRows=[], payrollRows=[], batchDraftCards=[];
+let modalState={mode:'create',employeeId:null,paymentId:null};
 const selectedIds=new Set();
 const $=id=>document.getElementById(id);
 
@@ -889,6 +1079,17 @@ function cycleLabel(c){
  if(norm==='biweekly')return 'Biweekly';
  return 'Monthly';
 }
+function normalizePayType(t){
+ if(t==='advance')return 'advance';
+ if(t==='adjustment')return 'adjustment';
+ return 'regular';
+}
+function payTypeLabel(t){
+ const norm=normalizePayType(t);
+ if(norm==='advance')return 'Advance';
+ if(norm==='adjustment')return 'Adjustment';
+ return 'Regular pay';
+}
 
 function getPasscode(){
  try{return localStorage.getItem(PASS_KEY)||DEFAULT_PASSCODE}catch(e){return DEFAULT_PASSCODE}
@@ -913,6 +1114,7 @@ function applyPasscodeChange(currentVal,nextVal){
 }
 function lockScreen(){
  stopCamera();
+ closePayModal();
  $('loginError').textContent='';
  $('passcodeInput').value='';
  $('lockScreen').classList.remove('hidden');
@@ -938,7 +1140,8 @@ function loadDB(){
   const x=JSON.parse(raw);
   if(!x||!Array.isArray(x.employees)||!Array.isArray(x.attendance))return blankDB();
   const employees=x.employees.map(e=>({...e,payCycle:normalizeCycle(e.payCycle)}));
-  return {...blankDB(),...x,employees,payments:Array.isArray(x.payments)?x.payments:[]};
+  const payments=(Array.isArray(x.payments)?x.payments:[]).map(p=>({...p,type:normalizePayType(p.type),note:String(p.note||'')}));
+  return {...blankDB(),...x,employees,payments};
  }catch(e){return blankDB()}
 }
 function persist(rollbackFn=null){
@@ -968,14 +1171,142 @@ function toast(s){
 function makeId(){
  let id;
  do{id='NX-'+Array.from(crypto.getRandomValues(new Uint8Array(4)),b=>b.toString(16).padStart(2,'0')).join('').toUpperCase()}
- while(db.employees.some(e=>e.qrId===id));
+ while(db.employees.some(e=>e.qrId.toUpperCase()===id));
  return id;
 }
-function empByQr(id){return db.employees.find(e=>String(e.qrId).toUpperCase()===String(id).trim().toUpperCase())}
+function empByQr(id){return db.employees.find(e=>String(e.qrId).trim().toUpperCase()===String(id).trim().toUpperCase())}
 function attendanceFor(empId,from='0000-01-01',to='9999-12-31'){return db.attendance.filter(a=>a.employeeId===empId&&a.date>=from&&a.date<=to)}
-function paidAmount(empId,from='0000-01-01',to='9999-12-31'){return db.payments.filter(p=>p.employeeId===empId&&p.date>=from&&p.date<=to).reduce((s,p)=>s+Number(p.amount||0),0)}
+function paymentsFor(empId,from='0000-01-01',to='9999-12-31'){return db.payments.filter(p=>p.employeeId===empId&&p.date>=from&&p.date<=to)}
+function paidBreakdown(empId,from='0000-01-01',to='9999-12-31'){
+ const rows=paymentsFor(empId,from,to);
+ let advance=0,other=0;
+ for(const p of rows){
+  const amt=Number(p.amount)||0;
+  if(normalizePayType(p.type)==='advance')advance+=amt;
+  else other+=amt;
+ }
+ return {advance,other,total:advance+other};
+}
 function todayPresent(){return db.attendance.filter(a=>a.date===localDate())}
 function dateLabel(d){return new Date(d+'T00:00:00').toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})}
+
+function personDisplayLabel(emp){
+ if(!emp)return 'Unknown';
+ return emp.name&&emp.name!==emp.qrId?emp.name:emp.qrId;
+}
+window.openEmployeeCard=(id,action='edit')=>{
+ const emp=db.employees.find(x=>x.id===id);
+ if(!emp)return;
+ openTab('employees');
+ if(action==='qr')showQr(emp);
+ else loadEmployeeIntoForm(emp);
+};
+window.quickMarkPresentById=id=>{
+ const emp=db.employees.find(x=>x.id===id);
+ if(!emp)return;
+ openTab('scan');
+ recordAttendance(emp.qrId);
+};
+function renderPersonButton(emp,extraText='',variant='default',onClickExpr=''){
+ const primary=esc(personDisplayLabel(emp));
+ const num=esc(emp.extra||emp.qrId);
+ const action=onClickExpr||`openEmployeeCard('${emp.id}','edit')`;
+ const extraCls=variant==='absent'?'absent-btn':variant==='advance'?'advance-btn':'';
+ return `<button type="button" class="person-btn ${extraCls}" onclick="${action}" title="Tap to open ${primary} (${num})"><span>${primary}</span><span class="num-pill">${num}</span>${extraText?`<span class="tiny">${esc(extraText)}</span>`:''}</button>`;
+}
+
+/* In-app Payment & Advance Modal Controls */
+function openPayModal({mode='create',employeeId=null,paymentId=null,defaultType='advance'}){
+ const [from,to]=dateRange('pay');
+ if(mode==='edit'){
+  const p=db.payments.find(x=>x.id===paymentId);
+  if(!p){toast('Payment entry not found.');return}
+  const emp=db.employees.find(x=>x.id===p.employeeId);
+  modalState={mode:'edit',employeeId:p.employeeId,paymentId:p.id};
+  $('payModalBadge').textContent='Edit Entry';
+  $('payModalTitle').textContent=emp?`Edit · ${emp.name}`:'Edit payment entry';
+  const earned=attendanceFor(p.employeeId,from,to).reduce((s,a)=>s+Number(a.dailyWage||0),0);
+  const bk=paidBreakdown(p.employeeId,from,to);
+  $('payModalSummary').innerHTML=`<b>${esc(emp?.name||'Employee')}</b> (${esc(emp?.qrId||'')})<br><span class="tiny">Period (${esc(from)} to ${esc(to)}): Earned <b>${money(earned)}</b> · Advances <b>${money(bk.advance)}</b> · Balance <b>${money(earned-bk.total)}</b></span>`;
+  $('payTypeSelect').value=normalizePayType(p.type);
+  $('payAmountInput').value=String(p.amount);
+  $('payDateInput').value=p.date;
+  $('payNoteInput').value=p.note||'';
+  $('submitPayModalBtn').textContent='Update entry';
+ }else{
+  const emp=db.employees.find(x=>x.id===employeeId);
+  if(!emp){toast('Employee not found.');return}
+  const pType=normalizePayType(defaultType);
+  modalState={mode:'create',employeeId:emp.id,paymentId:null};
+  $('payModalBadge').textContent=pType==='advance'?'Cash / Wage Advance':'Payroll Payment';
+  $('payModalTitle').textContent=pType==='advance'?`Advance · ${emp.name}`:`Pay · ${emp.name}`;
+  const earned=attendanceFor(emp.id,from,to).reduce((s,a)=>s+Number(a.dailyWage||0),0);
+  const bk=paidBreakdown(emp.id,from,to);
+  $('payModalSummary').innerHTML=`<b>${esc(emp.name)}</b> (${esc(emp.qrId)}) · Daily rate: <b>${money(emp.dailyWage)}</b><br><span class="tiny">Period (${esc(from)} to ${esc(to)}): Earned <b>${money(earned)}</b> · Advances <b>${money(bk.advance)}</b> · Balance <b>${money(earned-bk.total)}</b></span>`;
+  $('payTypeSelect').value=pType;
+  $('payAmountInput').value='';
+  $('payDateInput').value=localDate();
+  $('payNoteInput').value=pType==='advance'?'Advance payment':'';
+  $('submitPayModalBtn').textContent=pType==='advance'?'Save advance':'Save payment';
+ }
+ $('payModalError').textContent='';
+ $('payModal').classList.remove('hidden');
+ setTimeout(()=>$('payAmountInput').focus(),50);
+}
+
+function closePayModal(){
+ $('payModal').classList.add('hidden');
+ $('payModalError').textContent='';
+ modalState={mode:'create',employeeId:null,paymentId:null};
+}
+
+function submitPayModal(e){
+ e.preventDefault();
+ const pType=normalizePayType($('payTypeSelect').value);
+ const amount=Number($('payAmountInput').value);
+ const date=String($('payDateInput').value||'').trim();
+ const note=String($('payNoteInput').value||'').trim();
+
+ if(!Number.isFinite(amount)||amount<=0){
+  $('payModalError').textContent='Enter an amount greater than zero.';
+  $('payAmountInput').focus();
+  return;
+ }
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number.isNaN(Date.parse(date+'T00:00:00'))){
+  $('payModalError').textContent='Select a valid date.';
+  $('payDateInput').focus();
+  return;
+ }
+
+ if(modalState.mode==='edit'){
+  const p=db.payments.find(x=>x.id===modalState.paymentId);
+  if(!p){closePayModal();return}
+  const prev={type:p.type,amount:p.amount,date:p.date,note:p.note};
+  p.type=pType;
+  p.amount=amount;
+  p.date=date;
+  p.note=note;
+  p.updatedAt=new Date().toISOString();
+  if(!persist(()=>Object.assign(p,prev)))return;
+  closePayModal();
+  toast(`${payTypeLabel(pType)} updated.`);
+ }else{
+  if(!modalState.employeeId){closePayModal();return}
+  const entry={
+   id:crypto.randomUUID(),
+   employeeId:modalState.employeeId,
+   type:pType,
+   amount,
+   date,
+   note,
+   createdAt:new Date().toISOString()
+  };
+  db.payments.push(entry);
+  if(!persist(()=>db.payments.pop()))return;
+  closePayModal();
+  toast(`${payTypeLabel(pType)} of ${money(amount)} saved.`);
+ }
+}
 
 function daysSinceBackup(){
  if(!db.lastBackupAt)return null;
@@ -1002,9 +1333,12 @@ function updateBackupReminder(){
 function renderAll(){
  $('todayLabel').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'});
  const active=db.employees.filter(e=>e.active!==false),today=todayPresent(),present=today.length;
+ const presentIds=new Set(today.map(a=>a.employeeId));
+ const absentList=active.filter(e=>!presentIds.has(e.id));
+
  $('totalEmployees').textContent=active.length;
  $('presentToday').textContent=present;
- $('absentToday').textContent=Math.max(0,active.length-present);
+ $('absentToday').textContent=absentList.length;
  $('todayWages').textContent=money(today.reduce((s,a)=>s+Number(a.dailyWage||0),0));
 
  const sorted=[...today].sort((a,b)=>b.timestamp.localeCompare(a.timestamp));
@@ -1017,13 +1351,21 @@ function renderAll(){
   ?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Time</th><th>Wage</th></tr></thead><tbody>${recent.map(a=>`<tr><td><b>${esc(a.nameSnapshot)}</b><div class="tiny">${esc(a.qrId)}</div></td><td>${esc(a.time)}</td><td>${money(a.dailyWage)}</td></tr>`).join('')}</tbody></table></div>`
   :'<div class="empty">No scans recorded yet today. Use <b>Scan Attendance</b> to get started.</div>';
 
+ $('homeAbsentButtons').innerHTML=absentList.length
+  ?`<div class="status-chip-wrap">${absentList.map(e=>renderPersonButton(e,'Absent · Tap to mark present','absent',`quickMarkPresentById('${e.id}')`)).join('')}</div>`
+  :'<div class="empty">Everyone active is present today.</div>';
+
+ $('scanAbsentButtons').innerHTML=absentList.length
+  ?`<div class="status-chip-wrap">${absentList.map(e=>renderPersonButton(e,'Mark present','absent',`quickMarkPresentById('${e.id}')`)).join('')}</div>`
+  :'<div class="empty">No absent active employees today.</div>';
+
  renderEmployees();
  runReport();
  runPayroll();
  updateBackupReminder();
 
  const lastTxt=db.lastBackupAt?`Last backup: ${new Date(db.lastBackupAt).toLocaleString()}`:'No backup exported yet.';
- $('storageInfo').textContent=`${db.employees.length} employees · ${db.attendance.length} attendance records · ${db.payments.length} payments. ${lastTxt}`;
+ $('storageInfo').textContent=`${db.employees.length} employees · ${db.attendance.length} attendance records · ${db.payments.length} payments/advances. ${lastTxt}`;
 }
 
 function getFilteredEmployees(){
@@ -1110,20 +1452,111 @@ function saveEmployee(){
  }
  const saved=db.employees.find(e=>e.qrId===qrId);
  try{showQr(saved)}catch(err){toast(err.message||'Could not render QR')}
- resetEmployeeForm();
+ resetEmployeeForm(false);
 }
 
 function resetEmployeeForm(clearQr=true){
  $('editId').value='';$('newName').value='';$('newExtra').value='';$('newWage').value='';
  $('newPayCycle').value='weekly';
- $('newQrId').disabled=false;if(clearQr)$('newQrId').value='';
+ $('newQrId').disabled=false;
+ if(clearQr){$('newQrId').value='';clearQrPreview()}
  $('employeeFormTitle').textContent='Create / assign NEXUS QR card';
  $('saveEmployee').textContent='Save & generate NEXUS QR';
  $('cancelEdit').classList.add('hidden');
 }
+
+function clearQrPreview(){
+ currentQr='';
+ $('qrOutput').innerHTML='<span class="muted">NEXUS employee QR card preview appears here</span>';
+ $('printQr').disabled=true;$('downloadQr').disabled=true;
+}
+
+function previewQrFromId(rawId,overrides={}){
+ const qrId=String(rawId||'').trim().toUpperCase();
+ if(!qrId){clearQrPreview();return}
+ if(new TextEncoder().encode(qrId).length>17){toast('QR ID must be 17 bytes or fewer.');return}
+ const existing=empByQr(qrId);
+ const draftEmp={
+  id:existing?.id||'',
+  qrId,
+  name:overrides.name??($('newName').value.trim()||existing?.name||qrId),
+  extra:overrides.extra??($('newExtra').value.trim()||existing?.extra||''),
+  dailyWage:overrides.dailyWage??($('newWage').value!==''?Number($('newWage').value):(existing?.dailyWage??0)),
+  payCycle:normalizeCycle(overrides.payCycle??$('newPayCycle').value??existing?.payCycle??'weekly')
+ };
+ try{
+  const canvas=makeBrandedCardCanvas(draftEmp);
+  currentQr=qrId;
+  $('qrOutput').innerHTML='';
+  $('qrOutput').appendChild(canvas);
+  $('printQr').disabled=false;$('downloadQr').disabled=false;
+ }catch(err){toast(err.message||'Could not render QR')}
+}
+
+function getActiveCardEmployee(){
+ const emp=empByQr(currentQr);
+ if(emp)return emp;
+ if(!currentQr)return null;
+ return {
+  qrId:currentQr,
+  name:$('newName').value.trim()||currentQr,
+  extra:$('newExtra').value.trim()||'',
+  dailyWage:$('newWage').value!==''?Number($('newWage').value):0,
+  payCycle:normalizeCycle($('newPayCycle').value)
+ };
+}
+
+function generateBatchCards(){
+ const count=Number($('batchCount').value);
+ if(!Number.isInteger(count)||count<1||count>50){toast('Enter a number between 1 and 50.');return}
+ const rawWage=$('batchWage').value;
+ const wage=rawWage===''?0:Number(rawWage);
+ if(!Number.isFinite(wage)||wage<0){toast('Enter a valid daily wage.');return}
+ const payCycle=normalizeCycle($('batchCycle').value);
+
+ const created=[];
+ for(let i=0;i<count;i++){
+  const qrId=makeId();
+  const emp={id:crypto.randomUUID(),name:qrId,extra:'',qrId,dailyWage:wage,payCycle,active:true,createdAt:new Date().toISOString()};
+  db.employees.push(emp);
+  created.push(emp);
+ }
+ if(!persist(()=>{db.employees.splice(db.employees.length-created.length,created.length)}))return;
+ batchDraftCards=created;
+ renderBatchPreview(created);
+ toast(`Generated ${created.length} NEXUS QR cards.`);
+}
+
+function renderBatchPreview(cards){
+ const box=$('batchPreview');
+ box.innerHTML='';
+ $('printBatchPreviewBtn').disabled=!cards.length;
+ if(!cards.length){
+  $('batchStatus').textContent='Generates up to 50 unique QR cards ready for assigning names later.';
+  return;
+ }
+ $('batchStatus').textContent=`${cards.length} QR cards generated and saved as unassigned ("Needs name"). Tap any card below or in the directory to assign a name.`;
+ cards.forEach(emp=>{
+  const card=document.createElement('div');
+  card.className='batch-card';
+  card.title='Tap to assign name to '+emp.qrId;
+  card.onclick=()=>openEmployeeCard(emp.id,'edit');
+  const canvas=makeBrandedCardCanvas(emp);
+  const label=document.createElement('div');
+  label.className='tiny';
+  label.style.marginTop='6px';
+  label.textContent=emp.qrId;
+  card.appendChild(canvas);
+  card.appendChild(label);
+  box.appendChild(card);
+ });
+}
+
 function startNextCard(){
  resetEmployeeForm(true);
- $('newQrId').value=makeId();
+ const id=makeId();
+ $('newQrId').value=id;
+ previewQrFromId(id);
  $('newName').focus();
  toast('New QR ID generated');
 }
@@ -1186,7 +1619,7 @@ function triggerCardDownload(emp){
  document.body.appendChild(a);a.click();a.remove();
 }
 window.downloadOneQr=id=>{const emp=db.employees.find(x=>x.id===id);if(!emp)return;triggerCardDownload(emp);toast(`Downloaded ${emp.name}'s NEXUS card`)};
-function downloadQr(){const emp=empByQr(currentQr);if(emp)triggerCardDownload(emp)}
+function downloadQr(){const emp=getActiveCardEmployee();if(emp)triggerCardDownload(emp)}
 async function downloadSelectedQrs(){
  const chosen=db.employees.filter(e=>selectedIds.has(e.id));
  if(!chosen.length)return;
@@ -1210,7 +1643,7 @@ function printCardsList(emps){
  w.document.write(`<!doctype html><html><head><title>NEXUS QR Cards</title><style>body{font-family:system-ui,Arial;margin:14px;background:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(${isGrid?'175px':'240px'},1fr));gap:${isGrid?'10px':'16px'};justify-items:center}.card{break-inside:avoid;page-break-inside:avoid}.card img{width:${isGrid?'175px':'240px'};height:auto;display:block;border-radius:8px}@media print{body{margin:6px}}</style></head><body><div class="grid">${imgs}</div><script>window.onload=()=>window.print()<\/script></body></html>`);
  w.document.close();
 }
-function printCard(){const emp=empByQr(currentQr);if(emp)printCardsList([emp])}
+function printCard(){const emp=getActiveCardEmployee();if(emp)printCardsList([emp])}
 function printSelectedQrs(){printCardsList(db.employees.filter(e=>selectedIds.has(e.id)))}
 
 function dateRange(prefix){return [$(prefix+'From').value||'0000-01-01',$(prefix+'To').value||'9999-12-31']}
@@ -1231,63 +1664,84 @@ function setPayrollPreset(mode){
 function runPayroll(){
  const [from,to]=dateRange('pay');
  const cycleFilter=$('payCycleFilter')?.value||'all';
- payrollRows=db.employees
+ const statusFilter=$('payStatusFilter')?.value||'all';
+
+ const allPeriodPayments=db.payments
+  .filter(p=>p.date>=from&&p.date<=to)
+  .sort((a,b)=>b.date.localeCompare(a.date));
+
+ const baseRows=db.employees
   .filter(e=>cycleFilter==='all'||normalizeCycle(e.payCycle)===cycleFilter)
-  .filter(e=>e.active!==false||attendanceFor(e.id,from,to).length>0||db.payments.some(p=>p.employeeId===e.id&&p.date>=from&&p.date<=to))
+  .filter(e=>e.active!==false||attendanceFor(e.id,from,to).length>0||paymentsFor(e.id,from,to).length>0)
   .map(e=>{
    const days=attendanceFor(e.id,from,to);
    const earned=days.reduce((s,a)=>s+Number(a.dailyWage||0),0);
-   const paid=paidAmount(e.id,from,to);
+   const bk=paidBreakdown(e.id,from,to);
+   const paid=bk.total;
+   const advance=bk.advance;
+   const balance=earned-paid;
+   const lastPay=allPeriodPayments.find(p=>p.employeeId===e.id);
    const cycle=normalizeCycle(e.payCycle);
-   return {id:e.id,name:e.name,qrId:e.qrId,payCycle:cycle,cycleLabel:cycleLabel(cycle),days:days.length,earned,paid,balance:earned-paid};
+   let payStatus='Unpaid';
+   if(paid>0&&earned>0&&paid>=earned)payStatus='Paid in full';
+   else if(advance>0&&balance>0)payStatus='Advance taken';
+   else if(paid>0)payStatus='Partially paid';
+   return {id:e.id,name:e.name,extra:e.extra||'',qrId:e.qrId,payCycle:cycle,cycleLabel:cycleLabel(cycle),days:days.length,earned,advance,paid,balance,lastPayDate:lastPay?.date||'',payStatus};
   });
+
+ payrollRows=baseRows.filter(r=>{
+  if(statusFilter==='paid')return r.paid>0;
+  if(statusFilter==='advance')return r.advance>0;
+  if(statusFilter==='unpaid')return r.balance>0||r.paid<=0;
+  return true;
+ });
+
+ const paidPeople=baseRows.filter(r=>r.paid>0);
+ const advancePeople=baseRows.filter(r=>r.advance>0);
+ const absentInPeriod=baseRows.filter(r=>r.days===0);
  const totalEarned=payrollRows.reduce((s,r)=>s+r.earned,0);
+ const totalAdvance=payrollRows.reduce((s,r)=>s+r.advance,0);
  const totalPaid=payrollRows.reduce((s,r)=>s+r.paid,0);
  const balance=totalEarned-totalPaid;
  const allowedEmpIds=new Set(payrollRows.map(r=>r.id));
- const periodPayments=db.payments
-  .filter(p=>p.date>=from&&p.date<=to&&(cycleFilter==='all'||allowedEmpIds.has(p.employeeId)))
-  .sort((a,b)=>b.date.localeCompare(a.date));
+ const periodPayments=allPeriodPayments.filter(p=>cycleFilter==='all'||allowedEmpIds.has(p.employeeId));
 
- $('payrollSummary').innerHTML=`<div class="stats"><div class="stat"><small>Total earned</small><strong>${money(totalEarned)}</strong></div><div class="stat"><small>Paid</small><strong>${money(totalPaid)}</strong></div><div class="stat"><small>Outstanding</small><strong>${money(balance)}</strong></div><div class="stat"><small>Period</small><strong>${from===to?dateLabel(from):esc(from)+' – '+esc(to)}</strong></div></div>
- <div class="tablewrap"><table><thead><tr><th>Employee</th><th>Cycle</th><th>Days</th><th>Earned</th><th>Paid</th><th>Balance</th><th>Payment</th></tr></thead><tbody>${payrollRows.map(r=>`<tr><td><b>${esc(r.name)}</b></td><td><span class="tag cycle">${esc(r.cycleLabel)}</span></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${money(r.paid)}</td><td><b>${money(r.balance)}</b></td><td><button class="btn secondary small" onclick="addPayment('${r.id}')">Add payment</button></td></tr>`).join('')||'<tr><td colspan="7" class="empty">No employees match this pay cycle filter.</td></tr>'}</tbody></table></div>
- <h2 style="margin-top:18px">Payment history in this period</h2>
- <div class="tablewrap"><table><thead><tr><th>Employee</th><th>Date</th><th>Amount</th><th>Actions</th></tr></thead><tbody>${periodPayments.map(p=>{
+ $('payrollSummary').innerHTML=`<div class="stats"><div class="stat"><small>Total earned</small><strong>${money(totalEarned)}</strong></div><div class="stat"><small>Advances given</small><strong>${money(totalAdvance)}</strong></div><div class="stat"><small>Total paid (incl. adv.)</small><strong>${money(totalPaid)}</strong></div><div class="stat"><small>Remaining balance</small><strong>${money(balance)}</strong></div></div>
+ <div class="layout" style="margin-bottom:14px" id="payrollWhoLists">
+  <div class="panel" style="margin-bottom:0;padding:15px" id="whoGotPaidCard">
+   <h2 style="margin:0 0 6px">Who got paid (${paidPeople.length})</h2>
+   <div class="tiny">Tap a name or number button to open their card</div>
+   ${paidPeople.length
+    ?`<div class="status-chip-wrap">${paidPeople.map(p=>renderPersonButton(p,money(p.paid),false,`openEmployeeCard('${p.id}','edit')`)).join('')}</div>`
+    :'<div class="empty">No one paid in this range yet.</div>'}
+  </div>
+  <div class="panel" style="margin-bottom:0;padding:15px" id="whoIsAbsentCard">
+   <h2 style="margin:0 0 6px">Who is absent — 0 days in period (${absentInPeriod.length})</h2>
+   <div class="tiny">Tap a name or number button to open their card</div>
+   ${absentInPeriod.length
+    ?`<div class="status-chip-wrap">${absentInPeriod.map(a=>renderPersonButton(a,'0 days','absent',`openEmployeeCard('${a.id}','edit')`)).join('')}</div>`
+    :'<div class="empty">Everyone had at least 1 attendance day.</div>'}
+  </div>
+ </div>
+ ${advancePeople.length?`<div class="panel" style="margin-bottom:14px;padding:15px"><h2 style="margin:0 0 6px">Employees with advances (${advancePeople.length})</h2><div class="status-chip-wrap">${advancePeople.map(a=>renderPersonButton(a,'Adv: '+money(a.advance),'advance',`openEmployeeCard('${a.id}','edit')`)).join('')}</div></div>`:''}
+ <div class="tablewrap"><table><thead><tr><th>Employee</th><th>Cycle</th><th>Days</th><th>Earned</th><th>Advances</th><th>Total paid</th><th>Balance</th><th>Actions</th></tr></thead><tbody>${payrollRows.map(r=>`<tr><td>${renderPersonButton(r,'',false,`openEmployeeCard('${r.id}','edit')`)}<div class="tiny">${esc(r.payStatus)} · ${esc(r.qrId)}</div></td><td><span class="tag cycle">${esc(r.cycleLabel)}</span></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${r.advance>0?`<span class="tag advance">${money(r.advance)}</span>`:money(0)}</td><td class="money">${money(r.paid)}</td><td><b>${money(r.balance)}</b></td><td><div class="actions"><button class="btn secondary small" onclick="addPayment('${r.id}','regular')">+ Pay</button><button class="btn outline small" onclick="addPayment('${r.id}','advance')">+ Advance</button></div></td></tr>`).join('')||'<tr><td colspan="8" class="empty">No employees match the current filters.</td></tr>'}</tbody></table></div>
+ <h2 style="margin-top:18px">Payment & advance history in this period</h2>
+ <div class="tablewrap"><table><thead><tr><th>Employee</th><th>Type</th><th>Date</th><th>Amount</th><th>Note</th><th>Actions</th></tr></thead><tbody>${periodPayments.map(p=>{
   const e=db.employees.find(x=>x.id===p.employeeId);
-  return `<tr><td>${esc(e?.name||'Deleted employee')}</td><td>${esc(p.date)}</td><td>${money(p.amount)}</td><td><div class="actions"><button class="btn secondary small" onclick="editPayment('${p.id}')">Edit</button><button class="btn danger small" onclick="deletePayment('${p.id}')">Delete</button></div></td></tr>`;
- }).join('')||'<tr><td colspan="4" class="muted">No payments recorded for this period.</td></tr>'}</tbody></table></div>`;
+  const pType=normalizePayType(p.type);
+  return `<tr><td>${e?renderPersonButton(e,'',false,`openEmployeeCard('${e.id}','edit')`):esc('Deleted employee')}</td><td><span class="tag ${pType==='advance'?'advance':'paid'}">${esc(payTypeLabel(pType))}</span></td><td>${esc(p.date)}</td><td>${money(p.amount)}</td><td class="tiny">${esc(p.note||'—')}</td><td><div class="actions"><button class="btn secondary small" onclick="editPayment('${p.id}')">Edit</button><button class="btn danger small" onclick="deletePayment('${p.id}')">Delete</button></div></td></tr>`;
+ }).join('')||'<tr><td colspan="6" class="muted">No payments or advances recorded for this period.</td></tr>'}</tbody></table></div>`;
 }
 
-window.addPayment=id=>{
- const e=db.employees.find(x=>x.id===id);if(!e)return;
- const amount=prompt(`Enter payment amount in ETB for ${e.name} (${cycleLabel(e.payCycle)}):`);if(amount===null)return;
- const n=Number(amount);if(!Number.isFinite(n)||n<=0){toast('Enter an amount greater than zero.');return}
- const date=prompt('Payment date (YYYY-MM-DD):',localDate());if(date===null)return;
- if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number.isNaN(Date.parse(date+'T00:00:00'))){toast('Invalid date.');return}
- const entry={id:crypto.randomUUID(),employeeId:id,amount:n,date,createdAt:new Date().toISOString()};
- db.payments.push(entry);
- if(!persist(()=>db.payments.pop()))return;
- toast('Payment saved.');
-};
-
-window.editPayment=payId=>{
- const p=db.payments.find(x=>x.id===payId);if(!p)return;
- const amount=prompt('Update payment amount in ETB:',String(p.amount));if(amount===null)return;
- const n=Number(amount);if(!Number.isFinite(n)||n<=0){toast('Enter an amount greater than zero.');return}
- const date=prompt('Update payment date (YYYY-MM-DD):',p.date);if(date===null)return;
- if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number.isNaN(Date.parse(date+'T00:00:00'))){toast('Invalid date.');return}
- const prev={amount:p.amount,date:p.date};
- p.amount=n;p.date=date;p.updatedAt=new Date().toISOString();
- if(!persist(()=>Object.assign(p,prev)))return;
- toast('Payment updated.');
-};
+window.addPayment=(id,defaultType='regular')=>openPayModal({mode:'create',employeeId:id,defaultType});
+window.editPayment=payId=>openPayModal({mode:'edit',paymentId:payId});
 
 window.deletePayment=payId=>{
  const idx=db.payments.findIndex(x=>x.id===payId);if(idx===-1)return;
- if(!confirm('Delete this payment entry?'))return;
+ if(!confirm('Delete this payment/advance entry?'))return;
  const removed=db.payments.splice(idx,1)[0];
  if(!persist(()=>db.payments.splice(idx,0,removed)))return;
- toast('Payment deleted.');
+ toast('Entry deleted.');
 };
 
 function runReport(){
@@ -1312,7 +1766,7 @@ function download(name,content,type='text/csv;charset=utf-8'){
  a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
  setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
-function exportPayroll(){const [from,to]=dateRange('pay');download(`nexus-payroll-${from}-to-${to}.csv`,csv([['Employee','QR ID','Pay cycle','Working days','Earned ETB','Paid ETB','Balance ETB'],...payrollRows.map(r=>[r.name,r.qrId,r.cycleLabel,r.days,r.earned,r.paid,r.balance])]))}
+function exportPayroll(){const [from,to]=dateRange('pay');download(`nexus-payroll-${from}-to-${to}.csv`,csv([['Employee','QR ID','Pay cycle','Working days','Earned ETB','Advances ETB','Total paid ETB','Balance ETB'],...payrollRows.map(r=>[r.name,r.qrId,r.cycleLabel,r.days,r.earned,r.advance,r.paid,r.balance])]))}
 function exportReport(){runReport();const from=$('fromDate').value,to=$('toDate').value;download(`nexus-attendance-${from}-to-${to}.csv`,csv([['Employee','QR ID','Pay cycle','Working days','Earned ETB','Active'],...reportRows.map(r=>[r.name,r.qrId,r.payCycle,r.days,r.earned,r.active?'Yes':'No'])]))}
 function exportToday(){download(`nexus-attendance-${localDate()}.csv`,csv([['Employee','QR ID','Date','Time','Daily wage ETB'],...todayPresent().map(a=>[a.nameSnapshot,a.qrId,a.date,a.time,a.dailyWage])]))}
 
@@ -1338,7 +1792,8 @@ function restoreFile(file){
    if(!confirm('Replace current employees, attendance, and payments on this device with this backup?'))return;
    const snapshot=JSON.parse(JSON.stringify(db));
    const employees=(x.employees||[]).map(e=>({...e,payCycle:normalizeCycle(e.payCycle)}));
-   db={...blankDB(),...x,employees,payments:x.payments||[],lastBackupAt:new Date().toISOString()};
+   const payments=(x.payments||[]).map(p=>({...p,type:normalizePayType(p.type),note:String(p.note||'')}));
+   db={...blankDB(),...x,employees,payments,lastBackupAt:new Date().toISOString()};
    selectedIds.clear();
    if(!persist(()=>{db=snapshot}))return;
    toast('Backup restored successfully.');
@@ -1383,7 +1838,7 @@ const TAB_HEADINGS={
  home:'NEXUS Home',
  scan:'Scan Attendance',
  employees:'Employees & QR Cards',
- payroll:'NEXUS Payroll',
+ payroll:'NEXUS Payroll & Advances',
  reports:'Attendance Reports',
  backup:'Backup & Security'
 };
@@ -1395,12 +1850,44 @@ function openTab(tabName){
 }
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
 document.querySelectorAll('.quick-tile[data-jump]').forEach(el=>el.addEventListener('click',()=>openTab(el.dataset.jump)));
+$('statAbsentCard').onclick=()=>{
+ openTab('home');
+ $('homeAbsentPanel')?.scrollIntoView({behavior:'smooth'});
+};
+$('jumpPaidListBtn').onclick=()=>{
+ $('payStatusFilter').value='paid';
+ runPayroll();
+ $('whoGotPaidCard')?.scrollIntoView({behavior:'smooth'});
+};
+$('jumpAbsentListBtn').onclick=()=>{
+ runPayroll();
+ $('whoIsAbsentCard')?.scrollIntoView({behavior:'smooth'});
+};
 $('homeNextUnassigned').onclick=editNextUnassigned;
 $('backupBadge').onclick=()=>openTab('backup');
 $('quickBackupTop').onclick=backup;
 $('themeBtn').onclick=toggleTheme;
 $('backupThemeBtn').onclick=toggleTheme;
 $('lockBtn').onclick=lockScreen;
+
+$('payModalForm').addEventListener('submit',submitPayModal);
+$('closePayModalBtn').onclick=closePayModal;
+$('cancelPayModalBtn').onclick=closePayModal;
+$('payModal').addEventListener('click',e=>{
+ if(e.target===$('payModal'))closePayModal();
+});
+$('payTypeSelect').addEventListener('change',()=>{
+ const t=normalizePayType($('payTypeSelect').value);
+ if(modalState.mode==='create'){
+  $('payModalBadge').textContent=t==='advance'?'Cash / Wage Advance':'Payroll Payment';
+  $('submitPayModalBtn').textContent=t==='advance'?'Save advance':'Save payment';
+  if(t==='advance'&&!$('payNoteInput').value.trim())$('payNoteInput').value='Advance payment';
+  else if(t!=='advance'&&$('payNoteInput').value.trim()==='Advance payment')$('payNoteInput').value='';
+ }
+});
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'&&!$('payModal').classList.contains('hidden'))closePayModal();
+});
 
 $('loginForm').addEventListener('submit',e=>{
  e.preventDefault();
@@ -1441,10 +1928,22 @@ $('savePasscodeBtn').onclick=()=>{
  toast(res.msg);
 };
 
-$('makeId').onclick=()=>$('newQrId').value=makeId();
+$('makeId').onclick=()=>{
+ const id=makeId();
+ $('newQrId').value=id;
+ previewQrFromId(id);
+ $('newName').focus();
+};
+$('newQrId').addEventListener('input',()=>previewQrFromId($('newQrId').value));
+$('newName').addEventListener('input',()=>{if($('newQrId').value.trim())previewQrFromId($('newQrId').value)});
+$('newExtra').addEventListener('input',()=>{if($('newQrId').value.trim())previewQrFromId($('newQrId').value)});
+$('newWage').addEventListener('input',()=>{if($('newQrId').value.trim())previewQrFromId($('newQrId').value)});
+$('newPayCycle').addEventListener('change',()=>{if($('newQrId').value.trim())previewQrFromId($('newQrId').value)});
 $('saveEmployee').onclick=saveEmployee;
 $('cancelEdit').onclick=()=>resetEmployeeForm();
 $('quickNextCard').onclick=startNextCard;
+$('generateBatchBtn').onclick=generateBatchCards;
+$('printBatchPreviewBtn').onclick=()=>printCardsList(batchDraftCards);
 $('nextUnassignedBtn').onclick=editNextUnassigned;
 $('lookupQrBtn').onclick=lookupByQrId;
 $('lookupQrInput').addEventListener('keydown',e=>{if(e.key==='Enter')lookupByQrId()});
@@ -1464,6 +1963,7 @@ $('downloadSelectedQr').onclick=downloadSelectedQrs;
 $('printSelectedQr').onclick=printSelectedQrs;
 $('payFrom').value=localDate().slice(0,7)+'-01';$('payTo').value=localDate();
 $('payCycleFilter').onchange=runPayroll;
+$('payStatusFilter').onchange=runPayroll;
 $('preset7Days').onclick=()=>setPayrollPreset(7);
 $('preset14Days').onclick=()=>setPayrollPreset(14);
 $('presetMonth').onclick=()=>setPayrollPreset('month');
