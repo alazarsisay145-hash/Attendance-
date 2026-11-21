@@ -319,15 +319,32 @@ input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);cursor:
  border-radius:16px;display:none;margin-top:14px;border:1px solid var(--border);
 }
 
-/* Big Scan Confirmation Banner */
-.result{
- padding:14px 16px;border-radius:18px;background:var(--surface-subtle);
- border:1.5px solid var(--border);margin-top:14px;min-height:56px;font-size:13.5px;
- transition:all .2s ease;
+/* Big Animated Scan Confirmation Banner */
+@keyframes scanCardPop{
+ 0%{opacity:0;transform:translateY(8px) scale(.97)}
+ 65%{opacity:1;transform:translateY(-2px) scale(1.01)}
+ 100%{opacity:1;transform:translateY(0) scale(1)}
 }
+@keyframes checkBadgeBounce{
+ 0%{transform:scale(.35) rotate(-18deg);opacity:0}
+ 60%{transform:scale(1.14) rotate(4deg);opacity:1}
+ 82%{transform:scale(.95) rotate(-2deg)}
+ 100%{transform:scale(1) rotate(0deg);opacity:1}
+}
+@keyframes checkRingPulse{
+ 0%{transform:scale(.85);opacity:.75}
+ 100%{transform:scale(1.55);opacity:0}
+}
+
+.result{
+ position:relative;padding:15px 16px;border-radius:20px;background:var(--surface-subtle);
+ border:1.5px solid var(--border);margin-top:14px;min-height:60px;font-size:13.5px;
+ transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+.result.animate-confirm{animation:scanCardPop .38s cubic-bezier(.22,1,.36,1) both}
 .result.success{
  background:var(--success-bg);border-color:var(--success-border);
- box-shadow:0 8px 24px rgba(13,148,136,.12);
+ box-shadow:0 10px 26px rgba(13,148,136,.16);
 }
 .result.warn{
  background:var(--warning-bg);border-color:var(--warning-border);
@@ -335,13 +352,24 @@ input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);cursor:
 .confirm-banner{
  display:flex;align-items:center;gap:14px;
 }
+.confirm-icon-wrap{
+ position:relative;width:60px;height:60px;flex:0 0 auto;display:grid;place-items:center;
+}
 .confirm-icon-big{
- width:56px;height:56px;border-radius:18px;flex:0 0 auto;
- display:grid;place-items:center;font-size:28px;font-weight:900;line-height:1;
+ position:relative;z-index:1;width:60px;height:60px;border-radius:20px;
+ display:grid;place-items:center;font-size:30px;font-weight:900;line-height:1;
+}
+.result.animate-confirm .confirm-icon-big{
+ animation:checkBadgeBounce .46s cubic-bezier(.22,1,.36,1) both;
 }
 .result.success .confirm-icon-big{
  background:var(--success);color:#ffffff;
- box-shadow:0 6px 16px rgba(13,148,136,.28);
+ box-shadow:0 8px 20px rgba(13,148,136,.32);
+}
+.result.success.animate-confirm .confirm-icon-wrap::after{
+ content:"";position:absolute;inset:0;border-radius:20px;
+ border:3px solid var(--success);pointer-events:none;
+ animation:checkRingPulse .7s cubic-bezier(.16,1,.3,1) forwards;
 }
 .result.warn .confirm-icon-big{
  background:var(--warning);color:#ffffff;
@@ -349,12 +377,18 @@ input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);cursor:
 .confirm-body{min-width:0;flex:1}
 .confirm-status{
  display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
- padding:2px 8px;border-radius:999px;margin-bottom:4px;
+ padding:2px 9px;border-radius:999px;margin-bottom:4px;
 }
-.result.success .confirm-status{background:rgba(13,148,136,.15);color:var(--success)}
-.result.warn .confirm-status{background:rgba(217,119,6,.15);color:var(--warning)}
-.result b.name{font-size:20px;font-weight:800;letter-spacing:-.02em;display:block;margin-bottom:2px;color:var(--ink)}
+.result.success .confirm-status{background:rgba(13,148,136,.16);color:var(--success)}
+.result.warn .confirm-status{background:rgba(217,119,6,.16);color:var(--warning)}
+.result b.name{font-size:21px;font-weight:800;letter-spacing:-.02em;display:block;margin-bottom:2px;color:var(--ink)}
 .confirm-meta{font-size:12.5px;color:var(--ink-secondary)}
+
+@media(prefers-reduced-motion:reduce){
+ .result.animate-confirm,.result.animate-confirm .confirm-icon-big,.result.success.animate-confirm .confirm-icon-wrap::after{
+  animation:none!important;
+ }
+}
 
 table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
 th{text-align:left;color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--surface-subtle)}
@@ -613,11 +647,11 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
     <video id="video" playsinline muted></video>
     <div class="result" id="scanResult">
      <div class="confirm-banner">
-      <div class="confirm-icon-big" style="background:var(--accent-soft);color:var(--accent)">QR</div>
+      <div class="confirm-icon-wrap"><div class="confirm-icon-big" style="background:var(--accent-soft);color:var(--accent)">QR</div></div>
       <div class="confirm-body">
        <div class="confirm-status" style="background:var(--accent-soft);color:var(--accent)">Ready to scan</div>
        <b class="name" style="font-size:16px">Scan a pass or enter QR ID</b>
-       <div class="confirm-meta">Confirmation with check mark appears immediately here.</div>
+       <div class="confirm-meta">Animated confirmation with check mark and sound appears here.</div>
       </div>
      </div>
     </div>
@@ -996,10 +1030,34 @@ const PALETTE_META={
  midnight:{label:'Deep Midnight',themeColor:'#070b14'}
 };
 
-let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='', lastScanAt=0, reportRows=[], payrollRows=[], batchDraftCards=[];
+let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='', lastScanAt=0, reportRows=[], payrollRows=[], batchDraftCards=[], audioCtx=null;
 let modalState={mode:'create',employeeId:null,paymentId:null,allowSelectEmployee:false};
 const selectedIds=new Set();
 const $=id=>document.getElementById(id);
+
+function playScanSound(kind='success'){
+ try{
+  const Ctx=window.AudioContext||window.webkitAudioContext;
+  if(!Ctx)return;
+  if(!audioCtx)audioCtx=new Ctx();
+  if(audioCtx.state==='suspended')audioCtx.resume().catch(()=>{});
+  const now=audioCtx.currentTime;
+  const notes=kind==='success'?[523.25,783.99]:[392.0,329.63];
+  notes.forEach((freq,i)=>{
+   const osc=audioCtx.createOscillator();
+   const gain=audioCtx.createGain();
+   osc.type=kind==='success'?'sine':'triangle';
+   osc.frequency.setValueAtTime(freq,now+i*0.09);
+   gain.gain.setValueAtTime(0.001,now+i*0.09);
+   gain.gain.exponentialRampToValueAtTime(0.16,now+i*0.09+0.02);
+   gain.gain.exponentialRampToValueAtTime(0.0008,now+i*0.09+0.24);
+   osc.connect(gain);
+   gain.connect(audioCtx.destination);
+   osc.start(now+i*0.09);
+   osc.stop(now+i*0.09+0.26);
+  });
+ }catch(e){}
+}
 
 function getSavedPalette(){
  try{
@@ -1172,10 +1230,14 @@ function renderPersonButton(emp,extraText='',variant='default',onClickExpr=''){
  return `<button type="button" class="person-btn ${extraCls}" onclick="${action}"><span>${primary}</span><span class="num-pill">${num}</span>${extraText?`<span class="tiny">${esc(extraText)}</span>`:''}</button>`;
 }
 
-function renderScanBanner(type,badge,iconText,title,subtitle){
+function renderScanBanner(type,badge,iconText,title,subtitle,animate=false){
  const box=$('scanResult');
  box.className=`result ${type}`;
- box.innerHTML=`<div class="confirm-banner"><div class="confirm-icon-big">${esc(iconText)}</div><div class="confirm-body"><div class="confirm-status">${esc(badge)}</div><b class="name">${esc(title)}</b><div class="confirm-meta">${subtitle}</div></div></div>`;
+ box.innerHTML=`<div class="confirm-banner"><div class="confirm-icon-wrap"><div class="confirm-icon-big">${esc(iconText)}</div></div><div class="confirm-body"><div class="confirm-status">${esc(badge)}</div><b class="name">${esc(title)}</b><div class="confirm-meta">${subtitle}</div></div></div>`;
+ if(animate){
+  void box.offsetWidth;
+  box.classList.add('animate-confirm');
+ }
 }
 
 /* In-app Payment & Advance Modal Controls */
@@ -1378,21 +1440,25 @@ function renderEmployees(){
 function recordAttendance(raw){
  const id=String(raw||'').trim().toUpperCase(),emp=empByQr(id);
  if(!id){
-  renderScanBanner('warn','Missing ID','!','Enter or scan a QR ID','No code was detected.');
+  renderScanBanner('warn','Missing ID','!','Enter or scan a QR ID','No code was detected.',true);
+  playScanSound('warn');
   return;
  }
  if(!emp){
-  renderScanBanner('warn','Unknown Card','?','QR ID not recognized',`Code <b>${esc(id)}</b> is not assigned to staff.`);
+  renderScanBanner('warn','Unknown Card','?','QR ID not recognized',`Code <b>${esc(id)}</b> is not assigned to staff.`,true);
+  playScanSound('warn');
   toast('Unknown QR ID');
   return;
  }
  if(emp.active===false){
-  renderScanBanner('warn','Inactive Staff','!',emp.name,'This employee account is currently inactive.');
+  renderScanBanner('warn','Inactive Staff','!',emp.name,'This employee account is currently inactive.',true);
+  playScanSound('warn');
   return;
  }
  const date=localDate(),existing=db.attendance.find(a=>a.employeeId===emp.id&&a.date===date);
  if(existing){
-  renderScanBanner('warn','Already Checked In','✓',emp.name,`Already registered today at <b>${esc(existing.time)}</b>.`);
+  renderScanBanner('warn','Already Checked In','✓',emp.name,`Already registered today at <b>${esc(existing.time)}</b>.`,true);
+  playScanSound('warn');
   toast('Already scanned today');
   return;
  }
@@ -1404,8 +1470,10 @@ function recordAttendance(raw){
   'Successfully Registered',
   '✓',
   emp.name,
-  `Successfully registered for <b>${esc(dateLabel(date))}</b> at <b>${esc(entry.time)}</b> · <span class="money">${esc(money(entry.dailyWage))}</span>`
+  `Successfully registered for <b>${esc(dateLabel(date))}</b> at <b>${esc(entry.time)}</b> · <span class="money">${esc(money(entry.dailyWage))}</span>`,
+  true
  );
+ playScanSound('success');
  $('manualId').value='';lastScanned=id;lastScanAt=Date.now();toast(`${emp.name} — successfully registered`);
 }
 
