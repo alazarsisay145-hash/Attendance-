@@ -1,0 +1,22 @@
+WORKDAY V4 GO-LIVE TEST CHECKLIST
+
+Before real use:
+[ ] Upload app files to HTTPS hosting and open on the intended Android phone.
+[ ] Register a TEST employee with wage 100 ETB.
+[ ] Generate and download/print that employee's QR card.
+[ ] Scan the QR and confirm the employee name appears.
+[ ] Confirm attendance count becomes 1.
+[ ] Scan the same QR again on the same date.
+[ ] Confirm duplicate is rejected and count remains 1.
+[ ] Register another test employee and confirm their QR resolves to the correct name.
+[ ] Change the first employee's wage; confirm old attendance keeps the old wage.
+[ ] Add 12 test attendance dates (or test imported sample records) and confirm 100 × 12 = 1,200 ETB.
+[ ] Record a payment of 500 ETB; confirm balance is 700 ETB.
+[ ] Export CSV and open it to verify the totals.
+[ ] Download a full JSON backup.
+[ ] Restore the backup into a test browser/profile and verify employee, attendance and payment data.
+[ ] Turn off Wi-Fi and mobile data; reopen the app and repeat scan/manual-ID tests.
+[ ] Verify the phone's date and time are correct.
+
+DO NOT USE FOR REAL PAYROLL UNTIL YOU HAVE COMPLETED THE TESTS ABOVE.
+Keep regular backups. This is a single-device system, not a multi-phone shared database.

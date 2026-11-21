@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10251f">
+<meta name="description" content="Single-device offline employee attendance and payroll.">
+<meta name="application-name" content="WorkDay">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<title>WorkDay — Offline Attendance & Payroll</title>
+<style>
+:root{--bg:#f3f6f3;--card:#fff;--ink:#17251f;--muted:#718078;--green:#176b4a;--green2:#e7f3ec;--line:#e3eae4;--red:#b33a35;--amber:#966116;--shadow:0 10px 28px #1836290b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:#10251f;color:#fff;padding:18px max(16px,calc((100% - 1180px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font-size:22px;font-weight:850;letter-spacing:-.7px}.brand span{color:#9cdbb8}.sub{font-size:12px;color:#b9c9c0}
+main{max-width:1180px;margin:auto;padding:20px 14px 60px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+h1{font-size:25px;margin:0 0 3px;letter-spacing:-.7px}h2{font-size:17px;margin:0 0 13px}.muted{color:var(--muted)}.tiny{font-size:12px;color:var(--muted)}
+.pill{border-radius:99px;padding:6px 10px;background:#e7f4eb;color:#176b4a;font-size:12px;font-weight:800;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}.stat,.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}.stat{padding:14px}.stat small{color:var(--muted);font-weight:650}.stat strong{display:block;font-size:26px;margin-top:3px;letter-spacing:-.7px}.layout{display:grid;grid-template-columns:1fr 1.25fr;gap:14px}.panel{padding:16px;margin-bottom:14px}
+.tabs{display:flex;gap:7px;overflow:auto;padding:2px 0 12px}.tab{border:1px solid var(--line);background:#fff;padding:9px 13px;border-radius:99px;font-weight:750;color:#526158;white-space:nowrap}.tab.active{background:#173d2e;color:#fff;border-color:#173d2e}
+label{display:block;font-size:12px;font-weight:750;color:#506158;margin:11px 0 5px}input,select{width:100%;border:1px solid #dce5de;border-radius:10px;padding:11px;background:#fff;font:inherit;color:var(--ink);min-width:0}input:focus,select:focus{outline:2px solid #cce8d5;border-color:#4d9872}
+.row{display:flex;gap:8px;align-items:end}.row>*{flex:1;min-width:0}.btn{border:0;border-radius:10px;padding:11px 13px;font-weight:750;font-size:14px;cursor:pointer;background:var(--green);color:#fff}.btn.secondary{background:#edf3ef;color:#244437}.btn.outline{background:white;color:var(--green);border:1px solid #c9d9ce}.btn.danger{background:#fff0ef;color:var(--red)}.btn.small{padding:7px 9px;font-size:12px}.btn:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.actions>*{flex:1}.hidden{display:none!important}
+#video{width:100%;max-height:300px;object-fit:cover;background:#101b16;border-radius:12px;display:none;margin-top:10px}
+.result{padding:13px;border-radius:12px;background:#f0f5f1;margin-top:10px;min-height:50px}.result.success{background:#e7f5eb;border:1px solid #c9e8d2}.result.warn{background:#fff6e8;border:1px solid #f1dfbb}.result b.name{font-size:18px;display:block}
+table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;color:#7a8980;font-size:10px;text-transform:uppercase;letter-spacing:.45px;padding:9px 7px;border-bottom:1px solid var(--line)}td{padding:10px 7px;border-bottom:1px solid #eff2ef;vertical-align:middle}tr:last-child td{border:0}.tablewrap{overflow:auto}.status{font-size:11px;font-weight:800;border-radius:99px;padding:4px 7px;background:#e8f5ed;color:#176b4a;white-space:nowrap}.empty{text-align:center;padding:25px;color:var(--muted)}
+#qrOutput{display:flex;justify-content:center;align-items:center;padding:12px;min-height:160px;background:#fff;border:1px dashed #cbd8ce;border-radius:12px;margin-top:12px}#qrOutput canvas{width:180px;height:180px;max-width:100%}
+.note{font-size:12px;color:var(--muted);margin-top:9px}.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#14281f;color:white;padding:11px 15px;border-radius:12px;z-index:20;max-width:92vw;box-shadow:0 8px 30px #0003}
+.cardpreview{border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;background:#fff}.money{font-weight:850;color:#176b4a}.dangertext{color:var(--red)}
+hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+@media(max-width:760px){header{padding:16px}.stats{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}main{padding:16px 11px 45px}.stat{padding:12px}.stat strong{font-size:23px}}
+@media print{header,.no-print,.tabs,.note{display:none!important}body{background:white}.panel,.stat{box-shadow:none}}
+</style>
+</head>
+<body>
+<header><div><div class="brand">Work<span>Day</span></div><div class="sub">Offline employee attendance & payroll</div></div><div class="pill">● ONE-DEVICE MODE</div></header>
+<main>
+ <div class="top"><div><h1>Workplace overview</h1><div class="muted" id="todayLabel"></div></div><button class="btn secondary no-print" id="exportToday">Export today</button></div>
+ <section class="stats">
+  <div class="stat"><small>Active employees</small><strong id="totalEmployees">0</strong></div>
+  <div class="stat"><small>Present today</small><strong id="presentToday">0</strong></div>
+  <div class="stat"><small>Absent today</small><strong id="absentToday">0</strong></div>
+  <div class="stat"><small>Today's wage total</small><strong id="todayWages">0 ETB</strong></div>
+ </section>
+ <nav class="tabs no-print">
+  <button class="tab active" data-tab="scan">Scan attendance</button><button class="tab" data-tab="employees">Employees</button><button class="tab" data-tab="payroll">Payroll</button><button class="tab" data-tab="reports">Reports</button><button class="tab" data-tab="backup">Backup</button>
+ </nav>
+ <section id="tab-scan" class="tabpage">
+  <div class="layout">
+   <div class="panel">
+    <h2>Record attendance</h2>
+    <button class="btn" id="startScan" style="width:100%">Start QR camera scanner</button>
+    <button class="btn secondary hidden" id="stopScan" style="width:100%;margin-top:8px">Stop camera</button>
+    <video id="video" playsinline muted></video>
+    <div class="result" id="scanResult">Ready. Scan an employee card. The employee's name and attendance result will appear here.</div>
+    <div class="note">Only one attendance record per employee per local calendar day. Re-scanning does not add another day.</div>
+    <hr>
+    <h2>Manual QR ID entry</h2>
+    <label>Employee QR ID</label><div class="row"><input id="manualId" placeholder="Example: WD-8A2F41C9"><button class="btn secondary" id="manualScan">Record</button></div>
+    <div class="note">Use if camera scanning is unavailable. The ID must match a registered employee.</div>
+   </div>
+   <div class="panel"><h2>Today's attendance</h2><div id="todayList"></div></div>
+  </div>
+ </section>
+ <section id="tab-employees" class="tabpage hidden">
+  <div class="layout">
+   <div class="panel">
+    <h2 id="employeeFormTitle">Register employee</h2>
+    <input id="editId" type="hidden">
+    <label>Full name</label><input id="newName" placeholder="Employee full name" autocomplete="name">
+    <label>Phone / staff reference (optional)</label><input id="newExtra" placeholder="Optional">
+    <label>Daily wage (ETB)</label><input id="newWage" type="number" min="0" step="0.01" placeholder="e.g. 100">
+    <label>QR card ID</label><div class="row"><input id="newQrId" placeholder="Generate unique ID"><button class="btn secondary" id="makeId" style="flex:0 0 auto">Generate</button></div>
+    <button class="btn" id="saveEmployee" style="width:100%;margin-top:14px">Save employee & generate QR</button>
+    <button class="btn secondary hidden" id="cancelEdit" style="width:100%;margin-top:7px">Cancel editing</button>
+    <div id="qrOutput"><span class="muted">Employee QR card appears here after saving</span></div>
+    <div class="actions" style="margin-top:9px"><button class="btn secondary" id="printQr" disabled>Print card</button><button class="btn outline" id="downloadQr" disabled>Download QR</button></div>
+    <div class="note">Employee IDs are permanent. Changing a wage affects future attendance only; earlier attendance keeps its original wage rate.</div>
+   </div>
+   <div class="panel"><h2>Employee directory</h2><input id="employeeSearch" placeholder="Search by name or QR ID"><div id="employeeList" style="margin-top:10px"></div></div>
+  </div>
+ </section>
+ <section id="tab-payroll" class="tabpage hidden">
+  <div class="panel">
+   <h2>Payroll calculation</h2>
+   <div class="row"><div><label>From date</label><input type="date" id="payFrom"></div><div><label>To date</label><input type="date" id="payTo"></div></div>
+   <div class="row" style="margin-top:12px"><button class="btn" id="runPayroll">Calculate payroll</button><button class="btn secondary" id="payExport">Export payroll CSV</button></div>
+   <div id="payrollSummary" style="margin-top:14px"></div>
+   <div class="note">Earnings = sum of each recorded attendance day's wage. Payments are tracked separately and do not change attendance or earned wages.</div>
+  </div>
+ </section>
+ <section id="tab-reports" class="tabpage hidden">
+  <div class="panel">
+   <h2>Attendance report</h2>
+   <div class="row"><div><label>From</label><input type="date" id="fromDate"></div><div><label>To</label><input type="date" id="toDate"></div></div>
+   <div class="row" style="margin-top:12px"><button class="btn" id="runReport">Generate report</button><button class="btn secondary" id="exportReport">Export CSV</button></div>
+   <div id="reportOutput" style="margin-top:14px"></div>
+  </div>
+ </section>
+ <section id="tab-backup" class="tabpage hidden">
+  <div class="panel">
+   <h2>Backup & restore</h2>
+   <p class="muted">All employee, attendance and payment data is saved only in this browser on this device. Export a backup frequently, and keep a copy somewhere safe.</p>
+   <div class="actions"><button class="btn" id="backupBtn">Download full backup</button><button class="btn secondary" id="restoreBtn">Restore backup</button></div>
+   <input type="file" id="restoreFile" accept=".json,application/json" class="hidden">
+   <p class="note">Restore replaces current records. Export a backup first. There is no multi-phone sync or cloud copy.</p>
+   <hr><h2>Data health</h2><div id="storageInfo" class="result"></div>
+   <button class="btn danger" id="clearData" style="margin-top:12px">Delete all local data</button>
+  </div>
+ </section>
+ <footer class="note" style="text-align:center;margin-top:15px">WorkDay v4 · Offline local records · Export backups regularly</footer>
+</main>
+<div id="toast" class="toast hidden"></div>
+<script>
+/* Offline QR encoder: QR Model 2, Version 1-L, byte mode. IDs are <=17 UTF-8 bytes. */
+function makeOfflineQr(text){
+ const bytes=Array.from(new TextEncoder().encode(text)); if(bytes.length>17)throw Error("QR ID is too long.");
+ const bits=[],push=(v,n)=>{for(let i=n-1;i>=0;i--)bits.push((v>>>i)&1)};
+ push(4,4);push(bytes.length,8);bytes.forEach(b=>push(b,8));
+ for(let i=0;i<Math.min(4,152-bits.length);i++)bits.push(0);while(bits.length%8)bits.push(0);
+ const data=[];for(let i=0;i<bits.length;i+=8){let v=0;for(let j=0;j<8;j++)v=(v<<1)|bits[i+j];data.push(v)}
+ for(let p=0;data.length<19;p++)data.push(p%2?0x11:0xec);
+ const mul=(x,y)=>{let z=0;for(let i=7;i>=0;i--){z=(z<<1)^(((y>>>i)&1)?x:0);if(z&256)z^=0x11d}return z};
+ let gen=[1],root=1;for(let i=0;i<7;i++){let nx=Array(gen.length+1).fill(0);gen.forEach((v,j)=>{nx[j]^=v;nx[j+1]^=mul(v,root)});gen=nx;root=mul(root,2)}
+ const rem=Array(7).fill(0);data.forEach(b=>{let f=b^rem[0];rem.shift();rem.push(0);for(let i=0;i<7;i++)rem[i]^=mul(gen[i+1],f)});
+ const code=data.concat(rem),n=21,m=Array.from({length:n},()=>Array(n).fill(null)),set=(x,y,v)=>{if(x>=0&&x<n&&y>=0&&y<n)m[y][x]=!!v};
+ const finder=(ox,oy)=>{for(let dy=-1;dy<=7;dy++)for(let dx=-1;dx<=7;dx++){let x=ox+dx,y=oy+dy;if(x<0||x>=n||y<0||y>=n)continue;let inside=dx>=0&&dx<=6&&dy>=0&&dy<=6;set(x,y,inside&&(dx===0||dx===6||dy===0||dy===6||(dx>=2&&dx<=4&&dy>=2&&dy<=4)))}};
+ finder(0,0);finder(14,0);finder(0,14);
+ for(let i=8;i<n-8;i++){if(m[6][i]===null)set(i,6,i%2===0);if(m[i][6]===null)set(6,i,i%2===0)}
+ for(let i=0;i<15;i++){let a=i<6?[8,i]:i<8?[8,i+1]:i===8?[7,8]:[14-i,8];set(a[0],a[1],false);let b=i<8?[n-1-i,8]:[8,n-15+i];set(b[0],b[1],false)}
+ set(8,n-8,true);let bit=0,up=true;
+ for(let right=n-1;right>=1;right-=2){if(right===6)right=5;for(let v=0;v<n;v++){let y=up?n-1-v:v;for(let j=0;j<2;j++){let x=right-j;if(m[y][x]===null){let val=bit<code.length*8?((code[Math.floor(bit/8)]>>>(7-bit%8))&1):0;if((x+y)%2===0)val^=1;set(x,y,val);bit++}}}up=!up}
+ let fmt=8,rf=fmt;for(let i=0;i<10;i++)rf=(rf<<1)^(((rf>>>9)&1)?0x537:0);let f=((fmt<<10)|rf)^0x5412;
+ for(let i=0;i<15;i++){let v=((f>>>i)&1)!==0,a=i<6?[8,i]:i<8?[8,i+1]:i===8?[7,8]:[14-i,8],b=i<8?[n-1-i,8]:[8,n-15+i];set(a[0],a[1],v);set(b[0],b[1],v)}set(8,n-8,true);
+ const c=document.createElement('canvas'),s=9,q=4;c.width=c.height=(n+q*2)*s;const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#10251f';for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(m[y][x])ctx.fillRect((x+q)*s,(y+q)*s,s,s);return c;
+}
+</script>
+<script>
+'use strict';
+const KEY='workday_local_payroll_v4';
+let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='', lastScanAt=0, reportRows=[], payrollRows=[];
+const $=id=>document.getElementById(id);
+function blankDB(){return {version:4,employees:[],attendance:[],payments:[],createdAt:new Date().toISOString()}}
+function loadDB(){try{const x=JSON.parse(localStorage.getItem(KEY));if(!x||!Array.isArray(x.employees)||!Array.isArray(x.attendance))return blankDB();return {...blankDB(),...x,payments:Array.isArray(x.payments)?x.payments:[]}}catch(e){return blankDB()}}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(db));renderAll();return true}catch(e){toast('Storage is full or unavailable. Export a backup and free device space.');return false}}
+function localDate(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function money(n){return (Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' ETB'}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toast(s){$('toast').textContent=s;$('toast').classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.add('hidden'),2800)}
+function makeId(){let id;do{id='WD-'+Array.from(crypto.getRandomValues(new Uint8Array(4)),b=>b.toString(16).padStart(2,'0')).join('').toUpperCase()}while(db.employees.some(e=>e.qrId===id));return id}
+function empByQr(id){return db.employees.find(e=>String(e.qrId).toUpperCase()===String(id).trim().toUpperCase())}
+function attendanceFor(empId,from='0000-01-01',to='9999-12-31'){return db.attendance.filter(a=>a.employeeId===empId&&a.date>=from&&a.date<=to)}
+function totalEarned(empId,from='0000-01-01',to='9999-12-31'){return attendanceFor(empId,from,to).reduce((s,a)=>s+Number(a.dailyWage||0),0)}
+function paidAmount(empId,from='0000-01-01',to='9999-12-31'){return db.payments.filter(p=>p.employeeId===empId&&p.date>=from&&p.date<=to).reduce((s,p)=>s+Number(p.amount||0),0)}
+function todayPresent(){return db.attendance.filter(a=>a.date===localDate())}
+function dateLabel(d){return new Date(d+'T00:00:00').toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})}
+function renderAll(){
+ $('todayLabel').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+ const active=db.employees.filter(e=>e.active!==false),today= todayPresent(),present=today.length;
+ $('totalEmployees').textContent=active.length;$('presentToday').textContent=present;$('absentToday').textContent=Math.max(0,active.length-present);
+ $('todayWages').textContent=money(today.reduce((s,a)=>s+Number(a.dailyWage||0),0));
+ const sorted=[...today].sort((a,b)=>b.timestamp.localeCompare(a.timestamp));
+ $('todayList').innerHTML=sorted.length?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Time</th><th>Wage</th></tr></thead><tbody>${sorted.map(a=>`<tr><td><b>${esc(a.nameSnapshot)}</b><div class="tiny">${esc(a.qrId)}</div></td><td>${esc(a.time)}</td><td>${money(a.dailyWage)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No attendance recorded today.</div>';
+ renderEmployees();runReport();runPayroll();
+ $('storageInfo').textContent=`${db.employees.length} employee records · ${db.attendance.length} attendance records · ${db.payments.length} payment records. Last saved locally in this browser.`;
+}
+function renderEmployees(){
+ const q=($('employeeSearch').value||'').trim().toLowerCase();
+ const list=db.employees.filter(e=>(e.name+' '+e.qrId+' '+(e.extra||'')).toLowerCase().includes(q));
+ $('employeeList').innerHTML=list.length?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Daily wage</th><th>Actions</th></tr></thead><tbody>${list.map(e=>`<tr><td><b>${esc(e.name)}</b><div class="tiny">${esc(e.qrId)} · ${e.active===false?'Inactive':'Active'}</div></td><td>${money(e.dailyWage)}</td><td><div class="actions"><button class="btn secondary small" onclick="editEmployee('${e.id}')">Edit</button><button class="btn outline small" onclick="cardFor('${e.id}')">QR</button><button class="btn ${e.active===false?'secondary':'danger'} small" onclick="toggleEmployee('${e.id}')">${e.active===false?'Activate':'Deactivate'}</button></div></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No employees found.</div>';
+}
+function recordAttendance(raw){
+ const id=String(raw||'').trim().toUpperCase(),box=$('scanResult'),emp=empByQr(id);
+ if(!id){box.className='result warn';box.textContent='Enter or scan an employee QR ID.';return}
+ if(!emp){box.className='result warn';box.textContent=`Unknown QR ID: ${id}. Register this employee first.`;toast('QR ID is not registered');return}
+ if(emp.active===false){box.className='result warn';box.innerHTML=`<b class="name">${esc(emp.name)}</b>Employee is inactive. Attendance was not recorded.`;return}
+ const date=localDate(),existing=db.attendance.find(a=>a.employeeId===emp.id&&a.date===date);
+ if(existing){box.className='result warn';box.innerHTML=`<b class="name">${esc(emp.name)}</b><b>Already recorded today.</b><div class="tiny">First scan: ${esc(existing.time)} · No duplicate day or wage was added.</div>`;toast('Duplicate scan blocked');return}
+ const now=new Date(),entry={id:crypto.randomUUID(),employeeId:emp.id,qrId:emp.qrId,nameSnapshot:emp.name,date,time:now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'}),timestamp:now.toISOString(),dailyWage:Number(emp.dailyWage)||0,source:'scan'};
+ db.attendance.push(entry);
+ if(!persist()){db.attendance.pop();return}
+ box.className='result success';box.innerHTML=`<b class="name">✓ ${esc(emp.name)}</b><b>Attendance recorded</b><div>${dateLabel(date)} · ${esc(entry.time)}</div><div class="money">Today's wage: ${money(entry.dailyWage)}</div><div class="tiny">Working days are counted once per date.</div>`;
+ $('manualId').value='';lastScanned=id;lastScanAt=Date.now();toast(emp.name+' marked present');
+}
+function saveEmployee(){
+ const editId=$('editId').value,name=$('newName').value.trim(),extra=$('newExtra').value.trim(),qrId=$('newQrId').value.trim().toUpperCase(),wage=Number($('newWage').value);
+ if(!name||!qrId||$('newWage').value===''||!Number.isFinite(wage)||wage<0){toast('Enter name, QR ID and a valid daily wage.');return}
+ if(db.employees.some(e=>e.qrId.toUpperCase()===qrId&&e.id!==editId)){toast('That QR ID already belongs to another employee.');return}
+ if(editId){
+  const emp=db.employees.find(e=>e.id===editId);if(!emp)return;
+  emp.name=name;emp.extra=extra;emp.qrId=qrId;emp.dailyWage=wage;emp.updatedAt=new Date().toISOString();
+  toast('Employee updated. Earlier attendance wages remain unchanged.');
+ }else{
+  const emp={id:crypto.randomUUID(),name,extra,qrId,dailyWage:wage,active:true,createdAt:new Date().toISOString()};
+  db.employees.push(emp);toast('Employee registered.');
+ }
+ if(!persist())return;
+ const saved=db.employees.find(e=>e.qrId===qrId);showQr(saved);resetEmployeeForm();
+}
+function resetEmployeeForm(clearQr=true){$('editId').value='';$('newName').value='';$('newExtra').value='';$('newWage').value='';$('newQrId').disabled=false;if(clearQr)$('newQrId').value='';$('employeeFormTitle').textContent='Register employee';$('saveEmployee').textContent='Save employee & generate QR';$('cancelEdit').classList.add('hidden')}
+window.editEmployee=id=>{const e=db.employees.find(x=>x.id===id);if(!e)return;$('editId').value=e.id;$('newName').value=e.name;$('newExtra').value=e.extra||'';$('newWage').value=e.dailyWage;$('newQrId').value=e.qrId;$('newQrId').disabled=true;$('employeeFormTitle').textContent='Edit employee';$('saveEmployee').textContent='Save changes';$('cancelEdit').classList.remove('hidden');document.querySelector('[data-tab="employees"]').click();window.scrollTo({top:0,behavior:'smooth'})};
+window.cardFor=id=>{const e=db.employees.find(x=>x.id===id);if(e){showQr(e);document.querySelector('[data-tab="employees"]').click()}};
+window.toggleEmployee=id=>{const e=db.employees.find(x=>x.id===id);if(!e)return;const next=e.active===false;if(!confirm(`${next?'Activate':'Deactivate'} ${e.name}? ${next?'They can be marked present again.':'They will no longer be accepted by the scanner.'}`))return;e.active=next;e.updatedAt=new Date().toISOString();persist();toast(next?'Employee activated.':'Employee deactivated.')};
+function showQr(emp){
+ currentQr=emp.qrId;$('qrOutput').innerHTML='';const canvas=makeOfflineQr(emp.qrId);$('qrOutput').appendChild(canvas);
+ $('printQr').disabled=false;$('downloadQr').disabled=false;
+}
+function printCard(){
+ const emp=empByQr(currentQr);if(!emp)return;const c=$('qrOutput').querySelector('canvas');if(!c)return;
+ const w=window.open('','_blank');if(!w){toast('Allow pop-ups to print the card, or download the QR image.');return}
+ const img=c.toDataURL('image/png');w.document.write(`<!doctype html><html><head><title>WorkDay employee card</title><style>body{font-family:Arial;text-align:center;padding:25px}.card{border:1px solid #aaa;border-radius:14px;padding:22px;display:inline-block;min-width:260px}img{width:210px;height:210px}h2{margin:5px}</style></head><body><div class="card"><h2>WorkDay</h2><img src="${img}"><h2>${esc(emp.name)}</h2><p>${esc(emp.qrId)}</p><small>Employee attendance card</small></div><script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close();
+}
+function downloadQr(){const c=$('qrOutput').querySelector('canvas');if(!c||!currentQr)return;const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download=currentQr+'.png';a.click()}
+function dateRange(prefix){return [$(prefix+'From').value||'0000-01-01',$(prefix+'To').value||'9999-12-31']}
+function runPayroll(){
+ const [from,to]=dateRange('pay');payrollRows=db.employees.filter(e=>e.active!==false||attendanceFor(e.id,from,to).length>0||db.payments.some(p=>p.employeeId===e.id&&p.date>=from&&p.date<=to)).map(e=>{const days=attendanceFor(e.id,from,to),earned=days.reduce((s,a)=>s+Number(a.dailyWage||0),0),paid=paidAmount(e.id,from,to);return {id:e.id,name:e.name,qrId:e.qrId,days:days.length,earned,paid,balance:earned-paid}}); 
+ const totalEarned=payrollRows.reduce((s,r)=>s+r.earned,0),totalPaid=payrollRows.reduce((s,r)=>s+r.paid,0),balance=totalEarned-totalPaid;
+ $('payrollSummary').innerHTML=`<div class="stats"><div class="stat"><small>Total earned</small><strong>${money(totalEarned)}</strong></div><div class="stat"><small>Paid</small><strong>${money(totalPaid)}</strong></div><div class="stat"><small>Outstanding</small><strong>${money(balance)}</strong></div><div class="stat"><small>Period days</small><strong>${from===to?dateLabel(from):esc(from)+' – '+esc(to)}</strong></div></div><div class="tablewrap"><table><thead><tr><th>Employee</th><th>Days</th><th>Earned</th><th>Paid</th><th>Balance</th><th>Payment</th></tr></thead><tbody>${payrollRows.map(r=>`<tr><td><b>${esc(r.name)}</b></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${money(r.paid)}</td><td><b>${money(r.balance)}</b></td><td><button class="btn secondary small" onclick="addPayment('${r.id}')">Add payment</button></td></tr>`).join('')}</tbody></table></div><h2 style="margin-top:18px">Payment history in this period</h2><div class="tablewrap"><table><thead><tr><th>Employee</th><th>Payment date</th><th>Amount</th></tr></thead><tbody>${db.payments.filter(p=>p.date>=from&&p.date<=to).sort((a,b)=>b.date.localeCompare(a.date)).map(p=>{const e=db.employees.find(x=>x.id===p.employeeId);return `<tr><td>${esc(e?.name||'Deleted employee')}</td><td>${esc(p.date)}</td><td>${money(p.amount)}</td></tr>`}).join('')||'<tr><td colspan="3" class="muted">No payments recorded for this period.</td></tr>'}</tbody></table></div>`;
+}
+window.addPayment=id=>{
+ const e=db.employees.find(x=>x.id===id);if(!e)return;const amount=prompt(`Enter payment amount in ETB for ${e.name}:`);if(amount===null)return;const n=Number(amount);if(!Number.isFinite(n)||n<=0){toast('Enter a payment amount greater than zero.');return}
+ const date=prompt('Payment date (YYYY-MM-DD):',localDate());if(date===null)return;if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number.isNaN(Date.parse(date+'T00:00:00'))){toast('Invalid payment date.');return}
+ db.payments.push({id:crypto.randomUUID(),employeeId:id,amount:n,date,createdAt:new Date().toISOString()});persist();toast('Payment saved.');
+};
+function runReport(){
+ const from=$('fromDate').value||'0000-01-01',to=$('toDate').value||'9999-12-31';
+ reportRows=db.employees.map(e=>{const rows=attendanceFor(e.id,from,to);return {id:e.id,name:e.name,qrId:e.qrId,active:e.active!==false,days:rows.length,earned:rows.reduce((s,a)=>s+Number(a.dailyWage||0),0)}}).filter(e=>e.days||e.active);
+ $('reportOutput').innerHTML=reportRows.length?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Days</th><th>Earned</th><th>Status</th></tr></thead><tbody>${reportRows.map(r=>`<tr><td><b>${esc(r.name)}</b><div class="tiny">${esc(r.qrId)}</div></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${r.active?'Active':'Inactive'}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No employees in this report.</div>';
+}
+function csv(rows){return rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n')}
+function download(name,content,type='text/csv;charset=utf-8'){const blob=new Blob(['\ufeff',content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500)}
+function exportPayroll(){const [from,to]=dateRange('pay');download(`workday-payroll-${from}-to-${to}.csv`,csv([['Employee','QR ID','Working days','Earned ETB','Paid ETB','Balance ETB'],...payrollRows.map(r=>[r.name,r.qrId,r.days,r.earned,r.paid,r.balance])]))}
+function exportReport(){runReport();const from=$('fromDate').value,to=$('toDate').value;download(`workday-attendance-${from}-to-${to}.csv`,csv([['Employee','QR ID','Working days','Earned ETB','Active'],...reportRows.map(r=>[r.name,r.qrId,r.days,r.earned,r.active?'Yes':'No'])]))}
+function exportToday(){download(`workday-attendance-${localDate()}.csv`,csv([['Employee','QR ID','Date','Time','Daily wage ETB'],...todayPresent().map(a=>[a.nameSnapshot,a.qrId,a.date,a.time,a.dailyWage])]))}
+function validBackup(x){return x&&Array.isArray(x.employees)&&Array.isArray(x.attendance)&&Array.isArray(x.payments||[])&&x.employees.every(e=>e.id&&e.name&&e.qrId)&&x.attendance.every(a=>a.employeeId&&a.date&&a.qrId)&&((x.payments||[]).every(p=>p.employeeId&&Number(p.amount)>=0))}
+function backup(){download(`workday-backup-${localDate()}.json`,JSON.stringify({...db,backupCreatedAt:new Date().toISOString()},null,2),'application/json')}
+function restoreFile(file){const reader=new FileReader();reader.onload=()=>{try{const x=JSON.parse(reader.result);if(!validBackup(x))throw Error('Backup structure is not valid');if(!confirm('Replace ALL current employees, attendance and payments with this backup?'))return;db={...blankDB(),...x,payments:x.payments||[]};if(persist())toast('Backup restored successfully.')}catch(e){toast(e.message||'Could not read backup.')}};reader.readAsText(file)}
+async function startCamera(){
+ if(!window.isSecureContext){toast('Camera needs a secure HTTPS page. Use manual QR ID entry if unavailable.');return}
+ if(!navigator.mediaDevices?.getUserMedia){toast('Camera API is unavailable in this browser. Use manual QR ID entry.');return}
+ if(!('BarcodeDetector'in window)){toast('This browser has no built-in QR detector. Use a QR scanning app or manual ID entry.');return}
+ try{
+  const detector=new BarcodeDetector({formats:['qr_code']});
+  cameraStream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'}}});
+  const v=$('video');v.srcObject=cameraStream;v.style.display='block';await v.play();$('startScan').classList.add('hidden');$('stopScan').classList.remove('hidden');
+  const tick=async()=>{if(!cameraStream)return;try{if(v.readyState>=2){const codes=await detector.detect(v);if(codes.length){const raw=codes[0].rawValue;if(raw&&(raw!==lastScanned||Date.now()-lastScanAt>2200)){lastScanned=raw;lastScanAt=Date.now();recordAttendance(raw)}}}}catch(e){}scanLoop=setTimeout(tick,300)};tick();
+ }catch(e){stopCamera();toast('Camera could not start. Check permission and close other camera apps.')}
+}
+function stopCamera(){if(scanLoop)clearTimeout(scanLoop);scanLoop=null;if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null}const v=$('video');v.pause();v.srcObject=null;v.style.display='none';$('startScan').classList.remove('hidden');$('stopScan').classList.add('hidden')}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.tabpage').forEach(x=>x.classList.toggle('hidden',x.id!=='tab-'+b.dataset.tab));if(b.dataset.tab!=='scan')stopCamera()}));
+$('makeId').onclick=()=>$('newQrId').value=makeId();$('saveEmployee').onclick=saveEmployee;$('cancelEdit').onclick=()=>resetEmployeeForm();
+$('manualScan').onclick=()=>recordAttendance($('manualId').value);$('manualId').addEventListener('keydown',e=>{if(e.key==='Enter')recordAttendance($('manualId').value)});
+$('startScan').onclick=startCamera;$('stopScan').onclick=stopCamera;$('printQr').onclick=printCard;$('downloadQr').onclick=downloadQr;$('employeeSearch').oninput=renderEmployees;
+$('payFrom').value=localDate().slice(0,7)+'-01';$('payTo').value=localDate();$('fromDate').value=localDate().slice(0,7)+'-01';$('toDate').value=localDate();
+$('runPayroll').onclick=runPayroll;$('payExport').onclick=exportPayroll;$('runReport').onclick=runReport;$('exportReport').onclick=exportReport;$('exportToday').onclick=exportToday;
+$('backupBtn').onclick=backup;$('restoreBtn').onclick=()=>$('restoreFile').click();$('restoreFile').onchange=e=>{if(e.target.files[0])restoreFile(e.target.files[0]);e.target.value=''};
+$('clearData').onclick=()=>{if(confirm('PERMANENTLY delete every employee, attendance record and payment stored in this browser? Download a backup first.')){db=blankDB();persist();$('scanResult').textContent='Local records deleted.'}};
+window.addEventListener('beforeunload',stopCamera);
+renderAll();
+if(navigator.storage?.persist)navigator.storage.persist().then(ok=>{if(!ok)console.warn('Persistent storage was not granted. Keep regular backups.')}).catch(()=>{});
+if('serviceWorker'in navigator&&location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script>
+</body></html>
