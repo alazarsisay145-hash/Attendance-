@@ -14,26 +14,59 @@
  --bg-1:#e1eee8;
  --bg-2:#f5f8f6;
  --bg-3:#d5e7de;
- --glass:rgba(255,255,255,.70);
- --glass-card:rgba(255,255,255,.79);
- --glass-input:rgba(255,255,255,.92);
- --glass-well:rgba(240,247,243,.64);
- --edge:rgba(255,255,255,.85);
+ --glass:rgba(255,255,255,.72);
+ --glass-card:rgba(255,255,255,.82);
+ --glass-input:rgba(255,255,255,.94);
+ --glass-well:rgba(240,247,243,.68);
+ --glass-table:rgba(255,255,255,.58);
+ --edge:rgba(255,255,255,.86);
  --edge-soft:rgba(15,38,28,.09);
  --ink:#0f2118;
+ --ink-strong:#17251f;
  --muted:#566960;
  --green:#126846;
  --green-2:#1b855b;
- --green-soft:rgba(18,104,70,.11);
+ --green-soft:rgba(18,104,70,.12);
  --accent:#1738ff;
- --accent-soft:rgba(23,56,255,.10);
+ --accent-soft:rgba(23,56,255,.11);
  --amber:#945d12;
- --amber-soft:rgba(148,93,18,.13);
+ --amber-soft:rgba(148,93,18,.14);
  --red:#b53530;
- --red-soft:rgba(181,53,48,.11);
+ --red-soft:rgba(181,53,48,.12);
+ --header-bg:rgba(12,31,24,.86);
+ --brand-word:#111111;
  --blur:blur(18px);
  --shadow:0 16px 38px rgba(11,34,24,.08), 0 2px 8px rgba(11,34,24,.04), inset 0 1px 0 rgba(255,255,255,.92);
 }
+
+html.dark{
+ --bg-1:#08120e;
+ --bg-2:#0d1a15;
+ --bg-3:#11231c;
+ --glass:rgba(18,34,28,.76);
+ --glass-card:rgba(20,39,32,.84);
+ --glass-input:rgba(12,24,20,.92);
+ --glass-well:rgba(14,28,23,.74);
+ --glass-table:rgba(13,26,21,.64);
+ --edge:rgba(156,227,190,.15);
+ --edge-soft:rgba(156,227,190,.11);
+ --ink:#ecf6f0;
+ --ink-strong:#ffffff;
+ --muted:#95afa3;
+ --green:#239c6b;
+ --green-2:#2db87f;
+ --green-soft:rgba(45,184,127,.16);
+ --accent:#6c85ff;
+ --accent-soft:rgba(108,133,255,.18);
+ --amber:#eab052;
+ --amber-soft:rgba(234,176,82,.16);
+ --red:#ff726b;
+ --red-soft:rgba(255,114,107,.16);
+ --header-bg:rgba(7,16,13,.90);
+ --brand-word:#f3faf6;
+ --shadow:0 18px 42px rgba(0,0,0,.38), 0 2px 10px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.06);
+}
+
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
@@ -47,6 +80,14 @@ body{
   radial-gradient(620px 380px at 50% 96%, rgba(18,104,70,.13), transparent 72%),
   linear-gradient(165deg, var(--bg-1) 0%, var(--bg-2) 52%, var(--bg-3) 100%);
  background-attachment:fixed;
+ transition:background .25s ease,color .2s ease;
+}
+html.dark body{
+ background:
+  radial-gradient(600px 380px at 10% 6%, rgba(45,184,127,.14), transparent 70%),
+  radial-gradient(540px 360px at 90% 10%, rgba(108,133,255,.12), transparent 70%),
+  radial-gradient(640px 400px at 50% 96%, rgba(18,104,70,.15), transparent 72%),
+  linear-gradient(165deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
 }
 
 /* Admin Lock / Authentication Screen */
@@ -69,13 +110,13 @@ body{
 .lock-card{
  width:100%;
  max-width:410px;
- background:rgba(255,255,255,.88);
+ background:var(--glass-card);
  backdrop-filter:var(--blur);
  -webkit-backdrop-filter:var(--blur);
- border:1px solid rgba(255,255,255,.9);
+ border:1px solid var(--edge);
  border-radius:26px;
  padding:26px 22px;
- box-shadow:0 24px 60px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.95);
+ box-shadow:0 24px 60px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.15);
  text-align:center;
 }
 .lock-brand{
@@ -84,7 +125,7 @@ body{
  gap:8px;
  padding:6px 12px;
  border-radius:999px;
- background:rgba(255,255,255,.78);
+ background:var(--glass-input);
  border:1px solid var(--edge-soft);
  margin-bottom:14px;
 }
@@ -100,7 +141,7 @@ body{
  color:var(--accent);
  margin-bottom:8px;
 }
-.lock-title{font-size:22px;font-weight:850;letter-spacing:-.5px;margin:0 0 4px;color:var(--ink)}
+.lock-title{font-size:22px;font-weight:850;letter-spacing:-.5px;margin:0 0 4px;color:var(--ink-strong)}
 .lock-sub{font-size:13px;color:var(--muted);margin:0 0 18px}
 .passcode-input{
  text-align:center;
@@ -127,7 +168,7 @@ header{
  position:sticky;
  top:0;
  z-index:20;
- background:rgba(12,31,24,.85);
+ background:var(--header-bg);
  backdrop-filter:var(--blur);
  -webkit-backdrop-filter:var(--blur);
  border-bottom:1px solid rgba(255,255,255,.14);
@@ -170,8 +211,8 @@ header{
 
 main{max-width:1180px;margin:auto;padding:22px 14px 56px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-h1{font-size:26px;margin:0 0 3px;letter-spacing:-.75px;font-weight:850}
-h2{font-size:17px;margin:0 0 13px;letter-spacing:-.25px;font-weight:800}
+h1{font-size:26px;margin:0 0 3px;letter-spacing:-.75px;font-weight:850;color:var(--ink-strong)}
+h2{font-size:17px;margin:0 0 13px;letter-spacing:-.25px;font-weight:800;color:var(--ink-strong)}
 .muted{color:var(--muted)}
 .tiny{font-size:12px;color:var(--muted)}
 
@@ -191,7 +232,7 @@ h2{font-size:17px;margin:0 0 13px;letter-spacing:-.25px;font-weight:800}
 }
 .stat:hover{transform:translateY(-2px);background:var(--glass-card)}
 .stat small{color:var(--muted);font-weight:700;font-size:12px;display:block}
-.stat strong{display:block;font-size:25px;margin-top:6px;letter-spacing:-.7px;font-variant-numeric:tabular-nums}
+.stat strong{display:block;font-size:25px;margin-top:6px;letter-spacing:-.7px;font-variant-numeric:tabular-nums;color:var(--ink-strong)}
 
 .layout{display:grid;grid-template-columns:1fr 1.25fr;gap:15px;align-items:start}
 .panel{padding:19px;margin-bottom:14px;background:var(--glass-card)}
@@ -209,10 +250,10 @@ h2{font-size:17px;margin:0 0 13px;letter-spacing:-.25px;font-weight:800}
 }
 .quick-tile:hover{
  transform:translateY(-2px);
- background:#fff;
- border-color:rgba(18,104,70,.32);
+ background:var(--glass-input);
+ border-color:rgba(45,184,127,.45);
 }
-.quick-tile strong{display:block;font-size:14px;margin-bottom:2px}
+.quick-tile strong{display:block;font-size:14px;margin-bottom:2px;color:var(--ink-strong)}
 .quick-tile span{display:block;font-size:12px;color:var(--muted)}
 
 .tabs{display:flex;gap:8px;overflow:auto;padding:4px 2px 15px;scrollbar-width:none}
@@ -226,25 +267,25 @@ h2{font-size:17px;margin:0 0 13px;letter-spacing:-.25px;font-weight:800}
  border-radius:999px;
  font-weight:750;
  font-size:13px;
- color:#35473e;
+ color:var(--ink);
  white-space:nowrap;
  cursor:pointer;
  transition:all .18s ease;
- box-shadow:0 4px 14px rgba(11,34,24,.04);
+ box-shadow:0 4px 14px rgba(11,34,24,.05);
 }
 .tab:hover{background:var(--glass-input);transform:translateY(-1px)}
 .tab.active{
  background:linear-gradient(135deg,#103b2c,#196d4c);
  color:#fff;
  border-color:rgba(255,255,255,.32);
- box-shadow:0 10px 22px rgba(18,104,70,.24);
+ box-shadow:0 10px 22px rgba(18,104,70,.28);
 }
 
-label{display:block;font-size:12px;font-weight:750;color:#394c42;margin:12px 0 5px}
+label{display:block;font-size:12px;font-weight:750;color:var(--muted);margin:12px 0 5px}
 input:not([type="checkbox"]),select{
  width:100%;
  min-height:44px;
- border:1px solid rgba(15,33,24,.13);
+ border:1px solid var(--edge-soft);
  border-radius:13px;
  padding:10px 13px;
  background:var(--glass-input);
@@ -254,8 +295,8 @@ input:not([type="checkbox"]),select{
  transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
 }
 input:not([type="checkbox"]):focus,select:focus{
- outline:none;background:#fff;border-color:var(--green-2);
- box-shadow:0 0 0 3px rgba(27,133,91,.16);
+ outline:none;border-color:var(--green-2);
+ box-shadow:0 0 0 3px rgba(45,184,127,.2);
 }
 input[type="checkbox"]{width:19px;height:19px;accent-color:var(--green);cursor:pointer;margin:0;flex:0 0 auto}
 
@@ -264,7 +305,7 @@ input[type="checkbox"]{width:19px;height:19px;accent-color:var(--green);cursor:p
 
 .btn{
  min-height:44px;
- border:1px solid rgba(255,255,255,.22);
+ border:1px solid rgba(255,255,255,.18);
  border-radius:13px;
  padding:10px 15px;
  font-weight:750;
@@ -272,22 +313,23 @@ input[type="checkbox"]{width:19px;height:19px;accent-color:var(--green);cursor:p
  cursor:pointer;
  background:linear-gradient(135deg,var(--green),var(--green-2));
  color:#fff;
- box-shadow:0 8px 20px rgba(18,104,70,.22);
+ box-shadow:0 8px 20px rgba(18,104,70,.24);
  transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;
 }
-.btn:hover:not(:disabled){filter:brightness(1.04);transform:translateY(-1px)}
+.btn:hover:not(:disabled){filter:brightness(1.05);transform:translateY(-1px)}
 .btn:active:not(:disabled){transform:translateY(0)}
 .btn.secondary{
- background:var(--glass-input);color:#173427;
- border:1px solid rgba(15,33,24,.12);box-shadow:0 3px 10px rgba(11,34,24,.04);
+ background:var(--glass-input);color:var(--ink-strong);
+ border:1px solid var(--edge-soft);box-shadow:0 3px 10px rgba(11,34,24,.06);
 }
 .btn.outline{
- background:var(--green-soft);color:var(--green);
- border:1px solid rgba(18,104,70,.26);box-shadow:none;
+ background:var(--green-soft);color:var(--green-2);
+ border:1px solid rgba(45,184,127,.32);box-shadow:none;
 }
+html:not(.dark) .btn.outline{color:var(--green)}
 .btn.danger{
  background:var(--red-soft);color:var(--red);
- border:1px solid rgba(181,53,48,.22);box-shadow:none;
+ border:1px solid rgba(181,53,48,.28);box-shadow:none;
 }
 .btn.small{min-height:36px;padding:7px 11px;font-size:12px;border-radius:11px}
 .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
@@ -305,16 +347,18 @@ input[type="checkbox"]{width:19px;height:19px;accent-color:var(--green);cursor:p
  background:var(--glass-well);border:1px solid var(--edge-soft);
  margin-top:11px;min-height:54px;
 }
-.result.success{background:rgba(222,247,232,.86);border-color:rgba(18,104,70,.28)}
-.result.warn{background:rgba(255,245,222,.92);border-color:rgba(148,93,18,.26)}
-.result b.name{font-size:18px;display:block;margin-bottom:2px}
+.result.success{background:rgba(35,156,107,.16);border-color:rgba(45,184,127,.38)}
+.result.warn{background:rgba(234,176,82,.16);border-color:rgba(234,176,82,.38)}
+html:not(.dark) .result.success{background:rgba(222,247,232,.88);border-color:rgba(18,104,70,.28)}
+html:not(.dark) .result.warn{background:rgba(255,245,222,.92);border-color:rgba(148,93,18,.26)}
+.result b.name{font-size:18px;display:block;margin-bottom:2px;color:var(--ink-strong)}
 
 table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
-th{text-align:left;color:#62756c;font-size:10px;text-transform:uppercase;letter-spacing:.55px;padding:10px 9px;border-bottom:1px solid var(--edge-soft)}
-td{padding:11px 9px;border-bottom:1px solid rgba(15,33,24,.06);vertical-align:middle}
+th{text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.55px;padding:10px 9px;border-bottom:1px solid var(--edge-soft)}
+td{padding:11px 9px;border-bottom:1px solid var(--edge-soft);vertical-align:middle}
 tr:last-child td{border:0}
-tr.selected-row td{background:rgba(18,104,70,.07)}
-.tablewrap{overflow:auto;border-radius:16px;background:rgba(255,255,255,.55);border:1px solid var(--edge)}
+tr.selected-row td{background:var(--green-soft)}
+.tablewrap{overflow:auto;border-radius:16px;background:var(--glass-table);border:1px solid var(--edge)}
 .tag{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;margin-left:6px;vertical-align:middle}
 .tag.unassigned{background:var(--amber-soft);color:var(--amber)}
 .tag.inactive{background:var(--red-soft);color:var(--red)}
@@ -323,10 +367,10 @@ tr.selected-row td{background:rgba(18,104,70,.07)}
 
 #qrOutput{
  display:flex;justify-content:center;align-items:center;padding:16px;min-height:196px;
- background:rgba(255,255,255,.58);border:1.5px dashed rgba(18,104,70,.28);
+ background:var(--glass-well);border:1.5px dashed rgba(45,184,127,.35);
  border-radius:18px;margin-top:13px;
 }
-#qrOutput canvas{max-width:232px;height:auto;border-radius:14px;box-shadow:0 12px 26px rgba(11,34,24,.15)}
+#qrOutput canvas{max-width:232px;height:auto;border-radius:14px;box-shadow:0 12px 26px rgba(0,0,0,.22)}
 
 .bulkbar,.lookupbox{
  background:var(--glass-well);border:1px solid var(--edge);border-radius:16px;padding:12px;
@@ -336,16 +380,17 @@ tr.selected-row td{background:rgba(18,104,70,.07)}
 .chklabel{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:750;color:var(--ink);cursor:pointer;min-height:36px}
 
 .nexus-badge{display:inline-flex;align-items:center;gap:7px;vertical-align:middle}
-.nexus-word{font-weight:700;letter-spacing:.14em;color:#111;font-size:13px;line-height:1}
+.nexus-word{font-weight:700;letter-spacing:.14em;color:var(--brand-word);font-size:13px;line-height:1}
 
 .note{font-size:12px;color:var(--muted);margin-top:9px}
 .toast{
  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
- background:rgba(13,33,25,.92);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+ background:rgba(10,25,19,.95);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
  border:1px solid rgba(255,255,255,.18);color:#fff;padding:11px 16px;border-radius:15px;
- z-index:60;max-width:92vw;font-weight:650;box-shadow:0 14px 32px rgba(0,0,0,.22);
+ z-index:60;max-width:92vw;font-weight:650;box-shadow:0 14px 32px rgba(0,0,0,.35);
 }
-.money{font-weight:850;color:var(--green)}
+.money{font-weight:850;color:var(--green-2)}
+html:not(.dark) .money{color:var(--green)}
 hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
 
 @media(max-width:760px){
@@ -360,7 +405,7 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
 }
 @media print{
  header,.no-print,.tabs,.note,.lock-screen{display:none!important}
- body{background:#fff}
+ body{background:#fff;color:#0f2118}
  .panel,.stat{background:#fff;backdrop-filter:none;box-shadow:none;border-color:#ddd}
 }
 </style>
@@ -415,7 +460,8 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
  <div class="header-right">
   <button class="pill warn hidden" id="backupBadge" title="Open Backup & Security">Backup recommended</button>
   <div class="pill">● OFFLINE READY</div>
-  <button class="btn secondary small no-print" id="lockBtn" title="Lock admin session">Lock</button>
+  <button class="btn secondary small no-print" id="themeBtn" type="button" title="Toggle dark or light mode">Dark mode</button>
+  <button class="btn secondary small no-print" id="lockBtn" type="button" title="Lock admin session">Lock</button>
  </div>
 </header>
 
@@ -475,8 +521,8 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
       <span>Filter dates & export CSV</span>
      </button>
      <button class="quick-tile" data-jump="backup">
-      <strong>Backup & Admin Passcode</strong>
-      <span>Export JSON & change passcode</span>
+      <strong>Backup, Theme & Passcode</strong>
+      <span>Dark mode, JSON backup & security</span>
      </button>
     </div>
    </div>
@@ -529,9 +575,9 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
     <input id="newWage" type="number" min="0" step="0.01" placeholder="e.g. 400">
     <label for="newPayCycle">Pay cycle</label>
     <select id="newPayCycle">
-     <option value="weekly">Weekly (every 7 days)</option>
+     <option value="weekly" selected>Weekly (every 7 days)</option>
      <option value="biweekly">Biweekly (every 2 weeks / 14 days)</option>
-     <option value="monthly" selected>Monthly</option>
+     <option value="monthly">Monthly</option>
     </select>
     <label for="newQrId">QR card ID (max 17 chars)</label>
     <div class="row">
@@ -574,7 +620,7 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
     </div>
 
     <div class="row">
-     <div style="flex:3"><input id="employeeSearch" placeholder="Search by name, QR ID, or reference"></div>
+     <div style="flex:3"><input id="employeeSearch" placeholder="Search by name, QR ID, cycle, or reference"></div>
      <button class="btn secondary small" id="clearSearch" style="flex:0 0 auto;min-height:44px">Clear</button>
     </div>
 
@@ -644,6 +690,12 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
  <!-- BACKUP & SECURITY -->
  <section id="tab-backup" class="tabpage hidden">
   <div class="panel">
+   <h2>Appearance</h2>
+   <p class="muted" style="margin-top:0">Switch between Dark Mode and Light Mode for comfortable viewing day or night.</p>
+   <div class="actions">
+    <button class="btn secondary" id="backupThemeBtn" type="button">Toggle Dark / Light mode</button>
+   </div>
+   <hr>
    <h2>Admin authentication passcode</h2>
    <p class="muted" style="margin-top:0">Change your admin passcode anytime. You can also change it from the login screen using your current passcode.</p>
    <div class="row">
@@ -684,8 +736,8 @@ hr{border:0;border-top:1px solid var(--edge-soft);margin:16px 0}
    <span class="nexus-word">NEXUS</span>
   </span>
  </div>
- <div style="font-weight:750;color:#173427">NEXUS v5.3 · Workforce & Payroll OS</div>
- <div style="margin-top:6px;font-size:11px;color:#566960">Offline local records · Export backups regularly</div>
+ <div style="font-weight:750;color:var(--ink-strong)">NEXUS v5.4 · Workforce & Payroll OS</div>
+ <div style="margin-top:6px;font-size:11px;color:var(--muted)">Offline local records · Export backups regularly</div>
 </footer>
 
 <div id="toast" class="toast hidden"></div>
@@ -799,15 +851,37 @@ function makeBrandedCardCanvas(emp){
 const KEY='nexus_workforce_payroll_v5';
 const LEGACY_KEYS=['workday_local_payroll_v5','workday_local_payroll_v4'];
 const PASS_KEY='nexus_workforce_passcode_v1';
+const THEME_KEY='nexus_workforce_theme_v1';
 const DEFAULT_PASSCODE='2026';
 
 let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='', lastScanAt=0, reportRows=[], payrollRows=[];
 const selectedIds=new Set();
 const $=id=>document.getElementById(id);
 
+function getSavedTheme(){
+ try{
+  const saved=localStorage.getItem(THEME_KEY);
+  if(saved==='dark'||saved==='light')return saved;
+ }catch(e){}
+ return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+}
+function applyTheme(mode,notify=false){
+ const isDark=mode==='dark';
+ document.documentElement.classList.toggle('dark',isDark);
+ const metaTheme=document.querySelector('meta[name="theme-color"]');
+ if(metaTheme)metaTheme.setAttribute('content',isDark?'#07100d':'#0d221b');
+ if($('themeBtn'))$('themeBtn').textContent=isDark?'Light mode':'Dark mode';
+ try{localStorage.setItem(THEME_KEY,isDark?'dark':'light')}catch(e){}
+ if(notify)toast(isDark?'Dark mode enabled':'Light mode enabled');
+}
+function toggleTheme(){
+ const next=document.documentElement.classList.contains('dark')?'light':'dark';
+ applyTheme(next,true);
+}
+
 function normalizeCycle(c){
  if(c==='weekly'||c==='biweekly'||c==='monthly')return c;
- return 'monthly';
+ return 'weekly';
 }
 function cycleLabel(c){
  const norm=normalizeCycle(c);
@@ -1041,7 +1115,7 @@ function saveEmployee(){
 
 function resetEmployeeForm(clearQr=true){
  $('editId').value='';$('newName').value='';$('newExtra').value='';$('newWage').value='';
- $('newPayCycle').value='monthly';
+ $('newPayCycle').value='weekly';
  $('newQrId').disabled=false;if(clearQr)$('newQrId').value='';
  $('employeeFormTitle').textContent='Create / assign NEXUS QR card';
  $('saveEmployee').textContent='Save & generate NEXUS QR';
@@ -1324,6 +1398,8 @@ document.querySelectorAll('.quick-tile[data-jump]').forEach(el=>el.addEventListe
 $('homeNextUnassigned').onclick=editNextUnassigned;
 $('backupBadge').onclick=()=>openTab('backup');
 $('quickBackupTop').onclick=backup;
+$('themeBtn').onclick=toggleTheme;
+$('backupThemeBtn').onclick=toggleTheme;
 $('lockBtn').onclick=lockScreen;
 
 $('loginForm').addEventListener('submit',e=>{
@@ -1408,6 +1484,7 @@ $('clearData').onclick=()=>{
  }
 };
 window.addEventListener('beforeunload',stopCamera);
+applyTheme(getSavedTheme(),false);
 renderAll();
 setTimeout(()=>$('passcodeInput').focus(),60);
 if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});
