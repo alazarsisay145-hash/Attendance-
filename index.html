@@ -34,10 +34,10 @@
  --danger:#dc2626;
  --danger-bg:#fef2f2;
  --danger-border:#fca5a5;
- --header-bg:#ffffff;
+ --header-bg:rgba(255,255,255,.96);
  --nav-bg:rgba(255,255,255,.97);
  --brand-word:#091e34;
- --shadow-sm:0 2px 6px rgba(9,30,52,.05);
+ --shadow-sm:0 2px 8px rgba(9,30,52,.05);
  --shadow-md:0 12px 30px rgba(9,30,52,.10);
 }
 
@@ -65,7 +65,7 @@ html[data-palette="slate"]{
  --danger:#dc2626;
  --danger-bg:#fef2f2;
  --danger-border:#fca5a5;
- --header-bg:#ffffff;
+ --header-bg:rgba(255,255,255,.96);
  --nav-bg:rgba(255,255,255,.97);
  --brand-word:#0f172a;
 }
@@ -94,7 +94,7 @@ html[data-palette="stone"]{
  --danger:#dc2626;
  --danger-bg:#fef2f2;
  --danger-border:#fca5a5;
- --header-bg:#ffffff;
+ --header-bg:rgba(255,255,255,.96);
  --nav-bg:rgba(255,255,255,.97);
  --brand-word:#1c1917;
 }
@@ -123,11 +123,11 @@ html[data-palette="midnight"]{
  --danger:#f87171;
  --danger-bg:rgba(239,68,68,.14);
  --danger-border:rgba(248,113,113,.4);
- --header-bg:#0c1220;
+ --header-bg:rgba(12,18,32,.96);
  --nav-bg:rgba(12,18,32,.97);
  --brand-word:#f8fafc;
- --shadow-sm:0 2px 8px rgba(0,0,0,.3);
- --shadow-md:0 16px 36px rgba(0,0,0,.5);
+ --shadow-sm:0 2px 8px rgba(0,0,0,.32);
+ --shadow-md:0 16px 36px rgba(0,0,0,.52);
 }
 
 /* Retro Film-Grain Black & White Theme (Noir) */
@@ -161,8 +161,6 @@ html[data-palette="grainblack"]{
  --shadow-sm:0 2px 8px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.04);
  --shadow-md:0 16px 36px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.06);
 }
-
-/* Subtle analog film grain texture overlay for Retro Grain Noir */
 html[data-palette="grainblack"] body{
  background-color:#111111;
  background-image:
@@ -170,15 +168,8 @@ html[data-palette="grainblack"] body{
   radial-gradient(circle at 82% 88%,rgba(255,255,255,.025),transparent 46%);
 }
 html[data-palette="grainblack"] body::after{
- content:"";
- position:fixed;
- inset:0;
- z-index:90;
- pointer-events:none;
- opacity:.085;
- mix-blend-mode:screen;
- background-repeat:repeat;
- background-size:180px 180px;
+ content:"";position:fixed;inset:0;z-index:90;pointer-events:none;
+ opacity:.085;mix-blend-mode:screen;background-repeat:repeat;background-size:180px 180px;
  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
 }
 html[data-palette="grainblack"] .panel,
@@ -188,71 +179,32 @@ html[data-palette="grainblack"] .lock-card,
 html[data-palette="grainblack"] .modal-card{
  background-image:linear-gradient(180deg,rgba(255,255,255,.028) 0%,rgba(255,255,255,0) 100%);
 }
-html[data-palette="grainblack"] .scan-hero{
- border:1px solid rgba(255,255,255,.35);
- box-shadow:0 12px 28px rgba(0,0,0,.6);
-}
-html[data-palette="grainblack"] .scan-icon-box{
- background:rgba(17,17,17,.12);
-}
-html[data-palette="grainblack"] .scan-big-card{
- background:#161616;
- border-color:#f4f2ec;
- box-shadow:0 24px 54px rgba(0,0,0,.78);
-}
-html[data-palette="grainblack"] .scan-big-icon{
- background:#f4f2ec;
- color:#111111;
- box-shadow:0 12px 28px rgba(244,242,236,.25);
-}
-html[data-palette="grainblack"] .scan-big-icon-wrap::after{
- border-color:#f4f2ec;
-}
-html[data-palette="grainblack"] .scan-big-badge{
- background:rgba(244,242,236,.14);
- color:#f4f2ec;
-}
+html[data-palette="grainblack"] .scan-hero{border:1px solid rgba(255,255,255,.35);box-shadow:0 12px 28px rgba(0,0,0,.6)}
+html[data-palette="grainblack"] .scan-icon-box{background:rgba(17,17,17,.12)}
+html[data-palette="grainblack"] .scan-big-card{background:#161616;border-color:#f4f2ec;box-shadow:0 24px 54px rgba(0,0,0,.78)}
+html[data-palette="grainblack"] .scan-big-icon{background:#f4f2ec;color:#111111;box-shadow:0 12px 28px rgba(244,242,236,.25)}
+html[data-palette="grainblack"] .scan-big-icon-wrap::after{border-color:#f4f2ec}
+html[data-palette="grainblack"] .scan-big-badge{background:rgba(244,242,236,.14);color:#f4f2ec}
 html[data-palette="grainblack"] .scan-big-name{color:#f4f2ec}
 html[data-palette="grainblack"] .scan-big-meta,
 html[data-palette="grainblack"] .scan-big-tap{color:#d6d3cb}
-html[data-palette="grainblack"] .result.success .confirm-icon-big{
- background:#f4f2ec;
- color:#111111;
- box-shadow:0 8px 20px rgba(244,242,236,.22);
-}
-html[data-palette="grainblack"] .result.success.animate-confirm .confirm-icon-wrap::after{
- border-color:#f4f2ec;
-}
-html[data-palette="grainblack"] .result.success .confirm-status{
- background:rgba(244,242,236,.15);
- color:#f4f2ec;
-}
-html[data-palette="grainblack"] .result.warn .confirm-icon-big{
- background:#4a4945;
- color:#f4f2ec;
- border:1px solid #9a9790;
-}
-html[data-palette="grainblack"] .result.warn .confirm-status{
- background:rgba(244,242,236,.12);
- color:#d6d3cb;
-}
-html[data-palette="grainblack"] .btn.danger{
- border-style:dashed;
-}
+html[data-palette="grainblack"] .result.success .confirm-icon-big{background:#f4f2ec;color:#111111;box-shadow:0 8px 20px rgba(244,242,236,.22)}
+html[data-palette="grainblack"] .result.success.animate-confirm .confirm-icon-wrap::after{border-color:#f4f2ec}
+html[data-palette="grainblack"] .result.success .confirm-status{background:rgba(244,242,236,.15);color:#f4f2ec}
+html[data-palette="grainblack"] .result.warn .confirm-icon-big{background:#4a4945;color:#f4f2ec;border:1px solid #9a9790}
+html[data-palette="grainblack"] .result.warn .confirm-status{background:rgba(244,242,236,.12);color:#d6d3cb}
+html[data-palette="grainblack"] .btn.danger{border-style:dashed}
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{
- margin:0;
- min-height:100dvh;
- background:var(--bg);
- color:var(--ink);
+ margin:0;min-height:100dvh;background:var(--bg);color:var(--ink);
  font:400 15px/1.5 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif;
- padding-bottom:calc(88px + env(safe-area-inset-bottom));
+ padding-bottom:calc(92px + env(safe-area-inset-bottom));
  transition:background-color .2s ease,color .2s ease;
 }
 
-/* Admin Lock Screen */
+/* Overlays */
 .lock-screen{
  position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
  padding:20px;overflow:auto;background:var(--bg);
@@ -276,7 +228,6 @@ body{
 .lock-err{margin-top:10px;font-size:12.5px;font-weight:600;color:var(--danger);min-height:18px}
 .lock-change-box{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);text-align:left}
 
-/* In-app Payment / Advance Modal */
 .modal-backdrop{
  position:fixed;inset:0;z-index:55;display:flex;align-items:flex-end;justify-content:center;
  padding:12px;overflow:auto;background:rgba(9,30,52,.48);backdrop-filter:blur(2px);
@@ -294,7 +245,7 @@ body{
 }
 .modal-err{min-height:18px;margin-top:8px;font-size:12.5px;font-weight:600;color:var(--danger)}
 
-/* Big Pop-up Scan Confirmation Card Overlay */
+/* Big Check Mark Confirmation Overlay */
 .scan-overlay{
  position:fixed;inset:0;z-index:75;display:flex;align-items:center;justify-content:center;
  padding:20px;background:rgba(9,30,52,.52);backdrop-filter:blur(3px);
@@ -306,55 +257,38 @@ body{
  animation:scanCardPop .36s cubic-bezier(.22,1,.36,1) both;
 }
 .scan-big-card.warn{
- background:#fffbeb;border-color:#f59e0b;
- box-shadow:0 24px 54px rgba(217,119,6,.32);
+ background:#fffbeb;border-color:#f59e0b;box-shadow:0 24px 54px rgba(217,119,6,.32);
 }
-.scan-big-icon-wrap{
- position:relative;width:96px;height:96px;margin:0 auto 16px;display:grid;place-items:center;
-}
+.scan-big-icon-wrap{position:relative;width:96px;height:96px;margin:0 auto 16px;display:grid;place-items:center}
 .scan-big-icon{
  position:relative;z-index:1;width:96px;height:96px;border-radius:28px;
  background:#10b981;color:#ffffff;display:grid;place-items:center;
- font-size:52px;font-weight:900;line-height:1;
- box-shadow:0 12px 28px rgba(16,185,129,.42);
+ font-size:52px;font-weight:900;line-height:1;box-shadow:0 12px 28px rgba(16,185,129,.42);
  animation:checkBadgeBounce .46s cubic-bezier(.22,1,.36,1) both;
 }
-.scan-big-card.warn .scan-big-icon{
- background:#f59e0b;box-shadow:0 12px 28px rgba(245,158,11,.36);
-}
+.scan-big-card.warn .scan-big-icon{background:#f59e0b;box-shadow:0 12px 28px rgba(245,158,11,.36)}
 .scan-big-icon-wrap::after{
- content:"";position:absolute;inset:0;border-radius:28px;
- border:4px solid #10b981;pointer-events:none;
+ content:"";position:absolute;inset:0;border-radius:28px;border:4px solid #10b981;pointer-events:none;
  animation:checkRingPulse .75s cubic-bezier(.16,1,.3,1) forwards;
 }
-.scan-big-card.warn .scan-big-icon-wrap::after{
- border-color:#f59e0b;
-}
+.scan-big-card.warn .scan-big-icon-wrap::after{border-color:#f59e0b}
 .scan-big-badge{
  display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
  padding:4px 12px;border-radius:999px;background:rgba(16,185,129,.16);color:#047857;margin-bottom:8px;
 }
-.scan-big-card.warn .scan-big-badge{
- background:rgba(245,158,11,.18);color:#b45309;
-}
-.scan-big-name{
- font-size:26px;font-weight:900;letter-spacing:-.025em;color:#06281e;margin:0 0 6px;line-height:1.15;
-}
+.scan-big-card.warn .scan-big-badge{background:rgba(245,158,11,.18);color:#b45309}
+.scan-big-name{font-size:26px;font-weight:900;letter-spacing:-.025em;color:#06281e;margin:0 0 6px;line-height:1.15}
 .scan-big-card.warn .scan-big-name{color:#451a03}
-.scan-big-meta{
- font-size:14px;font-weight:600;color:#065f46;line-height:1.45;
-}
+.scan-big-meta{font-size:14px;font-weight:600;color:#065f46;line-height:1.45}
 .scan-big-card.warn .scan-big-meta{color:#78350f}
-.scan-big-tap{
- margin-top:14px;font-size:11.5px;font-weight:700;color:#059669;opacity:.85;
-}
+.scan-big-tap{margin-top:14px;font-size:11.5px;font-weight:700;color:#059669;opacity:.85}
 .scan-big-card.warn .scan-big-tap{color:#b45309}
 
-/* Top Header */
+/* Header */
 header{
- position:sticky;top:0;z-index:20;background:var(--header-bg);
+ position:sticky;top:0;z-index:20;background:var(--header-bg);backdrop-filter:blur(8px);
  border-bottom:1px solid var(--border);color:var(--ink);
- padding:12px max(16px,calc((100% - 900px)/2));
+ padding:12px max(16px,calc((100% - 920px)/2));
  padding-top:calc(12px + env(safe-area-inset-top));
  display:flex;justify-content:space-between;align-items:center;gap:12px;
 }
@@ -372,15 +306,14 @@ header{
 }
 .pill.warn{background:var(--warning-bg);border-color:var(--warning-border);color:var(--warning);cursor:pointer}
 
-/* Container */
-main{max-width:900px;margin:0 auto;padding:20px 16px 32px}
+/* Layout */
+main{max-width:920px;margin:0 auto;padding:20px 16px 32px}
 .app-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
 h1{font-size:24px;margin:0;letter-spacing:-.03em;font-weight:800;color:var(--ink)}
 h2{font-size:15px;margin:0 0 12px;letter-spacing:-.015em;font-weight:750;color:var(--ink)}
 .muted{color:var(--muted)}
 .tiny{font-size:12px;color:var(--muted)}
 
-/* Metrics */
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px}
 @media(min-width:640px){.stats{grid-template-columns:repeat(4,1fr)}}
 .stat,.panel{
@@ -388,19 +321,15 @@ h2{font-size:15px;margin:0 0 12px;letter-spacing:-.015em;font-weight:750;color:v
  border-radius:20px;box-shadow:var(--shadow-sm);
 }
 .stat{padding:16px;position:relative;overflow:hidden}
-.stat::before{
- content:"";position:absolute;top:0;left:0;right:0;height:3px;
- background:var(--accent);opacity:.65;
-}
+.stat::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);opacity:.65}
 .stat.clickable{cursor:pointer;transition:transform .14s ease,border-color .14s ease}
 .stat.clickable:hover{transform:translateY(-1px);border-color:var(--accent)}
 .stat small{color:var(--muted);font-weight:700;font-size:12px;display:block}
 .stat strong{display:block;font-size:22px;margin-top:6px;letter-spacing:-.025em;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink)}
 
-.panel{padding:20px;margin-bottom:14px}
+.panel{padding:20px;margin-bottom:16px}
 @media(min-width:760px){.two-col{display:grid;grid-template-columns:1fr 1.15fr;gap:16px;align-items:start}}
 
-/* Primary Scanner Action Card */
 .scan-hero{
  width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;
  padding:18px 20px;border-radius:20px;border:1px solid transparent;
@@ -491,7 +420,7 @@ input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);cursor:
  border-radius:16px;display:none;margin-top:14px;border:1px solid var(--border);
 }
 
-/* Inline Scan Confirmation Banner */
+/* Scan Confirmation Animations & Card */
 @keyframes scanCardPop{
  0%{opacity:0;transform:translateY(10px) scale(.94)}
  65%{opacity:1;transform:translateY(-2px) scale(1.02)}
@@ -514,38 +443,21 @@ input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);cursor:
  transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease;
 }
 .result.animate-confirm{animation:scanCardPop .38s cubic-bezier(.22,1,.36,1) both}
-.result.success{
- background:var(--success-bg);border-color:var(--success-border);
- box-shadow:0 10px 26px rgba(13,148,136,.16);
-}
-.result.warn{
- background:var(--warning-bg);border-color:var(--warning-border);
-}
-.confirm-banner{
- display:flex;align-items:center;gap:14px;
-}
-.confirm-icon-wrap{
- position:relative;width:64px;height:64px;flex:0 0 auto;display:grid;place-items:center;
-}
+.result.success{background:var(--success-bg);border-color:var(--success-border);box-shadow:0 10px 26px rgba(13,148,136,.16)}
+.result.warn{background:var(--warning-bg);border-color:var(--warning-border)}
+.confirm-banner{display:flex;align-items:center;gap:14px}
+.confirm-icon-wrap{position:relative;width:64px;height:64px;flex:0 0 auto;display:grid;place-items:center}
 .confirm-icon-big{
  position:relative;z-index:1;width:64px;height:64px;border-radius:20px;
  display:grid;place-items:center;font-size:34px;font-weight:900;line-height:1;
 }
-.result.animate-confirm .confirm-icon-big{
- animation:checkBadgeBounce .46s cubic-bezier(.22,1,.36,1) both;
-}
-.result.success .confirm-icon-big{
- background:#10b981;color:#ffffff;
- box-shadow:0 8px 20px rgba(16,185,129,.34);
-}
+.result.animate-confirm .confirm-icon-big{animation:checkBadgeBounce .46s cubic-bezier(.22,1,.36,1) both}
+.result.success .confirm-icon-big{background:#10b981;color:#ffffff;box-shadow:0 8px 20px rgba(16,185,129,.34)}
 .result.success.animate-confirm .confirm-icon-wrap::after{
- content:"";position:absolute;inset:0;border-radius:20px;
- border:3px solid #10b981;pointer-events:none;
+ content:"";position:absolute;inset:0;border-radius:20px;border:3px solid #10b981;pointer-events:none;
  animation:checkRingPulse .7s cubic-bezier(.16,1,.3,1) forwards;
 }
-.result.warn .confirm-icon-big{
- background:#f59e0b;color:#ffffff;
-}
+.result.warn .confirm-icon-big{background:#f59e0b;color:#ffffff}
 .confirm-body{min-width:0;flex:1}
 .confirm-status{
  display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
@@ -557,9 +469,7 @@ input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);cursor:
 .confirm-meta{font-size:12.5px;color:var(--ink-secondary)}
 
 @media(prefers-reduced-motion:reduce){
- .scan-big-card,.scan-big-icon,.scan-big-icon-wrap::after,.result.animate-confirm,.result.animate-confirm .confirm-icon-big,.result.success.animate-confirm .confirm-icon-wrap::after{
-  animation:none!important;
- }
+ .scan-big-card,.scan-big-icon,.scan-big-icon-wrap::after,.result.animate-confirm,.result.animate-confirm .confirm-icon-big,.result.success.animate-confirm .confirm-icon-wrap::after{animation:none!important}
 }
 
 table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
@@ -605,7 +515,7 @@ tr.selected-row td{background:var(--accent-soft)}
 
 .note{font-size:12px;color:var(--muted);margin-top:8px}
 .toast{
- position:fixed;bottom:calc(82px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+ position:fixed;bottom:calc(84px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
  background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:12px;
  z-index:60;max-width:92vw;font-size:13px;font-weight:700;box-shadow:var(--shadow-md);
 }
@@ -615,7 +525,7 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
 /* Bottom Navigation Bar */
 .bottom-nav{
  position:fixed;left:0;right:0;bottom:0;z-index:30;
- background:var(--nav-bg);border-top:1px solid var(--border);
+ background:var(--nav-bg);backdrop-filter:blur(8px);border-top:1px solid var(--border);
  padding:6px 8px calc(6px + env(safe-area-inset-bottom));
  display:grid;grid-template-columns:repeat(5,1fr);align-items:center;gap:4px;
 }
@@ -623,6 +533,7 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
  min-height:50px;border:0;background:transparent;color:var(--muted);
  font:650 10.5px/1.1 -apple-system,BlinkMacSystemFont,"Inter",sans-serif;cursor:pointer;border-radius:12px;
+ transition:background-color .15s ease,color .15s ease;
 }
 .nav-item svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .nav-item.active{color:var(--accent);background:var(--accent-soft)}
@@ -646,7 +557,7 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
 </head>
 <body>
 
-<!-- Big Green Check Mark Card Overlay on Scan -->
+<!-- Big Check Mark Card Overlay on Scan -->
 <div id="scanBigOverlay" class="scan-overlay hidden" role="status" aria-live="assertive">
  <div id="scanBigCard" class="scan-big-card">
   <div class="scan-big-icon-wrap">
@@ -746,7 +657,6 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
  <div class="header-right">
   <button class="pill warn hidden" id="backupBadge" title="Open Backup & Security">Backup</button>
   <div class="pill">Offline</div>
-  <button class="btn secondary small no-print" id="themeBtn" type="button">Palette</button>
   <button class="btn secondary small no-print" id="lockBtn" type="button">Lock</button>
  </div>
 </header>
@@ -757,7 +667,10 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
    <h1 id="pageHeading">Home</h1>
    <div class="tiny" id="todayLabel"></div>
   </div>
-  <button class="btn secondary small no-print" id="exportToday">Today CSV</button>
+  <div style="display:flex;gap:6px;flex-wrap:wrap" class="no-print">
+   <button class="btn secondary small hidden" id="undoScanBtn" type="button">Undo</button>
+   <button class="btn secondary small" id="exportToday">Today CSV</button>
+  </div>
  </div>
 
  <section class="stats">
@@ -796,8 +709,8 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
     <span>Add name to next card</span>
    </button>
    <button type="button" class="app-tile" data-jump="more">
-    <strong>Reports & backup</strong>
-    <span>CSV, JSON & security</span>
+    <strong>Reports, theme & backup</strong>
+    <span>CSV, JSON, palettes & lock</span>
    </button>
   </div>
 
@@ -857,7 +770,10 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
    </div>
 
    <div class="panel">
-    <h2>Present today</h2>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+     <h2 style="margin:0">Present today</h2>
+     <input id="todaySearchInput" placeholder="Filter present..." style="max-width:170px;min-height:34px;padding:6px 10px;font-size:12.5px">
+    </div>
     <div id="todayList"></div>
     <hr>
     <h2>Absent today</h2>
@@ -1013,7 +929,7 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
   </div>
  </section>
 
- <!-- MORE: REPORTS, BACKUP & SECURITY -->
+ <!-- MORE: PALETTE, REPORTS, BACKUP & SECURITY -->
  <section id="tab-more" class="tabpage hidden">
   <div class="panel">
    <h2>Color palette</h2>
@@ -1076,7 +992,7 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
  </button>
  <button type="button" class="nav-item" data-tab="employees">
   <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h3v3H7zm7 0h3v3h-3zM7 13h3v3H7z"/></svg>
-  <span>QR & Staff</span>
+  <span>Staff</span>
  </button>
  <button type="button" class="nav-scan-fab" id="navScanBtn" aria-label="Scan QR Attendance">
   <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
@@ -1230,6 +1146,7 @@ let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='',
 let soundEnabled=getSavedSoundEnabled();
 let bigOverlayTimer=null;
 let reloadedForUpdate=false;
+let lastScanUndo=null;
 let modalState={mode:'create',employeeId:null,paymentId:null,allowSelectEmployee:false};
 const selectedIds=new Set();
 const $=id=>document.getElementById(id);
@@ -1248,6 +1165,13 @@ function updateSoundUI(){
  if($('toggleScanSoundBtn'))$('toggleScanSoundBtn').textContent=soundEnabled?'Sound: On':'Sound: Off';
  if($('soundStatusHint'))$('soundStatusHint').textContent=soundEnabled?'Ping + vibration on check-in':'Sound muted (vibration active)';
 }
+function updateUndoUI(){
+ if(!$('undoScanBtn'))return;
+ $('undoScanBtn').classList.toggle('hidden',!lastScanUndo);
+ if(lastScanUndo){
+  $('undoScanBtn').title=`Undo last scan (${lastScanUndo.entry.nameSnapshot})`;
+ }
+}
 
 function getAudioContext(){
  const Ctx=window.AudioContext||window.webkitAudioContext;
@@ -1258,10 +1182,7 @@ function getAudioContext(){
  }
  return audioCtx;
 }
-
-function unlockAudio(){
- try{getAudioContext()}catch(e){}
-}
+function unlockAudio(){try{getAudioContext()}catch(e){}}
 
 function playTone(ctx,{freqStart,freqEnd,type='sine',startTime,duration,peakGain=0.26}){
  const osc=ctx.createOscillator();
@@ -1347,11 +1268,6 @@ function applyPalette(mode,notify=false){
  try{localStorage.setItem(PALETTE_KEY,pal)}catch(e){}
  if(notify)toast(`Palette: ${PALETTE_META[pal].label}`);
 }
-function cyclePalette(){
- const cur=getSavedPalette();
- const next=PALETTES[(PALETTES.indexOf(cur)+1)%PALETTES.length];
- applyPalette(next,true);
-}
 
 function normalizeCycle(c){
  if(c==='weekly'||c==='biweekly'||c==='monthly')return c;
@@ -1378,36 +1294,21 @@ function payTypeLabel(t){
 function getPasscode(){
  try{return localStorage.getItem(PASS_KEY)||DEFAULT_PASSCODE}catch(e){return DEFAULT_PASSCODE}
 }
-function setPasscode(val){
- localStorage.setItem(PASS_KEY,val);
-}
+function setPasscode(val){localStorage.setItem(PASS_KEY,val)}
 function applyPasscodeChange(currentVal,nextVal){
- if(currentVal!==getPasscode()){
-  return {ok:false,msg:'Current passcode is incorrect.'};
- }
+ if(currentVal!==getPasscode())return {ok:false,msg:'Current passcode is incorrect.'};
  const cleanNext=String(nextVal||'').trim();
- if(cleanNext.length<4){
-  return {ok:false,msg:'New passcode must be at least 4 characters.'};
- }
- try{
-  setPasscode(cleanNext);
-  return {ok:true,msg:'Passcode updated.'};
- }catch(e){
-  return {ok:false,msg:'Could not save passcode.'};
- }
+ if(cleanNext.length<4)return {ok:false,msg:'New passcode must be at least 4 characters.'};
+ try{setPasscode(cleanNext);return {ok:true,msg:'Passcode updated.'}}
+ catch(e){return {ok:false,msg:'Could not save passcode.'}}
 }
 function lockScreen(){
- stopCamera();
- closePayModal();
- hideBigCheckCard();
- $('loginError').textContent='';
- $('passcodeInput').value='';
+ stopCamera();closePayModal();hideBigCheckCard();
+ $('loginError').textContent='';$('passcodeInput').value='';
  $('lockScreen').classList.remove('hidden');
  setTimeout(()=>$('passcodeInput').focus(),50);
 }
-function unlockScreen(){
- $('lockScreen').classList.add('hidden');
-}
+function unlockScreen(){$('lockScreen').classList.add('hidden')}
 
 function blankDB(){
  return {version:5,employees:[],attendance:[],payments:[],lastBackupAt:null,createdAt:new Date().toISOString()};
@@ -1525,7 +1426,7 @@ function refreshModalSummary(empId){
  $('payModalSummary').innerHTML=`<b>${esc(emp.name)}</b> (${esc(emp.qrId)}) · Rate: <b>${money(emp.dailyWage)}</b><br><span class="tiny">Earned: <b>${money(earned)}</b> · Advances: <b>${money(bk.advance)}</b> · Balance: <b>${money(earned-bk.total)}</b></span>`;
 }
 
-function openPayModal({mode='create',employeeId=null,paymentId=null,defaultType='advance',allowSelectEmployee=false}){
+function openPayModal({mode='create',employeeId=null,paymentId=null,defaultType='advance',allowSelectEmployee=false,prefillAmount=null,prefillNote=null}){
  const [from,to]=dateRange('pay');
  if(mode==='edit'){
   const p=db.payments.find(x=>x.id===paymentId);
@@ -1562,9 +1463,9 @@ function openPayModal({mode='create',employeeId=null,paymentId=null,defaultType=
    :(pType==='advance'?`Advance · ${emp.name}`:`Pay · ${emp.name}`);
   refreshModalSummary(chosenId);
   $('payTypeSelect').value=pType;
-  $('payAmountInput').value='';
+  $('payAmountInput').value=prefillAmount&&Number(prefillAmount)>0?String(Number(prefillAmount).toFixed(2)):'';
   $('payDateInput').value=localDate();
-  $('payNoteInput').value=pType==='advance'?'Advance payment':'';
+  $('payNoteInput').value=prefillNote!==null?prefillNote:(pType==='advance'?'Advance payment':'');
   $('submitPayModalBtn').textContent=pType==='advance'?'Save advance':'Save payment';
  }
  $('payModalError').textContent='';
@@ -1611,7 +1512,7 @@ function submitPayModal(e){
   db.payments.push(entry);
   if(!persist(()=>db.payments.pop()))return;
   closePayModal();
-  toast(`${payTypeLabel(pType)} of ${money(amount)} subtracted from balance.`);
+  toast(`${payTypeLabel(pType)} of ${money(amount)} recorded.`);
  }
 }
 
@@ -1631,6 +1532,13 @@ function updateBackupReminder(){
  else badge.classList.add('hidden');
 }
 
+function estimateStorageKb(){
+ try{
+  const bytes=new TextEncoder().encode(localStorage.getItem(KEY)||'').length;
+  return (bytes/1024).toFixed(1)+' KB';
+ }catch(e){return '—'}
+}
+
 function renderAll(){
  $('todayLabel').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'short',day:'numeric'});
  const active=db.employees.filter(e=>e.active!==false),today=todayPresent(),present=today.length;
@@ -1642,12 +1550,16 @@ function renderAll(){
  $('absentToday').textContent=absentList.length;
  $('todayWages').textContent=money(today.reduce((s,a)=>s+Number(a.dailyWage||0),0));
 
- const sorted=[...today].sort((a,b)=>b.timestamp.localeCompare(a.timestamp));
+ const filterQ=($('todaySearchInput')?.value||'').trim().toLowerCase();
+ const sorted=[...today]
+  .sort((a,b)=>b.timestamp.localeCompare(a.timestamp))
+  .filter(a=>!filterQ||(a.nameSnapshot+' '+a.qrId+' '+a.time).toLowerCase().includes(filterQ));
+
  $('todayList').innerHTML=sorted.length
   ?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Time</th><th>Wage</th><th></th></tr></thead><tbody>${sorted.map(a=>`<tr><td><b>${esc(a.nameSnapshot)}</b><div class="tiny">${esc(a.qrId)}</div></td><td>${esc(a.time)}</td><td>${money(a.dailyWage)}</td><td><button class="btn danger small" onclick="deleteAttendance('${a.id}')">Remove</button></td></tr>`).join('')}</tbody></table></div>`
-  :'<div class="empty">No scans today yet.</div>';
+  :'<div class="empty">No matching scans today.</div>';
 
- const recent=sorted.slice(0,5);
+ const recent=[...today].sort((a,b)=>b.timestamp.localeCompare(a.timestamp)).slice(0,5);
  $('homeRecentList').innerHTML=recent.length
   ?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Time</th><th>Wage</th></tr></thead><tbody>${recent.map(a=>`<tr><td><b>${esc(a.nameSnapshot)}</b><div class="tiny">${esc(a.qrId)}</div></td><td>${esc(a.time)}</td><td>${money(a.dailyWage)}</td></tr>`).join('')}</tbody></table></div>`
   :'<div class="empty">No scans today yet.</div>';
@@ -1664,9 +1576,10 @@ function renderAll(){
  runReport();
  runPayroll();
  updateBackupReminder();
+ updateUndoUI();
 
  const lastTxt=db.lastBackupAt?`Last backup: ${new Date(db.lastBackupAt).toLocaleString()}`:'No backup exported yet.';
- $('storageInfo').textContent=`${db.employees.length} staff · ${db.attendance.length} scans · ${db.payments.length} entries. ${lastTxt}`;
+ $('storageInfo').textContent=`${db.employees.length} staff · ${db.attendance.length} scans · ${db.payments.length} entries · ${estimateStorageKb()}. ${lastTxt}`;
 }
 
 function getFilteredEmployees(){
@@ -1744,12 +1657,24 @@ function recordAttendance(raw){
  db.attendance.push(entry);
  if(!persist(()=>db.attendance.pop()))return;
 
+ lastScanUndo={entry:{...entry}};
  const metaHtml=`Registered for <b>${esc(dateLabel(date))}</b> at <b>${esc(entry.time)}</b><br><span class="money" style="font-size:16px">${esc(money(entry.dailyWage))}</span>`;
  renderScanBanner('success','Successfully Registered','✓',emp.name,metaHtml,true);
  showBigCheckCard('success','Successfully Registered','✓',emp.name,metaHtml,1900);
  triggerScanFeedback('success');
 
  $('manualId').value='';lastScanned=id;lastScanAt=Date.now();toast(`${emp.name} — successfully registered`);
+}
+
+function undoLastScan(){
+ if(!lastScanUndo)return;
+ const targetId=lastScanUndo.entry.id;
+ const idx=db.attendance.findIndex(a=>a.id===targetId);
+ if(idx===-1){lastScanUndo=null;updateUndoUI();return}
+ const removed=db.attendance.splice(idx,1)[0];
+ if(!persist(()=>db.attendance.splice(idx,0,removed)))return;
+ lastScanUndo=null;
+ toast(`Undid scan for ${removed.nameSnapshot}.`);
 }
 
 window.deleteAttendance=attId=>{
@@ -1759,6 +1684,7 @@ window.deleteAttendance=attId=>{
  if(!confirm(`Remove scan for ${item.nameSnapshot} on ${item.date}?`))return;
  const removed=db.attendance.splice(idx,1)[0];
  if(!persist(()=>db.attendance.splice(idx,0,removed)))return;
+ if(lastScanUndo&&lastScanUndo.entry.id===attId)lastScanUndo=null;
  toast('Scan removed.');
 };
 
@@ -2007,7 +1933,7 @@ function runPayroll(){
    ${absentInPeriod.length?`<div class="status-chip-wrap">${absentInPeriod.map(a=>renderPersonButton(a,'0d','absent',`openEmployeeCard('${a.id}','edit')`)).join('')}</div>`:'<div class="empty">No 0-day staff.</div>'}
   </div>
  </div>
- <div class="tablewrap"><table><thead><tr><th>Staff</th><th>Days</th><th>Earned</th><th>Adv.</th><th>Paid</th><th>Balance</th><th></th></tr></thead><tbody>${payrollRows.map(r=>`<tr><td>${renderPersonButton(r,'',false,`openEmployeeCard('${r.id}','edit')`)}<div class="tiny">${esc(r.payStatus)}</div></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${r.advance>0?`<span class="tag advance">-${money(r.advance)}</span>`:money(0)}</td><td class="money">${money(r.paid)}</td><td><b>${money(r.balance)}</b></td><td><div class="actions"><button class="btn secondary small" onclick="addPayment('${r.id}','regular')">+ Pay</button><button class="btn secondary small" onclick="addPayment('${r.id}','advance')">+ Advance</button></div></td></tr>`).join('')||'<tr><td colspan="7" class="empty">No matching staff.</td></tr>'}</tbody></table></div>
+ <div class="tablewrap"><table><thead><tr><th>Staff</th><th>Days</th><th>Earned</th><th>Adv.</th><th>Paid</th><th>Balance</th><th></th></tr></thead><tbody>${payrollRows.map(r=>`<tr><td>${renderPersonButton(r,'',false,`openEmployeeCard('${r.id}','edit')`)}<div class="tiny">${esc(r.payStatus)}</div></td><td>${r.days}</td><td>${money(r.earned)}</td><td>${r.advance>0?`<span class="tag advance">-${money(r.advance)}</span>`:money(0)}</td><td class="money">${money(r.paid)}</td><td><b>${money(r.balance)}</b></td><td><div class="actions"><button class="btn secondary small" onclick="addPayment('${r.id}','regular',${r.balance>0?r.balance:'null'})">${r.balance>0?'Settle':'+ Pay'}</button><button class="btn secondary small" onclick="addPayment('${r.id}','advance')">+ Advance</button></div></td></tr>`).join('')||'<tr><td colspan="7" class="empty">No matching staff.</td></tr>'}</tbody></table></div>
  <h2 style="margin-top:18px">Advances & payments log</h2>
  <div class="tablewrap"><table><thead><tr><th>Staff</th><th>Type</th><th>Date</th><th>Amount</th><th>Note</th><th></th></tr></thead><tbody>${periodPayments.map(p=>{
   const e=db.employees.find(x=>x.id===p.employeeId);
@@ -2016,7 +1942,7 @@ function runPayroll(){
  }).join('')||'<tr><td colspan="6" class="empty">No entries in period.</td></tr>'}</tbody></table></div>`;
 }
 
-window.addPayment=(id,defaultType='regular')=>openPayModal({mode:'create',employeeId:id,defaultType,allowSelectEmployee:false});
+window.addPayment=(id,defaultType='regular',prefillAmount=null)=>openPayModal({mode:'create',employeeId:id,defaultType,allowSelectEmployee:false,prefillAmount});
 window.editPayment=payId=>openPayModal({mode:'edit',paymentId:payId});
 window.deletePayment=payId=>{
  const idx=db.payments.findIndex(x=>x.id===payId);if(idx===-1)return;
@@ -2076,7 +2002,7 @@ function restoreFile(file){
    const employees=(x.employees||[]).map(e=>({...e,payCycle:normalizeCycle(e.payCycle)}));
    const payments=(x.payments||[]).map(p=>({...p,type:normalizePayType(p.type),note:String(p.note||'')}));
    db={...blankDB(),...x,employees,payments,lastBackupAt:new Date().toISOString()};
-   selectedIds.clear();
+   selectedIds.clear();lastScanUndo=null;
    if(!persist(()=>{db=snapshot}))return;
    toast('Backup restored.');
   }catch(e){toast(e.message||'Invalid file')}
@@ -2117,7 +2043,7 @@ function stopCamera(){
  $('startScan').classList.remove('hidden');$('stopScan').classList.add('hidden');
 }
 
-const TAB_HEADINGS={home:'Home',scan:'Scan QR',employees:'QR & Staff',payroll:'Payroll',more:'More'};
+const TAB_HEADINGS={home:'Home',scan:'Scan QR',employees:'Staff & QR',payroll:'Payroll',more:'More'};
 function openTab(tabName){
  document.querySelectorAll('.bottom-nav .nav-item').forEach(x=>x.classList.toggle('active',x.dataset.tab===tabName));
  document.querySelectorAll('.tabpage').forEach(x=>x.classList.toggle('hidden',x.id!=='tab-'+tabName));
@@ -2136,10 +2062,11 @@ $('quickRecordAdvanceBtn').onclick=()=>openPayModal({mode:'create',defaultType:'
 $('payEmployeeSelect').addEventListener('change',()=>{modalState.employeeId=$('payEmployeeSelect').value;refreshModalSummary(modalState.employeeId)});
 $('homeNextUnassigned').onclick=editNextUnassigned;
 $('backupBadge').onclick=()=>openTab('more');
-$('themeBtn').onclick=cyclePalette;
 document.querySelectorAll('[data-set-palette]').forEach(btn=>btn.addEventListener('click',()=>applyPalette(btn.dataset.setPalette,true)));
 $('lockBtn').onclick=lockScreen;
 $('scanBigOverlay').onclick=hideBigCheckCard;
+$('undoScanBtn').onclick=undoLastScan;
+$('todaySearchInput').addEventListener('input',renderAll);
 
 $('toggleScanSoundBtn').onclick=()=>{
  soundEnabled=!soundEnabled;
@@ -2241,7 +2168,7 @@ $('restoreFile').onchange=e=>{if(e.target.files[0])restoreFile(e.target.files[0]
 $('clearData').onclick=()=>{
  if(confirm('Delete ALL local data? Backup first.')){
   const snapshot=JSON.parse(JSON.stringify(db));
-  db=blankDB();selectedIds.clear();
+  db=blankDB();selectedIds.clear();lastScanUndo=null;
   if(!persist(()=>{db=snapshot}))return;
   $('scanResult').textContent='Local records deleted.';toast('All data deleted.');
  }
