@@ -130,6 +130,116 @@ html[data-palette="midnight"]{
  --shadow-md:0 16px 36px rgba(0,0,0,.5);
 }
 
+/* Retro Film-Grain Black & White Theme (Noir) */
+html[data-palette="grainblack"]{
+ --bg:#111111;
+ --surface:#181818;
+ --surface-subtle:#222222;
+ --surface-elevated:#1d1d1d;
+ --border:#333333;
+ --border-strong:#525252;
+ --ink:#f4f2ec;
+ --ink-secondary:#d6d3cb;
+ --muted:#9a9790;
+ --primary:#f4f2ec;
+ --primary-hover:#ffffff;
+ --primary-fg:#111111;
+ --accent:#f4f2ec;
+ --accent-soft:rgba(244,242,236,.12);
+ --success:#e5e3dd;
+ --success-bg:rgba(244,242,236,.10);
+ --success-border:#8a8780;
+ --warning:#d6d3cb;
+ --warning-bg:rgba(214,211,203,.09);
+ --warning-border:#6e6b65;
+ --danger:#f4f2ec;
+ --danger-bg:rgba(244,242,236,.07);
+ --danger-border:#78756f;
+ --header-bg:rgba(20,20,20,.96);
+ --nav-bg:rgba(18,18,18,.97);
+ --brand-word:#f4f2ec;
+ --shadow-sm:0 2px 8px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.04);
+ --shadow-md:0 16px 36px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+/* Subtle analog film grain texture overlay for Retro Grain Noir */
+html[data-palette="grainblack"] body{
+ background-color:#111111;
+ background-image:
+  radial-gradient(circle at 18% 12%,rgba(255,255,255,.035),transparent 42%),
+  radial-gradient(circle at 82% 88%,rgba(255,255,255,.025),transparent 46%);
+}
+html[data-palette="grainblack"] body::after{
+ content:"";
+ position:fixed;
+ inset:0;
+ z-index:90;
+ pointer-events:none;
+ opacity:.085;
+ mix-blend-mode:screen;
+ background-repeat:repeat;
+ background-size:180px 180px;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+html[data-palette="grainblack"] .panel,
+html[data-palette="grainblack"] .stat,
+html[data-palette="grainblack"] .app-tile,
+html[data-palette="grainblack"] .lock-card,
+html[data-palette="grainblack"] .modal-card{
+ background-image:linear-gradient(180deg,rgba(255,255,255,.028) 0%,rgba(255,255,255,0) 100%);
+}
+html[data-palette="grainblack"] .scan-hero{
+ border:1px solid rgba(255,255,255,.35);
+ box-shadow:0 12px 28px rgba(0,0,0,.6);
+}
+html[data-palette="grainblack"] .scan-icon-box{
+ background:rgba(17,17,17,.12);
+}
+html[data-palette="grainblack"] .scan-big-card{
+ background:#161616;
+ border-color:#f4f2ec;
+ box-shadow:0 24px 54px rgba(0,0,0,.78);
+}
+html[data-palette="grainblack"] .scan-big-icon{
+ background:#f4f2ec;
+ color:#111111;
+ box-shadow:0 12px 28px rgba(244,242,236,.25);
+}
+html[data-palette="grainblack"] .scan-big-icon-wrap::after{
+ border-color:#f4f2ec;
+}
+html[data-palette="grainblack"] .scan-big-badge{
+ background:rgba(244,242,236,.14);
+ color:#f4f2ec;
+}
+html[data-palette="grainblack"] .scan-big-name{color:#f4f2ec}
+html[data-palette="grainblack"] .scan-big-meta,
+html[data-palette="grainblack"] .scan-big-tap{color:#d6d3cb}
+html[data-palette="grainblack"] .result.success .confirm-icon-big{
+ background:#f4f2ec;
+ color:#111111;
+ box-shadow:0 8px 20px rgba(244,242,236,.22);
+}
+html[data-palette="grainblack"] .result.success.animate-confirm .confirm-icon-wrap::after{
+ border-color:#f4f2ec;
+}
+html[data-palette="grainblack"] .result.success .confirm-status{
+ background:rgba(244,242,236,.15);
+ color:#f4f2ec;
+}
+html[data-palette="grainblack"] .result.warn .confirm-icon-big{
+ background:#4a4945;
+ color:#f4f2ec;
+ border:1px solid #9a9790;
+}
+html[data-palette="grainblack"] .result.warn .confirm-status{
+ background:rgba(244,242,236,.12);
+ color:#d6d3cb;
+}
+html[data-palette="grainblack"] .btn.danger{
+ border-style:dashed;
+}
+
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{
@@ -322,7 +432,13 @@ h2{font-size:15px;margin:0 0 12px;letter-spacing:-.015em;font-weight:750;color:v
  font-size:12.5px;font-weight:700;cursor:pointer;transition:border-color .15s ease,background-color .15s ease;
 }
 .palette-btn.active{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
-.swatch-dot{width:12px;height:12px;border-radius:999px;border:1px solid rgba(0,0,0,.15)}
+.swatch-dot{width:12px;height:12px;border-radius:999px;border:1px solid rgba(128,128,128,.45)}
+.swatch-dot.grain-dot{
+ background:
+  radial-gradient(circle at 30% 30%,rgba(255,255,255,.35) 0 1px,transparent 1px),
+  radial-gradient(circle at 70% 65%,rgba(255,255,255,.28) 0 1px,transparent 1px),
+  linear-gradient(135deg,#141414 52%,#f4f2ec 52%);
+}
 
 label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-secondary);margin:12px 0 5px}
 input:not([type="checkbox"]),select{
@@ -522,6 +638,7 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
 
 @media print{
  header,.bottom-nav,.no-print,.note,.lock-screen,.modal-backdrop,.scan-overlay{display:none!important}
+ html[data-palette="grainblack"] body::after{display:none!important}
  body{background:#fff;color:#091e34;padding-bottom:0}
  .panel,.stat{background:#fff;box-shadow:none;border-color:#c7dff0}
 }
@@ -548,8 +665,8 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
   <div class="lock-brand">
    <span class="nexus-badge" aria-label="NEXUS">
     <svg width="18" height="16" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-     <circle cx="5.5" cy="5.5" r="3.5" fill="#0284c7"/>
-     <rect x="13.2" y="3.2" width="6.6" height="17.6" rx="3.3" transform="rotate(24 13.2 3.2)" fill="#0284c7"/>
+     <circle cx="5.5" cy="5.5" r="3.5" fill="currentColor" style="color:var(--primary)"/>
+     <rect x="13.2" y="3.2" width="6.6" height="17.6" rx="3.3" transform="rotate(24 13.2 3.2)" fill="currentColor" style="color:var(--primary)"/>
     </svg>
     <span class="nexus-word">NEXUS</span>
    </span>
@@ -727,7 +844,7 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
       <div class="confirm-body">
        <div class="confirm-status" style="background:var(--accent-soft);color:var(--accent)">Ready to scan</div>
        <b class="name" style="font-size:16px">Scan a pass or enter QR ID</b>
-       <div class="confirm-meta">Big green check mark card, ping, and vibration appear on check-in.</div>
+       <div class="confirm-meta">Big check mark card, ping, and vibration appear on check-in.</div>
       </div>
      </div>
     </div>
@@ -905,6 +1022,7 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
     <button type="button" class="palette-btn" data-set-palette="slate"><span class="swatch-dot" style="background:#1d4ed8"></span>Slate & Cobalt</button>
     <button type="button" class="palette-btn" data-set-palette="stone"><span class="swatch-dot" style="background:#9a5b13"></span>Warm Stone</button>
     <button type="button" class="palette-btn" data-set-palette="midnight"><span class="swatch-dot" style="background:#38bdf8"></span>Deep Midnight</button>
+    <button type="button" class="palette-btn" data-set-palette="grainblack"><span class="swatch-dot grain-dot"></span>Retro Grain Noir</button>
    </div>
 
    <hr>
@@ -1099,12 +1217,13 @@ const PASS_KEY='nexus_workforce_passcode_v1';
 const PALETTE_KEY='nexus_workforce_palette_v1';
 const SOUND_KEY='nexus_workforce_sound_v1';
 const DEFAULT_PASSCODE='2026';
-const PALETTES=['lightblue','slate','stone','midnight'];
+const PALETTES=['lightblue','slate','stone','midnight','grainblack'];
 const PALETTE_META={
  lightblue:{label:'Light Blue',themeColor:'#0284c7'},
  slate:{label:'Slate & Cobalt',themeColor:'#1d4ed8'},
  stone:{label:'Warm Stone',themeColor:'#9a5b13'},
- midnight:{label:'Deep Midnight',themeColor:'#070b14'}
+ midnight:{label:'Deep Midnight',themeColor:'#070b14'},
+ grainblack:{label:'Retro Grain Noir',themeColor:'#111111'}
 };
 
 let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='', lastScanAt=0, reportRows=[], payrollRows=[], batchDraftCards=[], audioCtx=null;
@@ -1177,12 +1296,10 @@ async function playScanSound(kind='success'){
   if(ctx.state==='suspended')await ctx.resume();
   const now=ctx.currentTime+0.015;
   if(kind==='success'){
-   // Crisp dual-stage scanner "ping" (E6 -> A6 + soft octave shimmer)
    playTone(ctx,{freqStart:1318.5,freqEnd:1318.5,type:'sine',startTime:now,duration:0.09,peakGain:0.28});
    playTone(ctx,{freqStart:1760.0,freqEnd:1790.0,type:'sine',startTime:now+0.075,duration:0.24,peakGain:0.30});
    playTone(ctx,{freqStart:2637.0,freqEnd:2637.0,type:'triangle',startTime:now+0.075,duration:0.15,peakGain:0.08});
   }else{
-   // Distinct two-note alert for unknown / inactive / duplicate scan
    playTone(ctx,{freqStart:360.0,freqEnd:310.0,type:'triangle',startTime:now,duration:0.12,peakGain:0.24});
    playTone(ctx,{freqStart:277.18,freqEnd:233.08,type:'triangle',startTime:now+0.13,duration:0.18,peakGain:0.24});
   }
@@ -2039,7 +2156,7 @@ $('toggleScanSoundBtn').onclick=()=>{
 $('testPingBtn').onclick=()=>{
  unlockAudio();
  triggerScanFeedback('success');
- renderScanBanner('success','Ping & Vibe Check','✓','Scanner Ready','Confirmed ping, big green check card, and vibration.',true);
+ renderScanBanner('success','Ping & Vibe Check','✓','Scanner Ready','Confirmed ping, big check card, and vibration.',true);
  showBigCheckCard('success','Ping & Vibe Check','✓','Scanner Ready','Confirmed ping, animation, and vibration.',1700);
 };
 
