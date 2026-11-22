@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0284c7">
-<meta name="description" content="NEXUS — Workforce & Payroll OS + Offline Coffee Feresula & Profit Calculator.">
+<meta name="description" content="NEXUS — Workforce & Payroll OS + Simple Coffee Arrivals, Ratio & Feresula Sales Tracker.">
 <meta name="application-name" content="NEXUS">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.webmanifest">
@@ -99,15 +99,15 @@ body{
  padding-bottom:calc(86px + env(safe-area-inset-bottom));
  transition:background-color .2s ease,color .2s ease,padding-bottom .2s ease;
 }
-body.scan-clean-mode{
- padding-bottom:calc(76px + env(safe-area-inset-bottom));
-}
+body.scan-clean-mode{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
 
 /* Overlays */
 .lock-screen{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto;background:var(--bg)}
 .lock-card{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:30px 24px;box-shadow:var(--shadow-md);text-align:center}
 .lock-brand{display:inline-flex;align-items:center;justify-content:center;padding:8px 16px;border-radius:999px;background:var(--accent-soft);border:1px solid var(--border);margin-bottom:14px}
 .admin-chip{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-bottom:8px}
+.admin-chip.done{background:var(--success-bg);color:var(--success)}
+.admin-chip.open{background:var(--warning-bg);color:var(--warning)}
 .lock-title{font-size:21px;font-weight:800;letter-spacing:-.025em;margin:0 0 4px;color:var(--ink)}
 .lock-sub{font-size:13px;color:var(--muted);margin:0 0 18px}
 .passcode-input{text-align:center;font-size:21px;font-weight:700;letter-spacing:.32em;min-height:48px}
@@ -286,11 +286,7 @@ tr:last-child td{border:0}
 tr.selected-row td{background:var(--accent-soft)}
 .tablewrap{overflow-x:auto;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
 .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;margin-left:4px;vertical-align:middle}
-.tag.unassigned{background:var(--warning-bg);color:var(--warning)}
 .tag.inactive{background:var(--danger-bg);color:var(--danger)}
-.tag.cycle{background:var(--surface-subtle);color:var(--muted)}
-.tag.advance{background:var(--warning-bg);color:var(--warning)}
-.tag.paid{background:var(--success-bg);color:var(--success)}
 .tag.seq{background:var(--accent-soft);color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .empty{text-align:center;padding:20px 12px;color:var(--muted);font-size:13px}
 
@@ -308,9 +304,6 @@ tr.selected-row td{background:var(--accent-soft)}
 .bulkbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:10px}
 .chklabel{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer}
 
-.progress-track{width:100%;height:10px;border-radius:999px;background:var(--surface);border:1px solid var(--border);overflow:hidden;margin:8px 0}
-.progress-fill{height:100%;background:var(--primary);border-radius:999px;transition:width .25s ease}
-
 .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
 @media(min-width:540px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
 .kpi-mini{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 12px}
@@ -324,7 +317,6 @@ tr.selected-row td{background:var(--accent-soft)}
 .person-btn:hover{border-color:var(--accent);background:var(--surface-subtle)}
 .person-btn .num-pill{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;padding:2px 6px;border-radius:7px;background:var(--surface-subtle);color:var(--muted)}
 .person-btn.absent-btn .num-pill{background:var(--danger-bg);color:var(--danger)}
-.person-btn.advance-btn .num-pill{background:var(--warning-bg);color:var(--warning)}
 .status-chip-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
 
 .note{font-size:12px;color:var(--muted);margin-top:8px}
@@ -514,8 +506,8 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 
   <div class="app-shortcuts">
    <button type="button" class="app-tile" data-jump="coffee">
-    <strong>Coffee & Profit Calc</strong>
-    <span>Real ratios (5:1, 6:1, 3:1) · 17kg feresula</span>
+    <strong>Coffee & Feresula Sales</strong>
+    <span>Daily arrivals, ratios & 17kg sales</span>
    </button>
    <button type="button" class="app-tile" data-jump="employees">
     <strong>QR cards (#1–#n)</strong>
@@ -527,7 +519,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
    </button>
    <button type="button" class="app-tile" data-jump="more">
     <strong>More features & settings</strong>
-    <span>All tools, reports, theme & backup</span>
+    <span>Reports, theme & backup</span>
    </button>
   </div>
 
@@ -543,152 +535,128 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   </div>
  </section>
 
- <!-- COFFEE LEDGER & REAL-RATIO FERESULA PROFIT CALCULATOR (17 KG / FERESULA) -->
+ <!-- SIMPLE COFFEE TRACKER: DAILY ARRIVALS -> RATIO (17 KG/FER) -> FERESULA SALES & PROFIT -->
  <section id="tab-coffee" class="tabpage hidden">
   <section class="stats">
-   <div class="stat"><small>Red cherry bought</small><strong id="coffeeTotalKg">0 kg</strong></div>
-   <div class="stat"><small>Weighted avg 1kg</small><strong id="coffeeAvgPrice">0 ETB</strong></div>
-   <div class="stat"><small>Cherry money paid</small><strong id="coffeeMoneyPaid">0 ETB</strong></div>
-   <div class="stat"><small>Est. Feresula (17kg)</small><strong id="coffeeEstFeresula">0.00</strong></div>
+   <div class="stat"><small>Total red cherry</small><strong id="coffeeTotalKg">0 kg</strong></div>
+   <div class="stat"><small>Avg price / kg</small><strong id="coffeeAvgPrice">0 ETB</strong></div>
+   <div class="stat"><small>Est. feresula (17kg)</small><strong id="coffeeEstFeresula">0.00</strong></div>
+   <div class="stat"><small>Feresula profit</small><strong id="coffeeNetProfit">0 ETB</strong></div>
   </section>
 
-  <!-- Batch Capacity Tracker -->
-  <div class="panel">
-   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-    <h2 style="margin:0">Batch capacity (<span id="targetCapLabel">30,000</span> kg)</h2>
-    <div style="display:flex;align-items:center;gap:6px">
-     <input id="batchTargetKgInput" type="number" min="100" step="100" value="30000" style="width:120px;min-height:36px;padding:6px 10px;font-size:13px" aria-label="Target batch kg">
-     <span class="tiny">kg</span>
-    </div>
-   </div>
-   <div class="progress-track"><div id="batchCapFill" class="progress-fill" style="width:0%"></div></div>
-   <div id="batchCapSummary" class="tiny"></div>
-  </div>
-
-  <!-- Real-Ratio Coffee & Profit Calculator -->
+  <!-- Step 2: Batch Arrival Status, Ratio & Break-Even Summary -->
   <div class="panel">
    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-    <h2 style="margin:0">Feresula (17 kg) & Profit Calculator</h2>
-    <div class="row-actions">
-     <button class="btn outline small" id="calcUseSavedLotsBtn" type="button">Saved lots</button>
-     <button class="btn secondary small" id="calcLoadExampleBtn" type="button">Sample lots</button>
+    <div>
+     <span class="admin-chip open" id="arrivalStatusChip">Arrivals in progress</span>
+     <h2 style="margin:2px 0 0">Batch total, ratio & feresula cost (17 kg)</h2>
     </div>
+    <button class="btn small" id="toggleArrivalDoneBtn" type="button">Mark arrivals done</button>
    </div>
 
    <div class="row">
     <div>
-     <label for="calcDataSource" style="margin-top:0">Data source</label>
-     <select id="calcDataSource">
-      <option value="saved">Saved daily coffee lots</option>
-      <option value="quick">Quick multi-lot simulator</option>
-      <option value="target">Full batch target at avg price</option>
+     <label for="batchRatioSelect" style="margin-top:0">Ratio (red kg → 17 kg feresula)</label>
+     <select id="batchRatioSelect">
+      <option value="5" selected>5:1 (85 kg red / feresula)</option>
+      <option value="6">6:1 (102 kg red / feresula)</option>
+      <option value="3">3:1 (51 kg red / feresula)</option>
+      <option value="custom">Custom ratio (x:1)</option>
      </select>
+    </div>
+    <div id="customRatioBox" class="hidden" style="max-width:150px">
+     <label for="customRatioVal" style="margin-top:0">Ratio (x:1)</label>
+     <input id="customRatioVal" type="number" min="1" max="25" step="0.1" value="4.5">
     </div>
     <div>
-     <label for="calcOutturnSelect" style="margin-top:0">Conversion ratio (1 Fer = 17 kg)</label>
-     <select id="calcOutturnSelect">
-      <option value="5" selected>5:1 — Standard outturn (85 kg red / fer)</option>
-      <option value="6">6:1 — Clean green / conservative (102 kg red / fer)</option>
-      <option value="3">3:1 — Dried cherry / jenfel ref (51 kg red / fer)</option>
-      <option value="custom">Custom ratio (red kg per 1 kg dry)</option>
-     </select>
-    </div>
-    <div id="calcCustomRatioWrap" class="hidden" style="max-width:150px">
-     <label for="calcCustomRatioInput" style="margin-top:0">Custom ratio (x:1)</label>
-     <input id="calcCustomRatioInput" type="number" min="1" max="20" step="0.1" value="4.8">
+     <label for="batchExtraCost" style="margin-top:0">Labor, bags & transport (ETB)</label>
+     <input id="batchExtraCost" type="number" min="0" step="10" value="0">
     </div>
    </div>
 
-   <div id="quickLotsBox" class="calc-box hidden">
-    <div class="tiny" style="margin-bottom:6px"><b>Quick Multi-Lot Weighted Average Tester:</b></div>
-    <div class="row">
-     <div><label style="margin-top:0">Lot 1 kg</label><input id="qLot1Kg" type="number" min="0" step="1" value="1000"></div>
-     <div><label style="margin-top:0">Lot 1 (ETB/kg)</label><input id="qLot1Price" type="number" min="0" step="0.5" value="150"></div>
-     <div><label style="margin-top:0">Lot 2 kg</label><input id="qLot2Kg" type="number" min="0" step="1" value="1500"></div>
-     <div><label style="margin-top:0">Lot 2 (ETB/kg)</label><input id="qLot2Price" type="number" min="0" step="0.5" value="160"></div>
-    </div>
-   </div>
-
-   <div class="row" style="margin-top:6px">
-    <div>
-     <label for="calcLaborMode">Labor cost (ETB)</label>
-     <select id="calcLaborMode">
-      <option value="attendance" selected>From attendance wages</option>
-      <option value="manual">Manual labor amount</option>
-     </select>
-    </div>
-    <div id="calcManualLaborWrap" class="hidden">
-     <label for="calcManualLaborInput">Manual labor (ETB)</label>
-     <input id="calcManualLaborInput" type="number" min="0" step="10" value="0">
-    </div>
-    <div>
-     <label for="calcExtraOpsCost">Bags, transport & ops (ETB)</label>
-     <input id="calcExtraOpsCost" type="number" min="0" step="10" value="0">
-    </div>
-    <div>
-     <label for="calcTargetMarginPct">Target margin (%)</label>
-     <input id="calcTargetMarginPct" type="number" min="0" max="500" step="0.5" value="15">
-    </div>
-    <div>
-     <label for="calcSellingPriceFer">Sell price / fer (ETB)</label>
-     <input id="calcSellingPriceFer" type="number" min="0" step="10" placeholder="Optional">
-    </div>
-   </div>
-
-   <div id="profitCalcOutput" class="calc-box"></div>
+   <div id="batchSummaryBox" class="calc-box"></div>
   </div>
 
-  <!-- Daily Coffee Entry + Recorded Ledger -->
+  <!-- Step 1: Daily Coffee Arrivals (Each Day Has Its Own kg & Price/kg) -->
   <div class="two-col">
    <div class="panel">
-    <h2 id="coffeeFormTitle">Record daily coffee</h2>
-    <input id="editCoffeeId" type="hidden">
-    <label for="coffeeDate">Purchase date</label>
-    <input id="coffeeDate" type="date" required>
+    <h2 id="arrivalFormTitle">Add daily arrival</h2>
+    <input id="editArrivalId" type="hidden">
+    <label for="arrivalDate">Arrival date</label>
+    <input id="arrivalDate" type="date" required>
 
     <div class="row">
      <div>
-      <label for="coffeeRedKg">Red cherry (kg)</label>
-      <input id="coffeeRedKg" type="number" min="0.01" step="0.01" placeholder="e.g. 1000" required>
+      <label for="arrivalKg">Red cherry (kg)</label>
+      <input id="arrivalKg" type="number" min="0.01" step="0.01" placeholder="e.g. 500" required>
      </div>
      <div>
-      <label for="coffeePriceKg">1 kg price (ETB)</label>
-      <input id="coffeePriceKg" type="number" min="0.01" step="0.01" placeholder="e.g. 150" required>
+      <label for="arrivalPriceKg">Price per kg (ETB)</label>
+      <input id="arrivalPriceKg" type="number" min="0.01" step="0.01" placeholder="e.g. 155" required>
      </div>
     </div>
 
     <div class="row">
      <div>
-      <label for="coffeeMoneyPaidInput">Money paid now (ETB)</label>
-      <input id="coffeeMoneyPaidInput" type="number" min="0" step="0.01" placeholder="Auto = kg × price">
+      <label for="arrivalPaid">Paid now (ETB)</label>
+      <input id="arrivalPaid" type="number" min="0" step="0.01" placeholder="Blank = full amount">
      </div>
      <div>
-      <label for="coffeeRatioMode">Lot ratio preset</label>
-      <select id="coffeeRatioMode">
-       <option value="r5" selected>5:1 (85 kg red / 17kg fer)</option>
-       <option value="r6">6:1 (102 kg red / 17kg fer)</option>
-       <option value="r3">3:1 (51 kg red / 17kg fer)</option>
-      </select>
+      <label for="arrivalNote">Supplier / note (optional)</label>
+      <input id="arrivalNote" maxlength="100" placeholder="e.g. Morning lot">
      </div>
     </div>
 
-    <label for="coffeeNote">Note (optional)</label>
-    <input id="coffeeNote" maxlength="120" placeholder="e.g. Guji Kercha lot">
-
-    <div class="calc-box" id="coffeeLiveCalc"></div>
+    <div id="arrivalLivePreview" class="calc-box"></div>
 
     <div class="actions" style="margin-top:12px">
-     <button class="btn" id="saveCoffeeBtn" type="button">Save coffee</button>
-     <button class="btn secondary hidden" id="cancelCoffeeEditBtn" type="button">Cancel</button>
+     <button class="btn" id="saveArrivalBtn" type="button">Save arrival</button>
+     <button class="btn secondary hidden" id="cancelArrivalEditBtn" type="button">Cancel</button>
     </div>
    </div>
 
    <div class="panel">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-     <h2 style="margin:0">Recorded coffee lots</h2>
-     <button class="btn secondary small" id="exportCoffeeCsvBtn" type="button">Export CSV</button>
+     <h2 style="margin:0">Daily arrivals log</h2>
+     <button class="btn secondary small" id="exportArrivalsCsvBtn" type="button">Export CSV</button>
     </div>
-    <div id="coffeeLotsList"></div>
+    <div id="arrivalsList"></div>
+   </div>
+  </div>
+
+  <!-- Step 3: Sell Feresula & Track Profit -->
+  <div class="two-col">
+   <div class="panel">
+    <h2>Sell feresula (17 kg)</h2>
+    <label for="saleDate">Sale date</label>
+    <input id="saleDate" type="date" required>
+
+    <div class="row">
+     <div>
+      <label for="saleFerQty">Feresula sold</label>
+      <input id="saleFerQty" type="number" min="0.01" step="0.01" placeholder="e.g. 5" required>
+     </div>
+     <div>
+      <label for="salePricePerFer">Sell price / feresula (ETB)</label>
+      <input id="salePricePerFer" type="number" min="0.01" step="0.01" placeholder="e.g. 15000" required>
+     </div>
+    </div>
+
+    <label for="saleBuyerNote">Buyer / note (optional)</label>
+    <input id="saleBuyerNote" maxlength="100" placeholder="e.g. Exporter or local buyer">
+
+    <div id="saleLivePreview" class="calc-box"></div>
+
+    <button class="btn" id="saveSaleBtn" type="button" style="width:100%;margin-top:12px">Record feresula sale</button>
+   </div>
+
+   <div class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+     <h2 style="margin:0">Feresula sales & profit</h2>
+     <button class="btn secondary small" id="exportSalesCsvBtn" type="button">Export CSV</button>
+    </div>
+    <div id="salesSummaryBox" class="calc-box" style="margin-top:0;margin-bottom:10px"></div>
+    <div id="salesList"></div>
    </div>
   </div>
  </section>
@@ -900,7 +868,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
    <h2>All features</h2>
    <div class="app-shortcuts three-col" style="margin-top:0">
     <button type="button" class="app-tile" data-jump="home"><strong>Home</strong><span>Stats, scans & absent</span></button>
-    <button type="button" class="app-tile" data-jump="coffee"><strong>Coffee & Profit</strong><span>Real ratios & 17kg feresula</span></button>
+    <button type="button" class="app-tile" data-jump="coffee"><strong>Coffee & Sales</strong><span>Arrivals, ratio & 17kg sales</span></button>
     <button type="button" class="app-tile" id="moreOpenScanBtn"><strong>Scan QR</strong><span>Clean camera check-in</span></button>
     <button type="button" class="app-tile" data-jump="employees"><strong>Staff & QR</strong><span>Batch #1–#n & print</span></button>
     <button type="button" class="app-tile" data-jump="payroll"><strong>Payroll</strong><span>Balances & advances</span></button>
@@ -1060,18 +1028,13 @@ function makeBrandedCardCanvas(emp){
 
 <script>
 'use strict';
-const KEY='nexus_workforce_payroll_v5';
-const LEGACY_KEYS=['workday_local_payroll_v5','workday_local_payroll_v4'];
+const KEY='nexus_workforce_payroll_v6';
+const LEGACY_KEYS=['nexus_workforce_payroll_v5','workday_local_payroll_v5','workday_local_payroll_v4'];
 const PASS_KEY='nexus_workforce_passcode_v1';
 const PALETTE_KEY='nexus_workforce_palette_v1';
 const SOUND_KEY='nexus_workforce_sound_v1';
 const DEFAULT_PASSCODE='2026';
 const FERESULA_KG=17;
-const RATIO_PRESETS={
- r5:{ratio:5,kgPerFer:85,label:'5:1 (85 kg/fer)'},
- r6:{ratio:6,kgPerFer:102,label:'6:1 (102 kg/fer)'},
- r3:{ratio:3,kgPerFer:51,label:'3:1 (51 kg/fer)'}
-};
 const PALETTES=['lightblue','slate','stone','midnight','grainblack'];
 const PALETTE_META={
  lightblue:{label:'Light Blue',themeColor:'#0284c7'},
@@ -1083,7 +1046,7 @@ const PALETTE_META={
 
 let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='', lastScanAt=0, reportRows=[], payrollRows=[], batchDraftCards=[], audioCtx=null;
 let soundEnabled=getSavedSoundEnabled(), bigOverlayTimer=null, reloadedForUpdate=false, lastScanUndo=null;
-let modalState={mode:'create',employeeId:null,paymentId:null,coffeeLotId:null,allowSelectEmployee:false};
+let modalState={mode:'create',employeeId:null,paymentId:null,arrivalId:null,allowSelectEmployee:false};
 const selectedIds=new Set();
 const $=id=>document.getElementById(id);
 
@@ -1165,7 +1128,20 @@ function applyPasscodeChange(curr,next){
 function lockScreen(){stopCamera();closePayModal();hideBigCheckCard();$('loginError').textContent='';$('passcodeInput').value='';$('lockScreen').classList.remove('hidden');setTimeout(()=>$('passcodeInput').focus(),50)}
 function unlockScreen(){$('lockScreen').classList.add('hidden')}
 
-function blankDB(){return {version:5,employees:[],attendance:[],payments:[],coffeeLots:[],lastBackupAt:null,createdAt:new Date().toISOString()}}
+function blankDB(){
+ return {
+  version:6,
+  employees:[],
+  attendance:[],
+  payments:[],
+  coffeeArrivals:[],
+  coffeeSales:[],
+  coffeeBatch:{arrivalsDone:false,ratioMode:'5',customRatio:4.5,extraCost:0},
+  lastBackupAt:null,
+  createdAt:new Date().toISOString()
+ };
+}
+
 function loadDB(){
  try{
   let raw=localStorage.getItem(KEY);
@@ -1173,9 +1149,18 @@ function loadDB(){
   if(!raw)return blankDB();
   const x=JSON.parse(raw);
   if(!x||!Array.isArray(x.employees)||!Array.isArray(x.attendance))return blankDB();
-  return {...blankDB(),...x,payments:Array.isArray(x.payments)?x.payments:[],coffeeLots:Array.isArray(x.coffeeLots)?x.coffeeLots:[]};
+  const migratedArrivals=Array.isArray(x.coffeeArrivals)?x.coffeeArrivals:(Array.isArray(x.coffeeLots)?x.coffeeLots:[]);
+  return {
+   ...blankDB(),
+   ...x,
+   payments:Array.isArray(x.payments)?x.payments:[],
+   coffeeArrivals:migratedArrivals,
+   coffeeSales:Array.isArray(x.coffeeSales)?x.coffeeSales:[],
+   coffeeBatch:{...blankDB().coffeeBatch,...(x.coffeeBatch||{})}
+  };
  }catch(e){return blankDB()}
 }
+
 function persist(rollbackFn=null){
  try{localStorage.setItem(KEY,JSON.stringify(db));renderAll();return true}
  catch(e){if(typeof rollbackFn==='function')rollbackFn();toast('Storage full or blocked. Export a backup first.');return false}
@@ -1185,212 +1170,247 @@ function money(n){return (Number(n)||0).toLocaleString(undefined,{minimumFractio
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function toast(s){$('toast').textContent=s;$('toast').classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.add('hidden'),2600)}
 
-function ratioFromMode(mode){return RATIO_PRESETS[mode]||RATIO_PRESETS.r5}
-function computeLotMetrics(redKg,pricePerKg,moneyPaid,ratioMode='r5'){
- const kg=Math.max(0,Number(redKg)||0);
- const rate=Math.max(0,Number(pricePerKg)||0);
- const lotCost=kg*rate;
- const paid=Math.max(0,Number(moneyPaid)??lotCost);
- const unpaid=lotCost-paid;
- const p=ratioFromMode(ratioMode);
- const dryKg=kg/p.ratio;
- const feresula=dryKg/FERESULA_KG;
- const rawBePerFeresula=rate*p.kgPerFer;
- return {redKg:kg,pricePerKg:rate,lotCost,moneyPaid:paid,unpaid,ratioMode:p.ratio===6?'r6':p.ratio===3?'r3':'r5',ratioLabel:p.label,dryKg,feresula,rawBePerFeresula};
+/* Simple Coffee Batch, Arrivals, Ratio & Feresula Sales Math */
+function getActiveRatio(){
+ const mode=$('batchRatioSelect')?.value||db.coffeeBatch?.ratioMode||'5';
+ if(mode==='custom')return Math.max(1,Number($('customRatioVal')?.value)||4.5);
+ return Math.max(1,Number(mode)||5);
 }
 
-function updateCoffeeLiveCalc(){
- const kg=Number($('coffeeRedKg').value)||0;
- const rate=Number($('coffeePriceKg').value)||0;
- const paidRaw=$('coffeeMoneyPaidInput').value;
- const lotCost=kg*rate;
- const paid=paidRaw===''?lotCost:(Number(paidRaw)||0);
- const m=computeLotMetrics(kg,rate,paid,$('coffeeRatioMode').value);
- $('coffeeLiveCalc').innerHTML=`
-  <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
-   <span>Lot: <b>${money(m.lotCost)}</b></span>
-   <span>Paid: <b class="money">${money(m.moneyPaid)}</b></span>
-   <span>Due: <b>${money(m.unpaid)}</b></span>
-  </div>
-  <div class="tiny" style="margin-top:5px">
-   ${esc(m.ratioLabel)} · Yield: <b>${m.feresula.toFixed(2)} fer</b> (${m.dryKg.toFixed(1)} kg) · Raw cost/fer: <b>${money(m.rawBePerFeresula)}</b>
-  </div>`;
-}
-
-function runCoffeeProfitCalculator(){
- const source=$('calcDataSource')?.value||'saved';
- const ratioSel=$('calcOutturnSelect')?.value||'5';
- $('quickLotsBox')?.classList.toggle('hidden',source!=='quick');
- $('calcCustomRatioWrap')?.classList.toggle('hidden',ratioSel!=='custom');
- const laborMode=$('calcLaborMode')?.value||'attendance';
- $('calcManualLaborWrap')?.classList.toggle('hidden',laborMode!=='manual');
-
- const ratio=ratioSel==='custom'
-  ?Math.max(1,Number($('calcCustomRatioInput')?.value)||5)
-  :Math.max(1,Number(ratioSel)||5);
+function getCoffeeSnapshot(){
+ const arrivals=db.coffeeArrivals||[];
+ const sales=db.coffeeSales||[];
+ const ratio=getActiveRatio();
  const kgPerFer=ratio*FERESULA_KG;
+ const extraCost=Math.max(0,Number($('batchExtraCost')?.value)||0);
 
- const savedLots=db.coffeeLots||[];
- const savedKg=savedLots.reduce((s,c)=>s+(Number(c.redKg)||0),0);
- const savedCost=savedLots.reduce((s,c)=>s+((Number(c.redKg)||0)*(Number(c.pricePerKg)||0)),0);
+ const totalKg=arrivals.reduce((s,a)=>s+(Number(a.redKg)||0),0);
+ const totalCherryCost=arrivals.reduce((s,a)=>s+((Number(a.redKg)||0)*(Number(a.pricePerKg)||0)),0);
+ const totalCherryPaid=arrivals.reduce((s,a)=>s+(Number(a.moneyPaid)||0),0);
+ const avgPriceKg=totalKg>0?totalCherryCost/totalKg:0;
 
- let activeKg=0,activeCherryCost=0,sourceNote='';
- if(source==='quick'){
-  const l1k=Math.max(0,Number($('qLot1Kg')?.value)||0),l1p=Math.max(0,Number($('qLot1Price')?.value)||0);
-  const l2k=Math.max(0,Number($('qLot2Kg')?.value)||0),l2p=Math.max(0,Number($('qLot2Price')?.value)||0);
-  activeKg=l1k+l2k;activeCherryCost=(l1k*l1p)+(l2k*l2p);
-  sourceNote='Quick multi-lot simulator';
- }else if(source==='target'){
-  const targetKg=Math.max(100,Number($('batchTargetKgInput')?.value)||30000);
-  const avg=savedKg>0?savedCost/savedKg:156;
-  activeKg=targetKg;activeCherryCost=targetKg*avg;
-  sourceNote=`${targetKg.toLocaleString()} kg target @ ${money(avg)}/kg`;
- }else{
-  activeKg=savedKg;activeCherryCost=savedCost;
-  sourceNote=`${savedLots.length} saved coffee lot(s)`;
- }
+ const estFeresula=(totalKg/ratio)/FERESULA_KG;
+ const totalCost=totalCherryCost+extraCost;
+ const breakEvenPerFer=estFeresula>0?totalCost/estFeresula:0;
 
- const out=$('profitCalcOutput');
- if(!out)return;
- if(activeKg<=0){
-  out.innerHTML='<div class="tiny">No coffee lots yet. Add a lot below or tap <b>Sample lots</b> to test.</div>';
-  return;
- }
+ const soldFeresula=sales.reduce((s,x)=>s+(Number(x.feresula)||0),0);
+ const totalSalesRevenue=sales.reduce((s,x)=>s+((Number(x.feresula)||0)*(Number(x.pricePerFer)||0)),0);
+ const avgSalePricePerFer=soldFeresula>0?totalSalesRevenue/soldFeresula:0;
+ const remainingFeresula=estFeresula-soldFeresula;
 
- const weightedAvg=activeCherryCost/activeKg;
- const dryKg=activeKg/ratio;
- const feresula=dryKg/FERESULA_KG;
- const laborCost=laborMode==='manual'?Math.max(0,Number($('calcManualLaborInput')?.value)||0):db.attendance.reduce((s,a)=>s+(Number(a.dailyWage)||0),0);
- const extraOps=Math.max(0,Number($('calcExtraOpsCost')?.value)||0);
- const totalAllIn=activeCherryCost+laborCost+extraOps;
- const breakEvenPerFer=feresula>0?totalAllIn/feresula:0;
- const marginPct=Math.max(0,Number($('calcTargetMarginPct')?.value)||0);
- const targetSellPerFer=breakEvenPerFer*(1+(marginPct/100));
- const targetProfit=(targetSellPerFer*feresula)-totalAllIn;
+ // Allocate cost cleanly: if arrivals done, compare sales revenue to sold portion cost (or full batch cost if all sold)
+ const soldCostBasis=estFeresula>0
+  ?(soldFeresula>=estFeresula?totalCost:(soldFeresula*(totalCost/estFeresula)))
+  :0;
+ const realizedProfit=totalSalesRevenue-soldCostBasis;
+ const fullBatchNetIfSoldAtAvg=estFeresula>0?((avgSalePricePerFer||breakEvenPerFer)*estFeresula)-totalCost:0;
 
- const sellPrice=Number($('calcSellingPriceFer')?.value)||0;
- const actualRev=sellPrice*feresula;
- const actualProfit=actualRev-totalAllIn;
-
- out.innerHTML=`
-  <div class="tiny"><b>${esc(sourceNote)}</b> · Ratio <b>${ratio}:1</b> (${kgPerFer.toFixed(1)} kg red / 17 kg feresula)</div>
-  <div class="kpi-grid">
-   <div class="kpi-mini"><small>Red Cherry</small><strong>${activeKg.toLocaleString(undefined,{maximumFractionDigits:2})} kg</strong></div>
-   <div class="kpi-mini"><small>Weighted Avg / kg</small><strong>${money(weightedAvg)}</strong></div>
-   <div class="kpi-mini"><small>Feresula (17 kg)</small><strong>${feresula.toFixed(2)} fer</strong></div>
-   <div class="kpi-mini"><small>All-In Cost</small><strong>${money(totalAllIn)}</strong></div>
-   <div class="kpi-mini"><small>Break-Even / Fer</small><strong>${money(breakEvenPerFer)}</strong></div>
-   <div class="kpi-mini"><small>Target (+${marginPct}%)</small><strong>${money(targetSellPerFer)} / fer</strong></div>
-  </div>
-  <div class="tiny" style="margin-top:8px">Est. profit at target price: <b class="money">${money(targetProfit)}</b>${sellPrice>0?` · At <b>${money(sellPrice)}/fer</b>: <b class="${actualProfit>=0?'money':'loss'}">${money(actualProfit)}</b> net`:''}</div>`;
+ return {
+  arrivalsDone:!!db.coffeeBatch?.arrivalsDone,
+  ratio,kgPerFer,extraCost,
+  totalKg,totalCherryCost,totalCherryPaid,totalCherryDue:totalCherryCost-totalCherryPaid,
+  avgPriceKg,estFeresula,totalCost,breakEvenPerFer,
+  soldFeresula,remainingFeresula,totalSalesRevenue,avgSalePricePerFer,
+  soldCostBasis,realizedProfit,fullBatchNetIfSoldAtAvg
+ };
 }
 
-function saveCoffeeLot(){
- const editId=$('editCoffeeId').value;
- const date=String($('coffeeDate').value||'').trim()||localDate();
- const redKg=Number($('coffeeRedKg').value);
- const pricePerKg=Number($('coffeePriceKg').value);
- const paidRaw=$('coffeeMoneyPaidInput').value;
- const ratioMode=$('coffeeRatioMode').value;
- const note=String($('coffeeNote').value||'').trim();
+function updateArrivalLivePreview(){
+ const kg=Number($('arrivalKg').value)||0;
+ const rate=Number($('arrivalPriceKg').value)||0;
+ const paidRaw=$('arrivalPaid').value;
+ const lotVal=kg*rate;
+ const paid=paidRaw===''?lotVal:(Number(paidRaw)||0);
+ const due=lotVal-paid;
+ const ratio=getActiveRatio();
+ const fer=(kg/ratio)/FERESULA_KG;
+ $('arrivalLivePreview').innerHTML=`
+  <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+   <span>Arrival total: <b>${money(lotVal)}</b></span>
+   <span>Paid: <b class="money">${money(paid)}</b></span>
+   <span>Due: <b>${money(due)}</b></span>
+  </div>
+  <div class="tiny" style="margin-top:4px">At ${ratio}:1 (${(ratio*FERESULA_KG).toFixed(1)} kg/fer): <b>${fer.toFixed(2)} feresula</b></div>`;
+}
+
+function updateSaleLivePreview(){
+ const fer=Number($('saleFerQty').value)||0;
+ const price=Number($('salePricePerFer').value)||0;
+ const snap=getCoffeeSnapshot();
+ const revenue=fer*price;
+ const estCostForSale=fer*snap.breakEvenPerFer;
+ const estProfit=revenue-estCostForSale;
+ $('saleLivePreview').innerHTML=`
+  <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+   <span>Sale total: <b class="money">${money(revenue)}</b></span>
+   <span>Break-even cost: <b>${money(estCostForSale)}</b></span>
+   <span>Est. profit: <b class="${estProfit>=0?'money':'loss'}">${money(estProfit)}</b></span>
+  </div>
+  <div class="tiny" style="margin-top:4px">Current batch break-even: <b>${money(snap.breakEvenPerFer)} / fer</b> · Remaining: <b>${snap.remainingFeresula.toFixed(2)} fer</b></div>`;
+}
+
+function saveArrival(){
+ const editId=$('editArrivalId').value;
+ const date=String($('arrivalDate').value||'').trim()||localDate();
+ const redKg=Number($('arrivalKg').value);
+ const pricePerKg=Number($('arrivalPriceKg').value);
+ const paidRaw=$('arrivalPaid').value;
+ const note=String($('arrivalNote').value||'').trim();
  if(!Number.isFinite(redKg)||redKg<=0){toast('Enter red cherry kg > 0.');return}
- if(!Number.isFinite(pricePerKg)||pricePerKg<=0){toast('Enter 1kg price > 0.');return}
+ if(!Number.isFinite(pricePerKg)||pricePerKg<=0){toast('Enter price per kg > 0.');return}
  const moneyPaid=paidRaw===''?(redKg*pricePerKg):Number(paidRaw);
- if(!Number.isFinite(moneyPaid)||moneyPaid<0){toast('Enter valid money paid.');return}
+ if(!Number.isFinite(moneyPaid)||moneyPaid<0){toast('Enter valid paid amount.');return}
 
  if(editId){
-  const item=db.coffeeLots.find(c=>c.id===editId);if(!item)return;
-  const prev={date:item.date,redKg:item.redKg,pricePerKg:item.pricePerKg,moneyPaid:item.moneyPaid,ratioMode:item.ratioMode,note:item.note};
-  item.date=date;item.redKg=redKg;item.pricePerKg=pricePerKg;item.moneyPaid=moneyPaid;item.ratioMode=ratioMode;item.note=note;
+  const item=db.coffeeArrivals.find(x=>x.id===editId);if(!item)return;
+  const prev={date:item.date,redKg:item.redKg,pricePerKg:item.pricePerKg,moneyPaid:item.moneyPaid,note:item.note};
+  item.date=date;item.redKg=redKg;item.pricePerKg=pricePerKg;item.moneyPaid=moneyPaid;item.note=note;
   if(!persist(()=>Object.assign(item,prev)))return;
-  toast('Coffee lot updated.');
+  toast('Arrival updated.');
  }else{
-  db.coffeeLots.push({id:crypto.randomUUID(),date,redKg,pricePerKg,moneyPaid,ratioMode,note,createdAt:new Date().toISOString()});
-  if(!persist(()=>db.coffeeLots.pop()))return;
-  toast('Coffee lot saved.');
+  db.coffeeArrivals.push({id:crypto.randomUUID(),date,redKg,pricePerKg,moneyPaid,note,createdAt:new Date().toISOString()});
+  if(!persist(()=>db.coffeeArrivals.pop()))return;
+  toast('Daily arrival saved.');
  }
- resetCoffeeForm();
+ resetArrivalForm();
 }
 
-function resetCoffeeForm(){
- $('editCoffeeId').value='';$('coffeeDate').value=localDate();$('coffeeRedKg').value='';$('coffeePriceKg').value='';
- $('coffeeMoneyPaidInput').value='';$('coffeeRatioMode').value='r5';$('coffeeNote').value='';
- $('coffeeFormTitle').textContent='Record daily coffee';$('saveCoffeeBtn').textContent='Save coffee';$('cancelCoffeeEditBtn').classList.add('hidden');
- updateCoffeeLiveCalc();
+function resetArrivalForm(){
+ $('editArrivalId').value='';$('arrivalDate').value=localDate();$('arrivalKg').value='';$('arrivalPriceKg').value='';
+ $('arrivalPaid').value='';$('arrivalNote').value='';
+ $('arrivalFormTitle').textContent='Add daily arrival';$('saveArrivalBtn').textContent='Save arrival';$('cancelArrivalEditBtn').classList.add('hidden');
+ updateArrivalLivePreview();
 }
 
-window.editCoffeeLot=id=>{
- const c=db.coffeeLots.find(x=>x.id===id);if(!c)return;
- $('editCoffeeId').value=c.id;$('coffeeDate').value=c.date;$('coffeeRedKg').value=c.redKg;$('coffeePriceKg').value=c.pricePerKg;
- $('coffeeMoneyPaidInput').value=c.moneyPaid;$('coffeeRatioMode').value=c.ratioMode||'r5';$('coffeeNote').value=c.note||'';
- $('coffeeFormTitle').textContent=`Edit lot (${c.date})`;$('saveCoffeeBtn').textContent='Update lot';$('cancelCoffeeEditBtn').classList.remove('hidden');
- updateCoffeeLiveCalc();$('coffeeRedKg').focus();
+window.editArrival=id=>{
+ const a=db.coffeeArrivals.find(x=>x.id===id);if(!a)return;
+ $('editArrivalId').value=a.id;$('arrivalDate').value=a.date;$('arrivalKg').value=a.redKg;$('arrivalPriceKg').value=a.pricePerKg;
+ $('arrivalPaid').value=a.moneyPaid;$('arrivalNote').value=a.note||'';
+ $('arrivalFormTitle').textContent=`Edit arrival (${a.date})`;$('saveArrivalBtn').textContent='Update arrival';$('cancelArrivalEditBtn').classList.remove('hidden');
+ updateArrivalLivePreview();$('arrivalKg').focus();
 };
 
-window.addCoffeePayment=id=>{
- const c=db.coffeeLots.find(x=>x.id===id);if(!c)return;
- const rem=Math.max(0,(c.redKg*c.pricePerKg)-c.moneyPaid);
- modalState={mode:'coffee_pay',coffeeLotId:c.id};
- $('payModalEmployeeWrap').classList.add('hidden');
- $('payTypeGroup').classList.add('hidden');
- $('payDateGroup').classList.add('hidden');
- $('payNoteGroup').classList.add('hidden');
- $('payModalBadge').textContent='Coffee Lot';
- $('payModalTitle').textContent=`Add payment · ${c.date}`;
- $('payModalSummary').innerHTML=`<b>${c.redKg} kg</b> @ ${money(c.pricePerKg)}/kg · Paid: <b>${money(c.moneyPaid)}</b> · Remaining: <b>${money(rem)}</b>`;
- $('payAmountInput').value=rem>0?rem.toFixed(2):'';
- $('payModalError').textContent='';
- $('payModal').classList.remove('hidden');
- setTimeout(()=>$('payAmountInput').focus(),50);
+window.addArrivalPayment=id=>{
+ const a=db.coffeeArrivals.find(x=>x.id===id);if(!a)return;
+ const due=Math.max(0,(a.redKg*a.pricePerKg)-a.moneyPaid);
+ modalState={mode:'arrival_pay',arrivalId:a.id};
+ $('payModalEmployeeWrap').classList.add('hidden');$('payTypeGroup').classList.add('hidden');$('payDateGroup').classList.add('hidden');$('payNoteGroup').classList.add('hidden');
+ $('payModalBadge').textContent='Arrival Payment';
+ $('payModalTitle').textContent=`Pay supplier · ${a.date}`;
+ $('payModalSummary').innerHTML=`<b>${a.redKg} kg</b> @ ${money(a.pricePerKg)}/kg · Paid: <b>${money(a.moneyPaid)}</b> · Due: <b>${money(due)}</b>`;
+ $('payAmountInput').value=due>0?due.toFixed(2):'';
+ $('payModalError').textContent='';$('payModal').classList.remove('hidden');setTimeout(()=>$('payAmountInput').focus(),50);
 };
 
-window.deleteCoffeeLot=id=>{
- const idx=db.coffeeLots.findIndex(c=>c.id===id);if(idx===-1)return;
- if(!confirm('Delete this coffee lot?'))return;
- const removed=db.coffeeLots.splice(idx,1)[0];
- if(!persist(()=>db.coffeeLots.splice(idx,0,removed)))return;
- toast('Coffee lot deleted.');
+window.deleteArrival=id=>{
+ const idx=db.coffeeArrivals.findIndex(x=>x.id===id);if(idx===-1)return;
+ if(!confirm('Delete this arrival?'))return;
+ const removed=db.coffeeArrivals.splice(idx,1)[0];
+ if(!persist(()=>db.coffeeArrivals.splice(idx,0,removed)))return;
+ toast('Arrival deleted.');
 };
+
+function saveFeresulaSale(){
+ const date=String($('saleDate').value||'').trim()||localDate();
+ const feresula=Number($('saleFerQty').value);
+ const pricePerFer=Number($('salePricePerFer').value);
+ const note=String($('saleBuyerNote').value||'').trim();
+ if(!Number.isFinite(feresula)||feresula<=0){toast('Enter feresula sold > 0.');return}
+ if(!Number.isFinite(pricePerFer)||pricePerFer<=0){toast('Enter sell price per feresula > 0.');return}
+ db.coffeeSales.push({id:crypto.randomUUID(),date,feresula,pricePerFer,note,createdAt:new Date().toISOString()});
+ if(!persist(()=>db.coffeeSales.pop()))return;
+ $('saleFerQty').value='';$('salePricePerFer').value='';$('saleBuyerNote').value='';
+ updateSaleLivePreview();
+ toast(`Recorded sale of ${feresula} feresula.`);
+}
+
+window.deleteSale=id=>{
+ const idx=db.coffeeSales.findIndex(x=>x.id===id);if(idx===-1)return;
+ if(!confirm('Delete this feresula sale?'))return;
+ const removed=db.coffeeSales.splice(idx,1)[0];
+ if(!persist(()=>db.coffeeSales.splice(idx,0,removed)))return;
+ toast('Sale deleted.');
+};
+
+function toggleArrivalStatus(){
+ db.coffeeBatch.arrivalsDone=!db.coffeeBatch.arrivalsDone;
+ persist();
+ toast(db.coffeeBatch.arrivalsDone?'Arrivals marked as done.':'Arrivals reopened.');
+}
 
 function renderCoffeeTab(){
- const lots=[...(db.coffeeLots||[])].sort((a,b)=>b.date.localeCompare(a.date));
- const totalKg=lots.reduce((s,c)=>s+(Number(c.redKg)||0),0);
- const totalVal=lots.reduce((s,c)=>s+((Number(c.redKg)||0)*(Number(c.pricePerKg)||0)),0);
- const totalPaid=lots.reduce((s,c)=>s+(Number(c.moneyPaid)||0),0);
- const avgPrice=totalKg>0?totalVal/totalKg:0;
- const selRatio=Number($('calcOutturnSelect')?.value)||5;
- const estFer=(totalKg/selRatio)/FERESULA_KG;
+ const s=getCoffeeSnapshot();
+ $('coffeeTotalKg').textContent=s.totalKg.toLocaleString(undefined,{maximumFractionDigits:2})+' kg';
+ $('coffeeAvgPrice').textContent=money(s.avgPriceKg);
+ $('coffeeEstFeresula').textContent=s.estFeresula.toFixed(2)+' fer';
+ $('coffeeNetProfit').innerHTML=`<span class="${s.realizedProfit>=0?'money':'loss'}">${money(s.realizedProfit)}</span>`;
 
- $('coffeeTotalKg').textContent=totalKg.toLocaleString(undefined,{maximumFractionDigits:2})+' kg';
- $('coffeeAvgPrice').textContent=money(avgPrice);
- $('coffeeMoneyPaid').textContent=money(totalPaid);
- $('coffeeEstFeresula').textContent=estFer.toFixed(2)+' fer';
+ const chip=$('arrivalStatusChip'),btn=$('toggleArrivalDoneBtn');
+ if(s.arrivalsDone){
+  chip.textContent='Arrivals done';chip.className='admin-chip done';btn.textContent='Reopen arrivals';
+ }else{
+  chip.textContent='Arrivals in progress';chip.className='admin-chip open';btn.textContent='Mark arrivals done';
+ }
 
- const targetKg=Math.max(100,Number($('batchTargetKgInput')?.value)||30000);
- if($('targetCapLabel'))$('targetCapLabel').textContent=targetKg.toLocaleString();
- const pct=Math.min(100,(totalKg/targetKg)*100);
- if($('batchCapFill'))$('batchCapFill').style.width=pct.toFixed(1)+'%';
- if($('batchCapSummary'))$('batchCapSummary').innerHTML=`Filled: <b>${totalKg.toLocaleString()} kg (${pct.toFixed(1)}%)</b> · Remaining: <b>${Math.max(0,targetKg-totalKg).toLocaleString()} kg</b>`;
+ $('batchSummaryBox').innerHTML=`
+  <div class="tiny">
+   Ratio: <b>${s.ratio}:1</b> (<b>${s.kgPerFer.toFixed(1)} kg</b> red cherry = <b>17 kg</b> feresula) ·
+   ${s.arrivalsDone?'<b>Final batch calculation</b>':'<b>Live batch estimate (still arriving)</b>'}
+  </div>
+  <div class="kpi-grid">
+   <div class="kpi-mini"><small>Cherry Cost</small><strong>${money(s.totalCherryCost)}</strong></div>
+   <div class="kpi-mini"><small>Total Cost (+Ops)</small><strong>${money(s.totalCost)}</strong></div>
+   <div class="kpi-mini"><small>Break-Even / Fer</small><strong>${money(s.breakEvenPerFer)}</strong></div>
+   <div class="kpi-mini"><small>Feresula Sold</small><strong>${s.soldFeresula.toFixed(2)} fer</strong></div>
+   <div class="kpi-mini"><small>Feresula Left</small><strong>${s.remainingFeresula.toFixed(2)} fer</strong></div>
+   <div class="kpi-mini"><small>Cherry Paid / Due</small><strong>${money(s.totalCherryPaid)}</strong></div>
+  </div>`;
 
- $('coffeeLotsList').innerHTML=lots.length
-  ?`<div class="tablewrap"><table><thead><tr><th>Date</th><th>Red kg</th><th>Paid</th><th>Yield</th><th>Actions</th></tr></thead><tbody>${lots.map(c=>{
-   const m=computeLotMetrics(c.redKg,c.pricePerKg,c.moneyPaid,c.ratioMode);
-   return `<tr><td><b>${esc(c.date)}</b>${c.note?`<div class="tiny">${esc(c.note)}</div>`:''}</td><td><b>${c.redKg} kg</b><div class="tiny">@ ${money(c.pricePerKg)}</div></td><td><span class="money">${money(m.moneyPaid)}</span></td><td><b>${m.feresula.toFixed(2)} fer</b><div class="tiny">${esc(m.ratioLabel)}</div></td><td><div class="row-actions"><button class="btn secondary small" onclick="addCoffeePayment('${c.id}')">+ Pay</button><button class="btn secondary small" onclick="editCoffeeLot('${c.id}')">Edit</button><button class="btn danger small" onclick="deleteCoffeeLot('${c.id}')">Del</button></div></td></tr>`;
+ const arrivals=[...(db.coffeeArrivals||[])].sort((a,b)=>b.date.localeCompare(a.date));
+ $('arrivalsList').innerHTML=arrivals.length
+  ?`<div class="tablewrap"><table><thead><tr><th>Date</th><th>Red kg & Rate</th><th>Total & Paid</th><th>Actions</th></tr></thead><tbody>${arrivals.map(a=>{
+   const lotTotal=(Number(a.redKg)||0)*(Number(a.pricePerKg)||0);
+   const due=Math.max(0,lotTotal-(Number(a.moneyPaid)||0));
+   return `<tr><td><b>${esc(a.date)}</b>${a.note?`<div class="tiny">${esc(a.note)}</div>`:''}</td><td><b>${a.redKg} kg</b><div class="tiny">@ ${money(a.pricePerKg)}/kg</div></td><td><b>${money(lotTotal)}</b><div class="tiny">${due>0?`Due: ${money(due)}`:'Paid'}</div></td><td><div class="row-actions">${due>0?`<button class="btn secondary small" onclick="addArrivalPayment('${a.id}')">Pay</button>`:''}<button class="btn secondary small" onclick="editArrival('${a.id}')">Edit</button><button class="btn danger small" onclick="deleteArrival('${a.id}')">Del</button></div></td></tr>`;
   }).join('')}</tbody></table></div>`
-  :'<div class="empty">No coffee lots recorded yet.</div>';
+  :'<div class="empty">No daily arrivals yet.</div>';
 
- updateCoffeeLiveCalc();
- runCoffeeProfitCalculator();
+ $('salesSummaryBox').innerHTML=`
+  <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+   <span>Sales revenue: <b class="money">${money(s.totalSalesRevenue)}</b></span>
+   <span>Avg sell/fer: <b>${money(s.avgSalePricePerFer)}</b></span>
+   <span>Profit: <b class="${s.realizedProfit>=0?'money':'loss'}">${money(s.realizedProfit)}</b></span>
+  </div>`;
+
+ const sales=[...(db.coffeeSales||[])].sort((a,b)=>b.date.localeCompare(a.date));
+ $('salesList').innerHTML=sales.length
+  ?`<div class="tablewrap"><table><thead><tr><th>Date</th><th>Sold</th><th>Price/Fer</th><th>Total</th><th></th></tr></thead><tbody>${sales.map(x=>{
+   const tot=(Number(x.feresula)||0)*(Number(x.pricePerFer)||0);
+   return `<tr><td><b>${esc(x.date)}</b>${x.note?`<div class="tiny">${esc(x.note)}</div>`:''}</td><td><b>${Number(x.feresula).toFixed(2)} fer</b></td><td>${money(x.pricePerFer)}</td><td class="money">${money(tot)}</td><td><button class="btn danger small" onclick="deleteSale('${x.id}')">Del</button></td></tr>`;
+  }).join('')}</tbody></table></div>`
+  :'<div class="empty">No feresula sales recorded yet.</div>';
+
+ updateArrivalLivePreview();
+ updateSaleLivePreview();
 }
 
-function exportCoffeeCsv(){
- const lots=[...(db.coffeeLots||[])].sort((a,b)=>a.date.localeCompare(b.date));
- download(`nexus-coffee-${localDate()}.csv`,csv([
-  ['Date','Note','Red Cherry kg','1kg Price ETB','Lot Value ETB','Money Paid ETB','Ratio','Dry kg','Feresula (17kg)'],
-  ...lots.map(c=>{const m=computeLotMetrics(c.redKg,c.pricePerKg,c.moneyPaid,c.ratioMode);return [c.date,c.note||'',m.redKg,m.pricePerKg,m.lotCost,m.moneyPaid,m.ratioLabel,m.dryKg.toFixed(2),m.feresula.toFixed(2)]})
+function exportArrivalsCsv(){
+ const arrivals=[...(db.coffeeArrivals||[])].sort((a,b)=>a.date.localeCompare(b.date));
+ download(`nexus-arrivals-${localDate()}.csv`,csv([
+  ['Date','Note','Red Cherry kg','Price/kg ETB','Total ETB','Paid ETB','Due ETB'],
+  ...arrivals.map(a=>{const tot=(Number(a.redKg)||0)*(Number(a.pricePerKg)||0);const paid=Number(a.moneyPaid)||0;return [a.date,a.note||'',a.redKg,a.pricePerKg,tot,paid,Math.max(0,tot-paid)]})
  ]));
 }
 
+function exportSalesCsv(){
+ const sales=[...(db.coffeeSales||[])].sort((a,b)=>a.date.localeCompare(b.date));
+ download(`nexus-feresula-sales-${localDate()}.csv`,csv([
+  ['Date','Buyer/Note','Feresula (17kg)','Price/Feresula ETB','Total ETB'],
+  ...sales.map(x=>[x.date,x.note||'',x.feresula,x.pricePerFer,(Number(x.feresula)||0)*(Number(x.pricePerFer)||0)])
+ ]));
+}
+
+/* Attendance, Staff, QR, Payroll & Admin */
 function makeId(){
  let id;
  do{id='NX-'+Array.from(crypto.getRandomValues(new Uint8Array(4)),b=>b.toString(16).padStart(2,'0')).join('').toUpperCase()}
@@ -1413,7 +1433,7 @@ window.quickMarkPresentById=id=>{unlockAudio();const emp=db.employees.find(x=>x.
 function renderPersonButton(emp,extraText='',variant='default',onClickExpr=''){
  const seqTag=emp.batchNum?`#${emp.batchNum} `:'';
  const action=onClickExpr||`openEmployeeCard('${emp.id}','edit')`;
- const extraCls=variant==='absent'?'absent-btn':variant==='advance'?'advance-btn':'';
+ const extraCls=variant==='absent'?'absent-btn':'';
  return `<button type="button" class="person-btn ${extraCls}" onclick="${action}"><span>${esc(seqTag+personDisplayLabel(emp))}</span><span class="num-pill">${esc(emp.extra||emp.qrId)}</span>${extraText?`<span class="tiny">${esc(extraText)}</span>`:''}</button>`;
 }
 
@@ -1435,37 +1455,26 @@ function refreshModalSummary(empId){
 function openPayModal({mode='create',employeeId=null,paymentId=null,defaultType='advance',allowSelectEmployee=false,prefillAmount=null}){
  $('payTypeGroup').classList.remove('hidden');$('payDateGroup').classList.remove('hidden');$('payNoteGroup').classList.remove('hidden');
  const [from,to]=dateRange('pay');
- if(mode==='edit'){
-  const p=db.payments.find(x=>x.id===paymentId);if(!p)return;
-  const emp=db.employees.find(x=>x.id===p.employeeId);
-  modalState={mode:'edit',employeeId:p.employeeId,paymentId:p.id,coffeeLotId:null,allowSelectEmployee:false};
-  $('payModalEmployeeWrap').classList.add('hidden');$('payModalBadge').textContent='Edit Entry';
-  $('payModalTitle').textContent=emp?`Edit · ${emp.name}`:'Edit entry';
-  refreshModalSummary(p.employeeId);
-  $('payTypeSelect').value=normalizePayType(p.type);$('payAmountInput').value=String(p.amount);$('payDateInput').value=p.date;$('payNoteInput').value=p.note||'';
-  $('submitPayModalBtn').textContent='Update';
- }else{
-  const list=db.employees;if(!list.length){toast('Add an employee first.');return}
-  const chosenId=employeeId&&list.some(e=>e.id===employeeId)?employeeId:list[0].id;
-  const pType=normalizePayType(defaultType);
-  modalState={mode:'create',employeeId:chosenId,paymentId:null,coffeeLotId:null,allowSelectEmployee};
-  if(allowSelectEmployee){
-   $('payEmployeeSelect').innerHTML=list.map(e=>`<option value="${esc(e.id)}" ${e.id===chosenId?'selected':''}>${esc(e.name)} (${esc(e.qrId)})</option>`).join('');
-   $('payModalEmployeeWrap').classList.remove('hidden');
-  }else $('payModalEmployeeWrap').classList.add('hidden');
-  $('payModalBadge').textContent=pType==='advance'?'Advance':'Payment';
-  $('payModalTitle').textContent=pType==='advance'?'Record advance':'Record payment';
-  refreshModalSummary(chosenId);
-  $('payTypeSelect').value=pType;$('payAmountInput').value=prefillAmount&&Number(prefillAmount)>0?String(Number(prefillAmount).toFixed(2)):'';
-  $('payDateInput').value=localDate();$('payNoteInput').value=pType==='advance'?'Advance payment':'';
-  $('submitPayModalBtn').textContent=pType==='advance'?'Save advance':'Save payment';
- }
+ const list=db.employees;if(!list.length){toast('Add an employee first.');return}
+ const chosenId=employeeId&&list.some(e=>e.id===employeeId)?employeeId:list[0].id;
+ const pType=normalizePayType(defaultType);
+ modalState={mode:'create',employeeId:chosenId,paymentId:null,arrivalId:null,allowSelectEmployee};
+ if(allowSelectEmployee){
+  $('payEmployeeSelect').innerHTML=list.map(e=>`<option value="${esc(e.id)}" ${e.id===chosenId?'selected':''}>${esc(e.name)} (${esc(e.qrId)})</option>`).join('');
+  $('payModalEmployeeWrap').classList.remove('hidden');
+ }else $('payModalEmployeeWrap').classList.add('hidden');
+ $('payModalBadge').textContent=pType==='advance'?'Advance':'Payment';
+ $('payModalTitle').textContent=pType==='advance'?'Record advance':'Record payment';
+ refreshModalSummary(chosenId);
+ $('payTypeSelect').value=pType;$('payAmountInput').value=prefillAmount&&Number(prefillAmount)>0?String(Number(prefillAmount).toFixed(2)):'';
+ $('payDateInput').value=localDate();$('payNoteInput').value=pType==='advance'?'Advance payment':'';
+ $('submitPayModalBtn').textContent=pType==='advance'?'Save advance':'Save payment';
  $('payModalError').textContent='';$('payModal').classList.remove('hidden');setTimeout(()=>$('payAmountInput').focus(),50);
 }
 
 function closePayModal(){
  $('payModal').classList.add('hidden');$('payModalError').textContent='';
- modalState={mode:'create',employeeId:null,paymentId:null,coffeeLotId:null,allowSelectEmployee:false};
+ modalState={mode:'create',employeeId:null,paymentId:null,arrivalId:null,allowSelectEmployee:false};
 }
 
 function submitPayModal(e){
@@ -1473,29 +1482,21 @@ function submitPayModal(e){
  const amount=Number($('payAmountInput').value);
  if(!Number.isFinite(amount)||amount<=0){$('payModalError').textContent='Enter an amount greater than zero.';return}
 
- if(modalState.mode==='coffee_pay'){
-  const c=db.coffeeLots.find(x=>x.id===modalState.coffeeLotId);if(!c){closePayModal();return}
-  const prevPaid=c.moneyPaid;c.moneyPaid=prevPaid+amount;
-  if(!persist(()=>{c.moneyPaid=prevPaid}))return;
-  closePayModal();toast(`Added ${money(amount)} paid.`);return;
+ if(modalState.mode==='arrival_pay'){
+  const a=db.coffeeArrivals.find(x=>x.id===modalState.arrivalId);if(!a){closePayModal();return}
+  const prevPaid=a.moneyPaid;a.moneyPaid=prevPaid+amount;
+  if(!persist(()=>{a.moneyPaid=prevPaid}))return;
+  closePayModal();toast(`Paid ${money(amount)} on arrival.`);return;
  }
 
  const pType=normalizePayType($('payTypeSelect').value);
  const date=String($('payDateInput').value||'').trim()||localDate();
  const note=String($('payNoteInput').value||'').trim();
  const targetEmpId=modalState.allowSelectEmployee?$('payEmployeeSelect').value:modalState.employeeId;
- if(modalState.mode==='edit'){
-  const p=db.payments.find(x=>x.id===modalState.paymentId);if(!p){closePayModal();return}
-  const prev={type:p.type,amount:p.amount,date:p.date,note:p.note};
-  p.type=pType;p.amount=amount;p.date=date;p.note=note;
-  if(!persist(()=>Object.assign(p,prev)))return;
-  closePayModal();toast('Updated.');
- }else{
-  if(!targetEmpId){closePayModal();return}
-  db.payments.push({id:crypto.randomUUID(),employeeId:targetEmpId,type:pType,amount,date,note,createdAt:new Date().toISOString()});
-  if(!persist(()=>db.payments.pop()))return;
-  closePayModal();toast(`${payTypeLabel(pType)} of ${money(amount)} recorded.`);
- }
+ if(!targetEmpId){closePayModal();return}
+ db.payments.push({id:crypto.randomUUID(),employeeId:targetEmpId,type:pType,amount,date,note,createdAt:new Date().toISOString()});
+ if(!persist(()=>db.payments.pop()))return;
+ closePayModal();toast(`${payTypeLabel(pType)} of ${money(amount)} recorded.`);
 }
 
 function renderAll(){
@@ -1524,7 +1525,7 @@ function renderAll(){
  $('scanAbsentButtons').innerHTML=absentList.length?`<div class="status-chip-wrap">${absentList.map(e=>renderPersonButton(e,'Present','absent',`quickMarkPresentById('${e.id}')`)).join('')}</div>`:'<div class="empty">None absent today.</div>';
 
  renderCoffeeTab();renderEmployees();runReport();runPayroll();updateUndoUI();
- $('storageInfo').textContent=`${db.employees.length} staff · ${db.attendance.length} scans · ${db.payments.length} entries · ${(db.coffeeLots?.length||0)} coffee lots.`;
+ $('storageInfo').textContent=`${db.employees.length} staff · ${db.attendance.length} scans · ${(db.coffeeArrivals?.length||0)} arrivals · ${(db.coffeeSales?.length||0)} sales.`;
 }
 
 function getFilteredEmployees(){
@@ -1694,7 +1695,7 @@ function restoreFile(file){
    const x=JSON.parse(reader.result);
    if(!x||!Array.isArray(x.employees)||!Array.isArray(x.attendance))throw Error('Invalid backup');
    if(!confirm('Replace local data with backup?'))return;
-   db={...blankDB(),...x,payments:Array.isArray(x.payments)?x.payments:[],coffeeLots:Array.isArray(x.coffeeLots)?x.coffeeLots:[]};
+   db={...blankDB(),...x,payments:Array.isArray(x.payments)?x.payments:[],coffeeArrivals:Array.isArray(x.coffeeArrivals)?x.coffeeArrivals:[],coffeeSales:Array.isArray(x.coffeeSales)?x.coffeeSales:[],coffeeBatch:{...blankDB().coffeeBatch,...(x.coffeeBatch||{})}};
    persist();toast('Backup restored.');
   }catch(e){toast(e.message)}
  };
@@ -1724,7 +1725,7 @@ function stopCamera(){
  $('startScan').classList.remove('hidden');$('stopScan').classList.add('hidden');
 }
 
-const TAB_HEADINGS={home:'Home',coffee:'Coffee & Profit',scan:'Scan QR',employees:'Staff & QR',payroll:'Payroll',more:'More'};
+const TAB_HEADINGS={home:'Home',coffee:'Coffee & Sales',scan:'Scan QR',employees:'Staff & QR',payroll:'Payroll',more:'More'};
 function openTab(tabName){
  document.querySelectorAll('#bottomNav .nav-item').forEach(x=>x.classList.toggle('active',x.dataset.tab===tabName));
  document.querySelectorAll('.tabpage').forEach(x=>x.classList.toggle('hidden',x.id!=='tab-'+tabName));
@@ -1751,19 +1752,35 @@ $('backupBadge').onclick=()=>openTab('more');
 document.querySelectorAll('[data-set-palette]').forEach(btn=>btn.addEventListener('click',()=>applyPalette(btn.dataset.setPalette,true)));
 $('lockBtn').onclick=lockScreen;$('scanBigOverlay').onclick=hideBigCheckCard;$('undoScanBtn').onclick=undoLastScan;$('todaySearchInput').addEventListener('input',renderAll);
 
-$('coffeeDate').value=localDate();
-['coffeeRedKg','coffeePriceKg','coffeeMoneyPaidInput','coffeeRatioMode'].forEach(id=>{
- $(id).addEventListener('input',updateCoffeeLiveCalc);
- $(id).addEventListener('change',()=>{updateCoffeeLiveCalc();renderCoffeeTab()});
+/* Coffee events */
+$('arrivalDate').value=localDate();
+$('saleDate').value=localDate();
+if(db.coffeeBatch){
+ $('batchRatioSelect').value=db.coffeeBatch.ratioMode||'5';
+ $('customRatioVal').value=db.coffeeBatch.customRatio||4.5;
+ $('batchExtraCost').value=db.coffeeBatch.extraCost||0;
+ $('customRatioBox').classList.toggle('hidden',$('batchRatioSelect').value!=='custom');
+}
+$('batchRatioSelect').addEventListener('change',()=>{
+ const isCustom=$('batchRatioSelect').value==='custom';
+ $('customRatioBox').classList.toggle('hidden',!isCustom);
+ db.coffeeBatch.ratioMode=$('batchRatioSelect').value;
+ persist();
 });
-$('batchTargetKgInput').addEventListener('input',renderCoffeeTab);
-['calcDataSource','calcOutturnSelect','calcCustomRatioInput','qLot1Kg','qLot1Price','qLot2Kg','qLot2Price','calcLaborMode','calcManualLaborInput','calcExtraOpsCost','calcTargetMarginPct','calcSellingPriceFer'].forEach(id=>{
- $(id).addEventListener('input',runCoffeeProfitCalculator);
- $(id).addEventListener('change',()=>{runCoffeeProfitCalculator();renderCoffeeTab()});
+$('customRatioVal').addEventListener('input',()=>{
+ db.coffeeBatch.customRatio=Math.max(1,Number($('customRatioVal').value)||4.5);
+ renderCoffeeTab();
 });
-$('calcUseSavedLotsBtn').onclick=()=>{$('calcDataSource').value='saved';runCoffeeProfitCalculator()};
-$('calcLoadExampleBtn').onclick=()=>{$('calcDataSource').value='quick';$('qLot1Kg').value='1000';$('qLot1Price').value='150';$('qLot2Kg').value='1500';$('qLot2Price').value='160';runCoffeeProfitCalculator();toast('Loaded sample lots')};
-$('saveCoffeeBtn').onclick=saveCoffeeLot;$('cancelCoffeeEditBtn').onclick=resetCoffeeForm;$('exportCoffeeCsvBtn').onclick=exportCoffeeCsv;
+$('batchExtraCost').addEventListener('input',()=>{
+ db.coffeeBatch.extraCost=Math.max(0,Number($('batchExtraCost').value)||0);
+ renderCoffeeTab();
+});
+$('toggleArrivalDoneBtn').onclick=toggleArrivalStatus;
+['arrivalKg','arrivalPriceKg','arrivalPaid'].forEach(id=>$(id).addEventListener('input',updateArrivalLivePreview));
+['saleFerQty','salePricePerFer'].forEach(id=>$(id).addEventListener('input',updateSaleLivePreview));
+$('saveArrivalBtn').onclick=saveArrival;$('cancelArrivalEditBtn').onclick=resetArrivalForm;
+$('saveSaleBtn').onclick=saveFeresulaSale;
+$('exportArrivalsCsvBtn').onclick=exportArrivalsCsv;$('exportSalesCsvBtn').onclick=exportSalesCsv;
 
 $('toggleScanSoundBtn').onclick=()=>{soundEnabled=!soundEnabled;saveSoundEnabled(soundEnabled);updateSoundUI();toast(soundEnabled?'Sound on':'Sound off')};
 $('testPingBtn').onclick=()=>{unlockAudio();triggerScanFeedback('success');showBigCheckCard('success','Ping Check','✓','Ready','Sound & vibration ok.',1400)};
