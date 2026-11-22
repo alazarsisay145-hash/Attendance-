@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0284c7">
-<meta name="description" content="NEXUS — Workforce & Payroll OS, Simple Coffee Arrivals & Feresula Sales Tracker, and Notes & Bank Transfers.">
+<meta name="description" content="NEXUS — Workforce & Payroll OS, Red Cherry & Jenfel Arrivals, 17kg Feresula Sales & Profit, and Notes & Bank Transfers.">
 <meta name="application-name" content="NEXUS">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.webmanifest">
@@ -290,7 +290,10 @@ tr.selected-row td{background:var(--accent-soft)}
 .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;margin-left:4px;vertical-align:middle}
 .tag.inactive{background:var(--danger-bg);color:var(--danger)}
 .tag.seq{background:var(--accent-soft);color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.tag.unassigned{background:var(--warning-bg);color:var(--warning)}
 .tag.bank{background:var(--surface-subtle);color:var(--ink);border:1px solid var(--border);margin-left:0}
+.tag.cherry{background:var(--danger-bg);color:var(--danger);margin-left:0}
+.tag.jenfel{background:var(--warning-bg);color:var(--warning);margin-left:0}
 .empty{text-align:center;padding:20px 12px;color:var(--muted);font-size:13px}
 
 #qrOutput{display:flex;justify-content:center;align-items:center;padding:16px;min-height:180px;background:var(--surface-subtle);border:1.5px dashed var(--border-strong);border-radius:16px;margin-top:12px}
@@ -510,15 +513,15 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   <div class="app-shortcuts">
    <button type="button" class="app-tile" data-jump="coffee">
     <strong>Coffee & Feresula Sales</strong>
-    <span>Daily arrivals, ratios & 17kg sales</span>
+    <span>Red cherry & jenfel, ratios & 17kg sales</span>
    </button>
    <button type="button" class="app-tile" data-jump="notes">
     <strong>Notes & Bank Transfers</strong>
     <span>Log transfers (e.g. 1M ETB) & notes</span>
    </button>
    <button type="button" class="app-tile" data-jump="employees">
-    <strong>QR cards (#1–#n)</strong>
-    <span>Batch create, edit & print</span>
+    <strong>QR cards (custom bulk)</strong>
+    <span>Print first, assign later · daily/wk/mo</span>
    </button>
    <button type="button" class="app-tile" data-jump="payroll">
     <strong>Payroll & advances</strong>
@@ -538,12 +541,12 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   </div>
  </section>
 
- <!-- COFFEE TRACKER: DAILY ARRIVALS -> RATIO (17 KG/FER) -> FERESULA SALES & PROFIT -->
+ <!-- COFFEE TRACKER: RED CHERRY + JENFEL ARRIVALS -> RATIOS (17 KG/FER) -> FERESULA SALES & PROFIT -->
  <section id="tab-coffee" class="tabpage hidden">
   <section class="stats">
-   <div class="stat"><small>Total red cherry</small><strong id="coffeeTotalKg">0 kg</strong></div>
-   <div class="stat"><small>Avg price / kg</small><strong id="coffeeAvgPrice">0 ETB</strong></div>
+   <div class="stat"><small>Total weight bought</small><strong id="coffeeTotalKg">0 kg</strong></div>
    <div class="stat"><small>Est. feresula (17kg)</small><strong id="coffeeEstFeresula">0.00</strong></div>
+   <div class="stat"><small>Break-even / fer</small><strong id="coffeeBreakEven">0 ETB</strong></div>
    <div class="stat"><small>Feresula profit</small><strong id="coffeeNetProfit">0 ETB</strong></div>
   </section>
 
@@ -551,24 +554,19 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
     <div>
      <span class="admin-chip open" id="arrivalStatusChip">Arrivals in progress</span>
-     <h2 style="margin:2px 0 0">Batch total, ratio & feresula cost (17 kg)</h2>
+     <h2 style="margin:2px 0 0">Batch ratios, totals & feresula cost (17 kg)</h2>
     </div>
     <button class="btn small" id="toggleArrivalDoneBtn" type="button">Mark arrivals done</button>
    </div>
 
    <div class="row">
     <div>
-     <label for="batchRatioSelect" style="margin-top:0">Ratio (red kg → 17 kg feresula)</label>
-     <select id="batchRatioSelect">
-      <option value="5" selected>5:1 (85 kg red / feresula)</option>
-      <option value="6">6:1 (102 kg red / feresula)</option>
-      <option value="3">3:1 (51 kg red / feresula)</option>
-      <option value="custom">Custom ratio (x:1)</option>
-     </select>
+     <label for="cherryRatioInput" style="margin-top:0">Red cherry ratio (x:1 → 17 kg)</label>
+     <input id="cherryRatioInput" type="number" min="1" max="25" step="0.1" value="5">
     </div>
-    <div id="customRatioBox" class="hidden" style="max-width:150px">
-     <label for="customRatioVal" style="margin-top:0">Ratio (x:1)</label>
-     <input id="customRatioVal" type="number" min="1" max="25" step="0.1" value="4.5">
+    <div>
+     <label for="jenfelRatioInput" style="margin-top:0">Jenfel ratio (x:1 → 17 kg)</label>
+     <input id="jenfelRatioInput" type="number" min="1" max="25" step="0.1" value="2.5">
     </div>
     <div>
      <label for="batchExtraCost" style="margin-top:0">Labor, bags & transport (ETB)</label>
@@ -583,12 +581,23 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
    <div class="panel">
     <h2 id="arrivalFormTitle">Add daily arrival</h2>
     <input id="editArrivalId" type="hidden">
-    <label for="arrivalDate">Arrival date</label>
-    <input id="arrivalDate" type="date" required>
+    <div class="row">
+     <div>
+      <label for="arrivalDate" style="margin-top:0">Arrival date</label>
+      <input id="arrivalDate" type="date" required>
+     </div>
+     <div>
+      <label for="arrivalType" style="margin-top:0">Coffee type</label>
+      <select id="arrivalType">
+       <option value="cherry" selected>Red Cherry</option>
+       <option value="jenfel">Jenfel</option>
+      </select>
+     </div>
+    </div>
 
     <div class="row">
      <div>
-      <label for="arrivalKg">Red cherry (kg)</label>
+      <label for="arrivalKg">Weight (kg)</label>
       <input id="arrivalKg" type="number" min="0.01" step="0.01" placeholder="e.g. 500" required>
      </div>
      <div>
@@ -619,7 +628,14 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
    <div class="panel">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
      <h2 style="margin:0">Daily arrivals log</h2>
-     <button class="btn secondary small" id="exportArrivalsCsvBtn" type="button">Export CSV</button>
+     <div class="row-actions">
+      <select id="arrivalFilterType" style="min-height:34px;padding:4px 8px;font-size:12px;width:auto">
+       <option value="all" selected>All types</option>
+       <option value="cherry">Red Cherry</option>
+       <option value="jenfel">Jenfel</option>
+      </select>
+      <button class="btn secondary small" id="exportArrivalsCsvBtn" type="button">Export CSV</button>
+     </div>
     </div>
     <div id="arrivalsList"></div>
    </div>
@@ -802,20 +818,20 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
  <section id="tab-employees" class="tabpage hidden">
   <div class="two-col">
    <div class="panel">
-    <h2 id="employeeFormTitle">Create / assign QR card</h2>
+    <h2 id="employeeFormTitle">Assign / create QR card</h2>
     <input id="editId" type="hidden">
     <input id="editBatchNum" type="hidden">
     <input id="editBatchTotal" type="hidden">
-    <label for="newName">Full name (optional)</label>
-    <input id="newName" placeholder="Leave blank to assign later" autocomplete="name">
-    <label for="newExtra">Phone / staff ID (optional)</label>
-    <input id="newExtra" placeholder="e.g. 09... or #12">
+    <label for="newName">Worker name (optional — fill on handout)</label>
+    <input id="newName" placeholder="Leave blank to print first & assign later" autocomplete="name">
+    <label for="newExtra">Phone / role / notes (optional)</label>
+    <input id="newExtra" placeholder="e.g. 09... or drying bed">
     <label for="newWage">Daily wage (ETB)</label>
     <input id="newWage" type="number" min="0" step="0.01" placeholder="e.g. 400">
     <label for="newPayCycle">Pay cycle</label>
     <select id="newPayCycle">
+     <option value="daily">Daily</option>
      <option value="weekly" selected>Weekly</option>
-     <option value="biweekly">Biweekly</option>
      <option value="monthly">Monthly</option>
     </select>
     <label for="newQrId">QR card ID (max 17 chars)</label>
@@ -843,43 +859,47 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     </div>
 
     <hr>
-    <h2>Batch generate (#1–#n)</h2>
+    <h2>Custom bulk QR generator (print before assigning)</h2>
     <div class="row">
-     <div><label for="batchCount" style="margin-top:0">Count (1–50)</label><input id="batchCount" type="number" min="1" max="50" value="10"></div>
-     <div><label for="batchWage" style="margin-top:0">Daily wage (ETB)</label><input id="batchWage" type="number" min="0" step="0.01" placeholder="e.g. 400"></div>
+     <div><label for="batchCount" style="margin-top:0">Count (1–500)</label><input id="batchCount" type="number" min="1" max="500" value="100"></div>
+     <div><label for="batchStartNum" style="margin-top:0">Start #</label><input id="batchStartNum" type="number" min="1" max="99999" value="1"></div>
+     <div><label for="batchPrefix" style="margin-top:0">Prefix</label><input id="batchPrefix" maxlength="8" value="NX" placeholder="NX"></div>
+    </div>
+    <div class="row">
+     <div><label for="batchWage">Default wage (ETB)</label><input id="batchWage" type="number" min="0" step="0.01" placeholder="e.g. 400 (or 0)"></div>
      <div>
-      <label for="batchCycle" style="margin-top:0">Cycle</label>
+      <label for="batchCycle">Default pay cycle</label>
       <select id="batchCycle">
+       <option value="daily">Daily</option>
        <option value="weekly" selected>Weekly</option>
-       <option value="biweekly">Biweekly</option>
        <option value="monthly">Monthly</option>
       </select>
      </div>
     </div>
     <div class="actions" style="margin-top:10px">
-     <button class="btn" id="generateBatchBtn" type="button">Generate (#1–#n)</button>
+     <button class="btn" id="generateBatchBtn" type="button">Generate bulk QRs</button>
      <button class="btn secondary" id="printBatchPreviewBtn" type="button" disabled>Print batch</button>
     </div>
-    <div id="batchStatus" class="note">Creates 1–50 cards tagged #1 to #n.</div>
+    <div id="batchStatus" class="note">Generates up to 500 blank cards so you can print first and assign name, wage & daily/weekly/monthly cycle when giving them out.</div>
     <div id="batchPreview"></div>
    </div>
 
    <div class="panel">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-     <h2 style="margin:0">Staff directory</h2>
+     <h2 style="margin:0">Cards & staff directory</h2>
      <button class="btn secondary small" id="nextUnassignedBtn" type="button">Unassigned (<span id="unassignedCount">0</span>)</button>
     </div>
 
     <div class="lookupbox">
-     <label for="lookupQrInput" style="margin-top:0">Edit by QR ID</label>
+     <label for="lookupQrInput" style="margin-top:0">Assign / edit by QR ID</label>
      <div class="row">
       <input id="lookupQrInput" maxlength="17" placeholder="e.g. NX-8A2F41C9">
-      <button class="btn secondary" id="lookupQrBtn" type="button" style="flex:0 0 auto">Edit</button>
+      <button class="btn secondary" id="lookupQrBtn" type="button" style="flex:0 0 auto">Assign / Edit</button>
      </div>
     </div>
 
     <div class="row">
-     <div style="flex:3"><input id="employeeSearch" placeholder="Search name, #tag, QR ID..."></div>
+     <div style="flex:3"><input id="employeeSearch" placeholder="Search name, unassigned, #tag, daily/weekly/monthly, QR ID..."></div>
      <button class="btn secondary small" id="clearSearch" type="button" style="flex:0 0 auto;min-height:44px">Clear</button>
     </div>
 
@@ -909,8 +929,8 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
      <label for="payCycleFilter">Cycle</label>
      <select id="payCycleFilter">
       <option value="all">All cycles</option>
+      <option value="daily">Daily</option>
       <option value="weekly">Weekly</option>
-      <option value="biweekly">Biweekly</option>
       <option value="monthly">Monthly</option>
      </select>
     </div>
@@ -945,10 +965,10 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
    <h2>All features</h2>
    <div class="app-shortcuts three-col" style="margin-top:0">
     <button type="button" class="app-tile" data-jump="home"><strong>Home</strong><span>Stats, scans & absent</span></button>
-    <button type="button" class="app-tile" data-jump="coffee"><strong>Coffee & Sales</strong><span>Arrivals, ratio & 17kg sales</span></button>
+    <button type="button" class="app-tile" data-jump="coffee"><strong>Coffee & Sales</strong><span>Cherry & jenfel, 17kg sales</span></button>
     <button type="button" class="app-tile" data-jump="notes"><strong>Notes & Transfers</strong><span>Bank transfers & notes</span></button>
     <button type="button" class="app-tile" id="moreOpenScanBtn"><strong>Scan QR</strong><span>Clean camera check-in</span></button>
-    <button type="button" class="app-tile" data-jump="employees"><strong>Staff & QR</strong><span>Batch #1–#n & print</span></button>
+    <button type="button" class="app-tile" data-jump="employees"><strong>Staff & QR</strong><span>Custom bulk & assign later</span></button>
     <button type="button" class="app-tile" data-jump="payroll"><strong>Payroll</strong><span>Balances & advances</span></button>
    </div>
 
@@ -1077,16 +1097,17 @@ function makeBrandedCardCanvas(emp){
  ctx.fillStyle='#bae6fd';ctx.font='600 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
  ctx.fillText('WORKFORCE & PAYROLL PASS',W/2,66);
  if(emp.batchNum){
-  ctx.fillStyle='#dff2fc';roundRectPath(ctx,W-128,102,108,26,13);ctx.fill();
+  ctx.fillStyle='#dff2fc';roundRectPath(ctx,W-132,102,112,26,13);ctx.fill();
   ctx.fillStyle='#0284c7';ctx.font='700 11px ui-monospace,SFMono-Regular,Menlo,monospace';
-  ctx.fillText(emp.batchTotal?`#${emp.batchNum} OF ${emp.batchTotal}`:`#${emp.batchNum}`,W-74,116);
+  ctx.fillText(`#${emp.batchNum}`,W-76,116);
  }
  const qrSize=240,qrX=(W-qrSize)/2,qrY=116;
  ctx.fillStyle='#eef6fc';ctx.fillRect(qrX-10,qrY-10,qrSize+20,qrSize+20);
  ctx.strokeStyle='#c7dff0';ctx.lineWidth=1.5;ctx.strokeRect(qrX-10,qrY-10,qrSize+20,qrSize+20);
  ctx.drawImage(qrCanvas,qrX,qrY,qrSize,qrSize);
+ const isUnassigned=!emp.name||emp.name===emp.qrId;
  ctx.fillStyle='#091e34';ctx.font='800 25px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
- ctx.fillText(emp.name||emp.qrId,W/2,410);
+ ctx.fillText(isUnassigned?'UNASSIGNED PASS':emp.name,W/2,410);
  ctx.fillStyle='#dff2fc';ctx.fillRect((W-210)/2,432,210,30);
  ctx.fillStyle='#0284c7';ctx.font='700 15px ui-monospace,SFMono-Regular,Menlo,monospace';
  ctx.fillText(emp.qrId,W/2,448);
@@ -1105,8 +1126,8 @@ function makeBrandedCardCanvas(emp){
 
 <script>
 'use strict';
-const KEY='nexus_workforce_payroll_v7';
-const LEGACY_KEYS=['nexus_workforce_payroll_v6','nexus_workforce_payroll_v5','workday_local_payroll_v5','workday_local_payroll_v4'];
+const KEY='nexus_workforce_payroll_v8';
+const LEGACY_KEYS=['nexus_workforce_payroll_v7','nexus_workforce_payroll_v6','nexus_workforce_payroll_v5','workday_local_payroll_v5','workday_local_payroll_v4'];
 const PASS_KEY='nexus_workforce_passcode_v1';
 const PALETTE_KEY='nexus_workforce_palette_v1';
 const SOUND_KEY='nexus_workforce_sound_v1';
@@ -1189,8 +1210,8 @@ function applyPalette(mode,notify=false){
  if(notify)toast(`Palette: ${PALETTE_META[pal].label}`);
 }
 
-function normalizeCycle(c){return (c==='weekly'||c==='biweekly'||c==='monthly')?c:'weekly'}
-function cycleLabel(c){const n=normalizeCycle(c);return n==='weekly'?'Weekly':n==='biweekly'?'Biweekly':'Monthly'}
+function normalizeCycle(c){return (c==='daily'||c==='weekly'||c==='monthly')?c:'weekly'}
+function cycleLabel(c){const n=normalizeCycle(c);return n==='daily'?'Daily':n==='monthly'?'Monthly':'Weekly'}
 function normalizePayType(t){return (t==='advance'||t==='adjustment')?t:'regular'}
 function payTypeLabel(t){const n=normalizePayType(t);return n==='advance'?'Advance':n==='adjustment'?'Adjustment':'Regular pay'}
 
@@ -1207,13 +1228,13 @@ function unlockScreen(){$('lockScreen').classList.add('hidden')}
 
 function blankDB(){
  return {
-  version:7,
+  version:8,
   employees:[],
   attendance:[],
   payments:[],
   coffeeArrivals:[],
   coffeeSales:[],
-  coffeeBatch:{arrivalsDone:false,ratioMode:'5',customRatio:4.5,extraCost:0},
+  coffeeBatch:{arrivalsDone:false,cherryRatio:5,jenfelRatio:2.5,extraCost:0},
   notesEntries:[],
   lastBackupAt:null,
   createdAt:new Date().toISOString()
@@ -1227,14 +1248,21 @@ function loadDB(){
   if(!raw)return blankDB();
   const x=JSON.parse(raw);
   if(!x||!Array.isArray(x.employees)||!Array.isArray(x.attendance))return blankDB();
-  const migratedArrivals=Array.isArray(x.coffeeArrivals)?x.coffeeArrivals:(Array.isArray(x.coffeeLots)?x.coffeeLots:[]);
+  const migratedArrivals=(Array.isArray(x.coffeeArrivals)?x.coffeeArrivals:(Array.isArray(x.coffeeLots)?x.coffeeLots:[]))
+   .map(a=>({...a,type:a.type==='jenfel'?'jenfel':'cherry'}));
+  const legacyRatio=Number(x.coffeeBatch?.customRatio)||Number(x.coffeeBatch?.ratioMode)||5;
   return {
    ...blankDB(),
    ...x,
    payments:Array.isArray(x.payments)?x.payments:[],
    coffeeArrivals:migratedArrivals,
    coffeeSales:Array.isArray(x.coffeeSales)?x.coffeeSales:[],
-   coffeeBatch:{...blankDB().coffeeBatch,...(x.coffeeBatch||{})},
+   coffeeBatch:{
+    ...blankDB().coffeeBatch,
+    ...(x.coffeeBatch||{}),
+    cherryRatio:Number(x.coffeeBatch?.cherryRatio)||legacyRatio||5,
+    jenfelRatio:Number(x.coffeeBatch?.jenfelRatio)||2.5
+   },
    notesEntries:Array.isArray(x.notesEntries)?x.notesEntries:[]
   };
  }catch(e){return blankDB()}
@@ -1340,27 +1368,39 @@ function exportNotesCsv(){
  ]));
 }
 
-/* Simple Coffee Batch, Arrivals, Ratio & Feresula Sales Math */
-function getActiveRatio(){
- const mode=$('batchRatioSelect')?.value||db.coffeeBatch?.ratioMode||'5';
- if(mode==='custom')return Math.max(1,Number($('customRatioVal')?.value)||4.5);
- return Math.max(1,Number(mode)||5);
-}
+/* Red Cherry + Jenfel Arrivals, Ratios (17 kg Feresula), Sales & Profit */
+function getCherryRatio(){return Math.max(1,Number($('cherryRatioInput')?.value)||Number(db.coffeeBatch?.cherryRatio)||5)}
+function getJenfelRatio(){return Math.max(1,Number($('jenfelRatioInput')?.value)||Number(db.coffeeBatch?.jenfelRatio)||2.5)}
+function ratioForType(type){return type==='jenfel'?getJenfelRatio():getCherryRatio()}
+function arrivalTypeLabel(type){return type==='jenfel'?'Jenfel':'Red Cherry'}
 
 function getCoffeeSnapshot(){
  const arrivals=db.coffeeArrivals||[];
  const sales=db.coffeeSales||[];
- const ratio=getActiveRatio();
- const kgPerFer=ratio*FERESULA_KG;
+ const cherryRatio=getCherryRatio();
+ const jenfelRatio=getJenfelRatio();
  const extraCost=Math.max(0,Number($('batchExtraCost')?.value)||0);
 
- const totalKg=arrivals.reduce((s,a)=>s+(Number(a.redKg)||0),0);
- const totalCherryCost=arrivals.reduce((s,a)=>s+((Number(a.redKg)||0)*(Number(a.pricePerKg)||0)),0);
- const totalCherryPaid=arrivals.reduce((s,a)=>s+(Number(a.moneyPaid)||0),0);
- const avgPriceKg=totalKg>0?totalCherryCost/totalKg:0;
+ const cherryArr=arrivals.filter(a=>a.type!=='jenfel');
+ const jenfelArr=arrivals.filter(a=>a.type==='jenfel');
 
- const estFeresula=(totalKg/ratio)/FERESULA_KG;
- const totalCost=totalCherryCost+extraCost;
+ const cherryKg=cherryArr.reduce((s,a)=>s+(Number(a.redKg)||0),0);
+ const jenfelKg=jenfelArr.reduce((s,a)=>s+(Number(a.redKg)||0),0);
+ const totalKg=cherryKg+jenfelKg;
+
+ const cherryCost=cherryArr.reduce((s,a)=>s+((Number(a.redKg)||0)*(Number(a.pricePerKg)||0)),0);
+ const jenfelCost=jenfelArr.reduce((s,a)=>s+((Number(a.redKg)||0)*(Number(a.pricePerKg)||0)),0);
+ const totalRawCost=cherryCost+jenfelCost;
+
+ const avgCherryPrice=cherryKg>0?cherryCost/cherryKg:0;
+ const avgJenfelPrice=jenfelKg>0?jenfelCost/jenfelKg:0;
+
+ const cherryFer=(cherryKg/cherryRatio)/FERESULA_KG;
+ const jenfelFer=(jenfelKg/jenfelRatio)/FERESULA_KG;
+ const estFeresula=cherryFer+jenfelFer;
+
+ const totalPaid=arrivals.reduce((s,a)=>s+(Number(a.moneyPaid)||0),0);
+ const totalCost=totalRawCost+extraCost;
  const breakEvenPerFer=estFeresula>0?totalCost/estFeresula:0;
 
  const soldFeresula=sales.reduce((s,x)=>s+(Number(x.feresula)||0),0);
@@ -1375,21 +1415,25 @@ function getCoffeeSnapshot(){
 
  return {
   arrivalsDone:!!db.coffeeBatch?.arrivalsDone,
-  ratio,kgPerFer,extraCost,
-  totalKg,totalCherryCost,totalCherryPaid,totalCherryDue:totalCherryCost-totalCherryPaid,
-  avgPriceKg,estFeresula,totalCost,breakEvenPerFer,
-  soldFeresula,remainingFeresula,totalSalesRevenue,avgSalePricePerFer,realizedProfit
+  cherryRatio,jenfelRatio,extraCost,
+  cherryKg,jenfelKg,totalKg,
+  cherryCost,jenfelCost,totalRawCost,totalPaid,totalCost,
+  avgCherryPrice,avgJenfelPrice,
+  cherryFer,jenfelFer,estFeresula,
+  breakEvenPerFer,soldFeresula,remainingFeresula,
+  totalSalesRevenue,avgSalePricePerFer,realizedProfit
  };
 }
 
 function updateArrivalLivePreview(){
+ const type=$('arrivalType').value||'cherry';
  const kg=Number($('arrivalKg').value)||0;
  const rate=Number($('arrivalPriceKg').value)||0;
  const paidRaw=$('arrivalPaid').value;
  const lotVal=kg*rate;
  const paid=paidRaw===''?lotVal:(Number(paidRaw)||0);
  const due=lotVal-paid;
- const ratio=getActiveRatio();
+ const ratio=ratioForType(type);
  const fer=(kg/ratio)/FERESULA_KG;
  $('arrivalLivePreview').innerHTML=`
   <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
@@ -1397,7 +1441,7 @@ function updateArrivalLivePreview(){
    <span>Paid: <b class="money">${money(paid)}</b></span>
    <span>Due: <b>${money(due)}</b></span>
   </div>
-  <div class="tiny" style="margin-top:4px">At ${ratio}:1 (${(ratio*FERESULA_KG).toFixed(1)} kg/fer): <b>${fer.toFixed(2)} feresula</b></div>`;
+  <div class="tiny" style="margin-top:4px">${arrivalTypeLabel(type)} @ <b>${ratio}:1</b> (${(ratio*FERESULA_KG).toFixed(1)} kg/fer): <b>${fer.toFixed(2)} feresula</b></div>`;
 }
 
 function updateSaleLivePreview(){
@@ -1413,46 +1457,47 @@ function updateSaleLivePreview(){
    <span>Break-even cost: <b>${money(estCostForSale)}</b></span>
    <span>Est. profit: <b class="${estProfit>=0?'money':'loss'}">${money(estProfit)}</b></span>
   </div>
-  <div class="tiny" style="margin-top:4px">Current batch break-even: <b>${money(snap.breakEvenPerFer)} / fer</b> · Remaining: <b>${snap.remainingFeresula.toFixed(2)} fer</b></div>`;
+  <div class="tiny" style="margin-top:4px">Batch break-even: <b>${money(snap.breakEvenPerFer)} / fer</b> · Remaining: <b>${snap.remainingFeresula.toFixed(2)} fer</b></div>`;
 }
 
 function saveArrival(){
  const editId=$('editArrivalId').value;
  const date=String($('arrivalDate').value||'').trim()||localDate();
+ const type=$('arrivalType').value==='jenfel'?'jenfel':'cherry';
  const redKg=Number($('arrivalKg').value);
  const pricePerKg=Number($('arrivalPriceKg').value);
  const paidRaw=$('arrivalPaid').value;
  const note=String($('arrivalNote').value||'').trim();
- if(!Number.isFinite(redKg)||redKg<=0){toast('Enter red cherry kg > 0.');return}
+ if(!Number.isFinite(redKg)||redKg<=0){toast('Enter weight in kg > 0.');return}
  if(!Number.isFinite(pricePerKg)||pricePerKg<=0){toast('Enter price per kg > 0.');return}
  const moneyPaid=paidRaw===''?(redKg*pricePerKg):Number(paidRaw);
  if(!Number.isFinite(moneyPaid)||moneyPaid<0){toast('Enter valid paid amount.');return}
 
  if(editId){
   const item=db.coffeeArrivals.find(x=>x.id===editId);if(!item)return;
-  const prev={date:item.date,redKg:item.redKg,pricePerKg:item.pricePerKg,moneyPaid:item.moneyPaid,note:item.note};
-  item.date=date;item.redKg=redKg;item.pricePerKg=pricePerKg;item.moneyPaid=moneyPaid;item.note=note;
+  const prev={date:item.date,type:item.type,redKg:item.redKg,pricePerKg:item.pricePerKg,moneyPaid:item.moneyPaid,note:item.note};
+  item.date=date;item.type=type;item.redKg=redKg;item.pricePerKg=pricePerKg;item.moneyPaid=moneyPaid;item.note=note;
   if(!persist(()=>Object.assign(item,prev)))return;
   toast('Arrival updated.');
  }else{
-  db.coffeeArrivals.push({id:crypto.randomUUID(),date,redKg,pricePerKg,moneyPaid,note,createdAt:new Date().toISOString()});
+  db.coffeeArrivals.push({id:crypto.randomUUID(),date,type,redKg,pricePerKg,moneyPaid,note,createdAt:new Date().toISOString()});
   if(!persist(()=>db.coffeeArrivals.pop()))return;
-  toast('Daily arrival saved.');
+  toast(`${arrivalTypeLabel(type)} arrival saved.`);
  }
  resetArrivalForm();
 }
 
 function resetArrivalForm(){
- $('editArrivalId').value='';$('arrivalDate').value=localDate();$('arrivalKg').value='';$('arrivalPriceKg').value='';
- $('arrivalPaid').value='';$('arrivalNote').value='';
+ $('editArrivalId').value='';$('arrivalDate').value=localDate();$('arrivalType').value='cherry';
+ $('arrivalKg').value='';$('arrivalPriceKg').value='';$('arrivalPaid').value='';$('arrivalNote').value='';
  $('arrivalFormTitle').textContent='Add daily arrival';$('saveArrivalBtn').textContent='Save arrival';$('cancelArrivalEditBtn').classList.add('hidden');
  updateArrivalLivePreview();
 }
 
 window.editArrival=id=>{
  const a=db.coffeeArrivals.find(x=>x.id===id);if(!a)return;
- $('editArrivalId').value=a.id;$('arrivalDate').value=a.date;$('arrivalKg').value=a.redKg;$('arrivalPriceKg').value=a.pricePerKg;
- $('arrivalPaid').value=a.moneyPaid;$('arrivalNote').value=a.note||'';
+ $('editArrivalId').value=a.id;$('arrivalDate').value=a.date;$('arrivalType').value=a.type==='jenfel'?'jenfel':'cherry';
+ $('arrivalKg').value=a.redKg;$('arrivalPriceKg').value=a.pricePerKg;$('arrivalPaid').value=a.moneyPaid;$('arrivalNote').value=a.note||'';
  $('arrivalFormTitle').textContent=`Edit arrival (${a.date})`;$('saveArrivalBtn').textContent='Update arrival';$('cancelArrivalEditBtn').classList.remove('hidden');
  updateArrivalLivePreview();$('arrivalKg').focus();
 };
@@ -1464,7 +1509,7 @@ window.addArrivalPayment=id=>{
  $('payModalEmployeeWrap').classList.add('hidden');$('payTypeGroup').classList.add('hidden');$('payDateGroup').classList.add('hidden');$('payNoteGroup').classList.add('hidden');
  $('payModalBadge').textContent='Arrival Payment';
  $('payModalTitle').textContent=`Pay supplier · ${a.date}`;
- $('payModalSummary').innerHTML=`<b>${a.redKg} kg</b> @ ${money(a.pricePerKg)}/kg · Paid: <b>${money(a.moneyPaid)}</b> · Due: <b>${money(due)}</b>`;
+ $('payModalSummary').innerHTML=`<span class="tag ${a.type==='jenfel'?'jenfel':'cherry'}">${arrivalTypeLabel(a.type)}</span> <b>${a.redKg} kg</b> @ ${money(a.pricePerKg)}/kg · Paid: <b>${money(a.moneyPaid)}</b> · Due: <b>${money(due)}</b>`;
  $('payAmountInput').value=due>0?due.toFixed(2):'';
  $('payModalError').textContent='';$('payModal').classList.remove('hidden');setTimeout(()=>$('payAmountInput').focus(),50);
 };
@@ -1508,8 +1553,8 @@ function toggleArrivalStatus(){
 function renderCoffeeTab(){
  const s=getCoffeeSnapshot();
  $('coffeeTotalKg').textContent=s.totalKg.toLocaleString(undefined,{maximumFractionDigits:2})+' kg';
- $('coffeeAvgPrice').textContent=money(s.avgPriceKg);
  $('coffeeEstFeresula').textContent=s.estFeresula.toFixed(2)+' fer';
+ $('coffeeBreakEven').textContent=money(s.breakEvenPerFer);
  $('coffeeNetProfit').innerHTML=`<span class="${s.realizedProfit>=0?'money':'loss'}">${money(s.realizedProfit)}</span>`;
 
  const chip=$('arrivalStatusChip'),btn=$('toggleArrivalDoneBtn');
@@ -1521,26 +1566,37 @@ function renderCoffeeTab(){
 
  $('batchSummaryBox').innerHTML=`
   <div class="tiny">
-   Ratio: <b>${s.ratio}:1</b> (<b>${s.kgPerFer.toFixed(1)} kg</b> red cherry = <b>17 kg</b> feresula) ·
+   Red Cherry: <b>${s.cherryKg.toLocaleString(undefined,{maximumFractionDigits:2})} kg</b> (@ avg ${money(s.avgCherryPrice)}/kg, ratio ${s.cherryRatio}:1 → <b>${s.cherryFer.toFixed(2)} fer</b>) ·
+   Jenfel: <b>${s.jenfelKg.toLocaleString(undefined,{maximumFractionDigits:2})} kg</b> (@ avg ${money(s.avgJenfelPrice)}/kg, ratio ${s.jenfelRatio}:1 → <b>${s.jenfelFer.toFixed(2)} fer</b>) ·
    ${s.arrivalsDone?'<b>Final batch calculation</b>':'<b>Live batch estimate (still arriving)</b>'}
   </div>
   <div class="kpi-grid">
-   <div class="kpi-mini"><small>Cherry Cost</small><strong>${money(s.totalCherryCost)}</strong></div>
+   <div class="kpi-mini"><small>Raw Purchases</small><strong>${money(s.totalRawCost)}</strong></div>
    <div class="kpi-mini"><small>Total Cost (+Ops)</small><strong>${money(s.totalCost)}</strong></div>
    <div class="kpi-mini"><small>Break-Even / Fer</small><strong>${money(s.breakEvenPerFer)}</strong></div>
    <div class="kpi-mini"><small>Feresula Sold</small><strong>${s.soldFeresula.toFixed(2)} fer</strong></div>
    <div class="kpi-mini"><small>Feresula Left</small><strong>${s.remainingFeresula.toFixed(2)} fer</strong></div>
-   <div class="kpi-mini"><small>Cherry Paid / Due</small><strong>${money(s.totalCherryPaid)}</strong></div>
+   <div class="kpi-mini"><small>Paid to Suppliers</small><strong>${money(s.totalPaid)}</strong></div>
   </div>`;
 
- const arrivals=[...(db.coffeeArrivals||[])].sort((a,b)=>b.date.localeCompare(a.date));
+ const typeFilter=$('arrivalFilterType')?.value||'all';
+ const arrivals=[...(db.coffeeArrivals||[])]
+  .filter(a=>typeFilter==='all'||(a.type||'cherry')===typeFilter)
+  .sort((a,b)=>b.date.localeCompare(a.date));
+
  $('arrivalsList').innerHTML=arrivals.length
-  ?`<div class="tablewrap"><table><thead><tr><th>Date</th><th>Red kg & Rate</th><th>Total & Paid</th><th>Actions</th></tr></thead><tbody>${arrivals.map(a=>{
+  ?`<div class="tablewrap"><table><thead><tr><th>Date & Type</th><th>kg & Rate</th><th>Total & Paid</th><th>Actions</th></tr></thead><tbody>${arrivals.map(a=>{
+   const t=a.type==='jenfel'?'jenfel':'cherry';
    const lotTotal=(Number(a.redKg)||0)*(Number(a.pricePerKg)||0);
    const due=Math.max(0,lotTotal-(Number(a.moneyPaid)||0));
-   return `<tr><td><b>${esc(a.date)}</b>${a.note?`<div class="tiny">${esc(a.note)}</div>`:''}</td><td><b>${a.redKg} kg</b><div class="tiny">@ ${money(a.pricePerKg)}/kg</div></td><td><b>${money(lotTotal)}</b><div class="tiny">${due>0?`Due: ${money(due)}`:'Paid'}</div></td><td><div class="row-actions">${due>0?`<button class="btn secondary small" onclick="addArrivalPayment('${a.id}')">Pay</button>`:''}<button class="btn secondary small" onclick="editArrival('${a.id}')">Edit</button><button class="btn danger small" onclick="deleteArrival('${a.id}')">Del</button></div></td></tr>`;
+   return `<tr>
+    <td><b>${esc(a.date)}</b><div><span class="tag ${t}">${esc(arrivalTypeLabel(t))}</span></div>${a.note?`<div class="tiny">${esc(a.note)}</div>`:''}</td>
+    <td><b>${a.redKg} kg</b><div class="tiny">@ ${money(a.pricePerKg)}/kg</div></td>
+    <td><b>${money(lotTotal)}</b><div class="tiny">${due>0?`Due: ${money(due)}`:'Paid'}</div></td>
+    <td><div class="row-actions">${due>0?`<button class="btn secondary small" onclick="addArrivalPayment('${a.id}')">Pay</button>`:''}<button class="btn secondary small" onclick="editArrival('${a.id}')">Edit</button><button class="btn danger small" onclick="deleteArrival('${a.id}')">Del</button></div></td>
+   </tr>`;
   }).join('')}</tbody></table></div>`
-  :'<div class="empty">No daily arrivals yet.</div>';
+  :'<div class="empty">No arrivals match yet.</div>';
 
  $('salesSummaryBox').innerHTML=`
   <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
@@ -1564,8 +1620,8 @@ function renderCoffeeTab(){
 function exportArrivalsCsv(){
  const arrivals=[...(db.coffeeArrivals||[])].sort((a,b)=>a.date.localeCompare(b.date));
  download(`nexus-arrivals-${localDate()}.csv`,csv([
-  ['Date','Note','Red Cherry kg','Price/kg ETB','Total ETB','Paid ETB','Due ETB'],
-  ...arrivals.map(a=>{const tot=(Number(a.redKg)||0)*(Number(a.pricePerKg)||0);const paid=Number(a.moneyPaid)||0;return [a.date,a.note||'',a.redKg,a.pricePerKg,tot,paid,Math.max(0,tot-paid)]})
+  ['Date','Type','Note','Weight kg','Price/kg ETB','Total ETB','Paid ETB','Due ETB'],
+  ...arrivals.map(a=>{const tot=(Number(a.redKg)||0)*(Number(a.pricePerKg)||0);const paid=Number(a.moneyPaid)||0;return [a.date,arrivalTypeLabel(a.type),a.note||'',a.redKg,a.pricePerKg,tot,paid,Math.max(0,tot-paid)]})
  ]));
 }
 
@@ -1578,13 +1634,19 @@ function exportSalesCsv(){
 }
 
 /* Attendance, Staff, QR, Payroll & Admin */
-function makeId(){
+function makeId(prefix='NX'){
+ const cleanPrefix=String(prefix||'NX').trim().toUpperCase().replace(/[^A-Z0-9]/g,'')||'NX';
+ const maxRandChars=Math.max(2,Math.min(8,17-cleanPrefix.length-1));
+ const randByteLen=Math.max(1,Math.ceil(maxRandChars/2));
  let id;
- do{id='NX-'+Array.from(crypto.getRandomValues(new Uint8Array(4)),b=>b.toString(16).padStart(2,'0')).join('').toUpperCase()}
- while(db.employees.some(e=>e.qrId.toUpperCase()===id));
+ do{
+  const hex=Array.from(crypto.getRandomValues(new Uint8Array(randByteLen)),b=>b.toString(16).padStart(2,'0')).join('').toUpperCase().slice(0,maxRandChars);
+  id=`${cleanPrefix}-${hex}`.slice(0,17);
+ }while(db.employees.some(e=>e.qrId.toUpperCase()===id));
  return id;
 }
 function empByQr(id){return db.employees.find(e=>String(e.qrId).trim().toUpperCase()===String(id).trim().toUpperCase())}
+function isUnassignedPass(emp){return !emp.name||emp.name===emp.qrId}
 function attendanceFor(empId,from='0000-01-01',to='9999-12-31'){return db.attendance.filter(a=>a.employeeId===empId&&a.date>=from&&a.date<=to)}
 function paymentsFor(empId,from='0000-01-01',to='9999-12-31'){return db.payments.filter(p=>p.employeeId===empId&&p.date>=from&&p.date<=to)}
 function paidBreakdown(empId,from='0000-01-01',to='9999-12-31'){
@@ -1594,7 +1656,7 @@ function paidBreakdown(empId,from='0000-01-01',to='9999-12-31'){
 }
 function todayPresent(){return db.attendance.filter(a=>a.date===localDate())}
 function dateLabel(d){return new Date(d+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}
-function personDisplayLabel(emp){return !emp?'Unknown':(emp.name&&emp.name!==emp.qrId?emp.name:emp.qrId)}
+function personDisplayLabel(emp){return !emp?'Unknown':(!isUnassignedPass(emp)?emp.name:emp.qrId)}
 window.openEmployeeCard=(id,action='edit')=>{const emp=db.employees.find(x=>x.id===id);if(!emp)return;openTab('employees');if(action==='qr')showQr(emp);else loadEmployeeIntoForm(emp)};
 window.quickMarkPresentById=id=>{unlockAudio();const emp=db.employees.find(x=>x.id===id);if(!emp)return;openTab('scan');recordAttendance(emp.qrId)};
 function renderPersonButton(emp,extraText='',variant='default',onClickExpr=''){
@@ -1692,30 +1754,33 @@ function renderAll(){
  $('scanAbsentButtons').innerHTML=absentList.length?`<div class="status-chip-wrap">${absentList.map(e=>renderPersonButton(e,'Present','absent',`quickMarkPresentById('${e.id}')`)).join('')}</div>`:'<div class="empty">None absent today.</div>';
 
  renderCoffeeTab();renderNotesTab();renderEmployees();runReport();runPayroll();updateUndoUI();
- $('storageInfo').textContent=`${db.employees.length} staff · ${db.attendance.length} scans · ${(db.coffeeArrivals?.length||0)} arrivals · ${(db.coffeeSales?.length||0)} sales · ${(db.notesEntries?.length||0)} notes/transfers.`;
+ $('storageInfo').textContent=`${db.employees.length} cards/staff · ${db.attendance.length} scans · ${(db.coffeeArrivals?.length||0)} arrivals · ${(db.coffeeSales?.length||0)} sales · ${(db.notesEntries?.length||0)} notes/transfers.`;
 }
 
 function getFilteredEmployees(){
  const q=($('employeeSearch').value||'').trim().toLowerCase();
- return db.employees.filter(e=>(e.name+' '+e.qrId+' '+(e.extra||'')+' '+(e.batchNum?`#${e.batchNum}`:'')).toLowerCase().includes(q));
+ return db.employees.filter(e=>{
+  const unass=isUnassignedPass(e)?'unassigned blank ready':'assigned';
+  return (e.name+' '+e.qrId+' '+(e.extra||'')+' '+cycleLabel(e.payCycle)+' '+unass+' '+(e.batchNum?`#${e.batchNum}`:'')).toLowerCase().includes(q);
+ });
 }
 function updateSelectionUI(){
  const filtered=getFilteredEmployees();
  $('selectAllQr').checked=filtered.length>0&&filtered.every(e=>selectedIds.has(e.id));
  $('selectedCount').textContent=selectedIds.size;
  $('downloadSelectedQr').disabled=selectedIds.size===0;$('printSelectedQr').disabled=selectedIds.size===0;
- const unassigned=db.employees.filter(e=>e.name===e.qrId);
+ const unassigned=db.employees.filter(e=>isUnassignedPass(e));
  $('unassignedCount').textContent=unassigned.length;$('nextUnassignedBtn').disabled=unassigned.length===0;
 }
 window.toggleSelectEmp=(id,checked)=>{if(checked)selectedIds.add(id);else selectedIds.delete(id);renderEmployees()};
 function renderEmployees(){
  const list=getFilteredEmployees();
  $('employeeList').innerHTML=list.length
-  ?`<div class="tablewrap"><table><thead><tr><th style="width:32px"></th><th>Staff</th><th>Wage</th><th>Actions</th></tr></thead><tbody>${list.map(e=>{
-   const sel=selectedIds.has(e.id),inactive=e.active===false;
-   return `<tr class="${sel?'selected-row':''}"><td><input type="checkbox" ${sel?'checked':''} onchange="toggleSelectEmp('${e.id}',this.checked)"></td><td>${e.batchNum?`<span class="tag seq">#${e.batchNum}</span>`:''}<b>${esc(e.name)}</b>${inactive?'<span class="tag inactive">Off</span>':''}<div class="tiny">${esc(e.qrId)}</div></td><td>${money(e.dailyWage)}</td><td><div class="row-actions"><button class="btn secondary small" onclick="editEmployee('${e.id}')">Edit</button><button class="btn secondary small" onclick="cardFor('${e.id}')">QR</button><button class="btn small" onclick="downloadOneQr('${e.id}')">PNG</button></div></td></tr>`;
+  ?`<div class="tablewrap"><table><thead><tr><th style="width:32px"></th><th>Card / Staff</th><th>Wage & Cycle</th><th>Actions</th></tr></thead><tbody>${list.map(e=>{
+   const sel=selectedIds.has(e.id),inactive=e.active===false,unass=isUnassignedPass(e);
+   return `<tr class="${sel?'selected-row':''}"><td><input type="checkbox" ${sel?'checked':''} onchange="toggleSelectEmp('${e.id}',this.checked)"></td><td>${e.batchNum?`<span class="tag seq">#${e.batchNum}</span>`:''}<b>${esc(unass?'Unassigned':e.name)}</b>${unass?'<span class="tag unassigned">Blank</span>':''}${inactive?'<span class="tag inactive">Off</span>':''}<div class="tiny">${esc(e.qrId)}</div></td><td><b>${money(e.dailyWage)}</b><div class="tiny">${esc(cycleLabel(e.payCycle))}</div></td><td><div class="row-actions"><button class="btn secondary small" onclick="editEmployee('${e.id}')">${unass?'Assign':'Edit'}</button><button class="btn secondary small" onclick="cardFor('${e.id}')">QR</button><button class="btn small" onclick="downloadOneQr('${e.id}')">PNG</button></div></td></tr>`;
   }).join('')}</tbody></table></div>`
-  :'<div class="empty">No staff match filter.</div>';
+  :'<div class="empty">No cards or staff match filter.</div>';
  updateSelectionUI();
 }
 
@@ -1763,7 +1828,7 @@ function saveEmployee(){
   const emp=db.employees.find(e=>e.id===editId);if(!emp)return;
   const prev={name:emp.name,extra:emp.extra,qrId:emp.qrId,dailyWage:emp.dailyWage,payCycle:emp.payCycle};
   emp.name=name;emp.extra=extra;emp.qrId=qrId;emp.dailyWage=wage;emp.payCycle=payCycle;
-  if(!persist(()=>Object.assign(emp,prev)))return;toast('Saved.');
+  if(!persist(()=>Object.assign(emp,prev)))return;toast('Card & worker saved.');
  }else{
   db.employees.push({id:crypto.randomUUID(),name,extra,qrId,dailyWage:wage,payCycle,active:true,createdAt:new Date().toISOString()});
   if(!persist(()=>db.employees.pop()))return;toast('QR card saved.');
@@ -1774,7 +1839,7 @@ function resetEmployeeForm(clearQr=true){
  $('editId').value='';$('editBatchNum').value='';$('editBatchTotal').value='';$('newName').value='';$('newExtra').value='';$('newWage').value='';
  $('newPayCycle').value='weekly';$('newQrId').disabled=false;
  if(clearQr){$('newQrId').value='';currentQr='';$('qrOutput').innerHTML='<span class="muted">QR card preview</span>';$('printQr').disabled=true;$('downloadQr').disabled=true}
- $('employeeFormTitle').textContent='Create / assign QR card';$('saveEmployee').textContent='Save & generate QR';$('cancelEdit').classList.add('hidden');
+ $('employeeFormTitle').textContent='Assign / create QR card';$('saveEmployee').textContent='Save & generate QR';$('cancelEdit').classList.add('hidden');
 }
 function previewQrFromId(rawId){
  const qrId=String(rawId||'').trim().toUpperCase();if(!qrId)return;
@@ -1783,27 +1848,40 @@ function previewQrFromId(rawId){
  try{currentQr=qrId;$('qrOutput').innerHTML='';$('qrOutput').appendChild(makeBrandedCardCanvas(draft));$('printQr').disabled=false;$('downloadQr').disabled=false}catch(err){toast(err.message)}
 }
 function generateBatchCards(){
- const count=Number($('batchCount').value);if(!Number.isInteger(count)||count<1||count>50){toast('Enter 1 to 50.');return}
- const wage=$('batchWage').value===''?0:Number($('batchWage').value),payCycle=normalizeCycle($('batchCycle').value),created=[];
- for(let i=0;i<count;i++){const qrId=makeId();created.push({id:crypto.randomUUID(),name:qrId,extra:'',batchNum:i+1,batchTotal:count,qrId,dailyWage:wage,payCycle,active:true,createdAt:new Date().toISOString()})}
+ const count=Number($('batchCount').value);if(!Number.isInteger(count)||count<1||count>500){toast('Enter 1 to 500.');return}
+ const startNum=Math.max(1,Math.floor(Number($('batchStartNum')?.value)||1));
+ const prefix=($('batchPrefix')?.value||'NX').trim().toUpperCase().replace(/[^A-Z0-9]/g,'')||'NX';
+ const wage=$('batchWage').value===''?0:Number($('batchWage').value);
+ if(!Number.isFinite(wage)||wage<0){toast('Enter valid wage.');return}
+ const payCycle=normalizeCycle($('batchCycle').value),created=[];
+ for(let i=0;i<count;i++){
+  const seqNum=startNum+i;
+  const qrId=makeId(prefix);
+  created.push({id:crypto.randomUUID(),name:qrId,extra:'',batchNum:seqNum,batchTotal:count,qrId,dailyWage:wage,payCycle,active:true,createdAt:new Date().toISOString()});
+ }
  db.employees.push(...created);
  if(!persist(()=>{db.employees.splice(db.employees.length-created.length,created.length)}))return;
  batchDraftCards=created;
  $('printBatchPreviewBtn').disabled=!created.length;
- $('batchStatus').textContent=`${created.length} cards (#1–#${created.length}) ready.`;
+ const endNum=startNum+count-1;
+ const previewLimit=Math.min(24,created.length);
+ $('batchStatus').textContent=`${created.length} blank cards (#${startNum}–#${endNum}, ${cycleLabel(payCycle)}) ready to print. Showing ${previewLimit} in preview; print includes all ${created.length}.`;
  $('batchPreview').innerHTML='';
- created.forEach((emp,idx)=>{
+ for(let idx=0;idx<previewLimit;idx++){
+  const emp=created[idx];
   const card=document.createElement('div');card.className='batch-card';card.onclick=()=>openEmployeeCard(emp.id,'edit');
-  const tag=document.createElement('div');tag.className='batch-num';tag.textContent=`#${idx+1}`;
+  const tag=document.createElement('div');tag.className='batch-num';tag.textContent=`#${emp.batchNum}`;
   const c=makeBrandedCardCanvas(emp);const lbl=document.createElement('div');lbl.className='tiny';lbl.style.marginTop='4px';lbl.textContent=emp.qrId;
   card.appendChild(tag);card.appendChild(c);card.appendChild(lbl);$('batchPreview').appendChild(card);
- });
- toast(`Generated ${created.length} cards.`);
+ }
+ toast(`Generated ${created.length} bulk QR cards.`);
 }
 function loadEmployeeIntoForm(e){
  $('editId').value=e.id;$('editBatchNum').value=e.batchNum||'';$('editBatchTotal').value=e.batchTotal||'';
- $('newName').value=e.name===e.qrId?'':e.name;$('newExtra').value=e.extra||'';$('newWage').value=e.dailyWage;$('newPayCycle').value=normalizeCycle(e.payCycle);
- $('newQrId').value=e.qrId;$('newQrId').disabled=true;$('employeeFormTitle').textContent='Edit '+e.qrId;$('saveEmployee').textContent='Save changes';$('cancelEdit').classList.remove('hidden');
+ $('newName').value=isUnassignedPass(e)?'':e.name;$('newExtra').value=e.extra||'';$('newWage').value=e.dailyWage;$('newPayCycle').value=normalizeCycle(e.payCycle);
+ $('newQrId').value=e.qrId;$('newQrId').disabled=true;
+ $('employeeFormTitle').textContent=(isUnassignedPass(e)?'Assign card ':'Edit ')+e.qrId;
+ $('saveEmployee').textContent='Save assignment';$('cancelEdit').classList.remove('hidden');
  showQr(e);window.scrollTo({top:0,behavior:'smooth'});
 }
 window.editEmployee=id=>{const e=db.employees.find(x=>x.id===id);if(e)loadEmployeeIntoForm(e)};
@@ -1862,7 +1940,8 @@ function restoreFile(file){
    const x=JSON.parse(reader.result);
    if(!x||!Array.isArray(x.employees)||!Array.isArray(x.attendance))throw Error('Invalid backup');
    if(!confirm('Replace local data with backup?'))return;
-   db={...blankDB(),...x,payments:Array.isArray(x.payments)?x.payments:[],coffeeArrivals:Array.isArray(x.coffeeArrivals)?x.coffeeArrivals:[],coffeeSales:Array.isArray(x.coffeeSales)?x.coffeeSales:[],coffeeBatch:{...blankDB().coffeeBatch,...(x.coffeeBatch||{})},notesEntries:Array.isArray(x.notesEntries)?x.notesEntries:[]};
+   const migratedArr=(Array.isArray(x.coffeeArrivals)?x.coffeeArrivals:[]).map(a=>({...a,type:a.type==='jenfel'?'jenfel':'cherry'}));
+   db={...blankDB(),...x,payments:Array.isArray(x.payments)?x.payments:[],coffeeArrivals:migratedArr,coffeeSales:Array.isArray(x.coffeeSales)?x.coffeeSales:[],coffeeBatch:{...blankDB().coffeeBatch,...(x.coffeeBatch||{})},notesEntries:Array.isArray(x.notesEntries)?x.notesEntries:[]};
    persist();toast('Backup restored.');
   }catch(e){toast(e.message)}
  };
@@ -1929,19 +2008,16 @@ $('exportNotesCsvBtn').onclick=exportNotesCsv;
 $('arrivalDate').value=localDate();
 $('saleDate').value=localDate();
 if(db.coffeeBatch){
- $('batchRatioSelect').value=db.coffeeBatch.ratioMode||'5';
- $('customRatioVal').value=db.coffeeBatch.customRatio||4.5;
+ $('cherryRatioInput').value=db.coffeeBatch.cherryRatio||5;
+ $('jenfelRatioInput').value=db.coffeeBatch.jenfelRatio||2.5;
  $('batchExtraCost').value=db.coffeeBatch.extraCost||0;
- $('customRatioBox').classList.toggle('hidden',$('batchRatioSelect').value!=='custom');
 }
-$('batchRatioSelect').addEventListener('change',()=>{
- const isCustom=$('batchRatioSelect').value==='custom';
- $('customRatioBox').classList.toggle('hidden',!isCustom);
- db.coffeeBatch.ratioMode=$('batchRatioSelect').value;
- persist();
+$('cherryRatioInput').addEventListener('input',()=>{
+ db.coffeeBatch.cherryRatio=Math.max(1,Number($('cherryRatioInput').value)||5);
+ renderCoffeeTab();
 });
-$('customRatioVal').addEventListener('input',()=>{
- db.coffeeBatch.customRatio=Math.max(1,Number($('customRatioVal').value)||4.5);
+$('jenfelRatioInput').addEventListener('input',()=>{
+ db.coffeeBatch.jenfelRatio=Math.max(1,Number($('jenfelRatioInput').value)||2.5);
  renderCoffeeTab();
 });
 $('batchExtraCost').addEventListener('input',()=>{
@@ -1949,7 +2025,8 @@ $('batchExtraCost').addEventListener('input',()=>{
  renderCoffeeTab();
 });
 $('toggleArrivalDoneBtn').onclick=toggleArrivalStatus;
-['arrivalKg','arrivalPriceKg','arrivalPaid'].forEach(id=>$(id).addEventListener('input',updateArrivalLivePreview));
+$('arrivalFilterType').addEventListener('change',renderCoffeeTab);
+['arrivalType','arrivalKg','arrivalPriceKg','arrivalPaid'].forEach(id=>$(id).addEventListener('input',updateArrivalLivePreview));
 ['saleFerQty','salePricePerFer'].forEach(id=>$(id).addEventListener('input',updateSaleLivePreview));
 $('saveArrivalBtn').onclick=saveArrival;$('cancelArrivalEditBtn').onclick=resetArrivalForm;
 $('saveSaleBtn').onclick=saveFeresulaSale;
@@ -1967,16 +2044,16 @@ $('toggleLockChangeBtn').onclick=()=>$('lockChangeBox').classList.toggle('hidden
 $('lockSaveNewPassBtn').onclick=()=>{const r=applyPasscodeChange($('lockOldPass').value,$('lockNewPass').value);if(!r.ok){$('loginError').textContent=r.msg;return}$('lockChangeBox').classList.add('hidden');toast(r.msg)};
 $('savePasscodeBtn').onclick=()=>{const r=applyPasscodeChange($('currentPasscodeInput').value,$('newPasscodeInput').value);if(!r.ok){toast(r.msg);return}$('currentPasscodeInput').value='';$('newPasscodeInput').value='';toast(r.msg)};
 
-$('makeId').onclick=()=>{const id=makeId();$('newQrId').value=id;previewQrFromId(id)};
+$('makeId').onclick=()=>{const id=makeId($('batchPrefix')?.value||'NX');$('newQrId').value=id;previewQrFromId(id)};
 $('newQrId').addEventListener('input',()=>previewQrFromId($('newQrId').value));
 $('newName').addEventListener('input',()=>{if($('newQrId').value.trim())previewQrFromId($('newQrId').value)});
 $('newExtra').addEventListener('input',()=>{if($('newQrId').value.trim())previewQrFromId($('newQrId').value)});
 $('newWage').addEventListener('input',()=>{if($('newQrId').value.trim())previewQrFromId($('newQrId').value)});
 $('newPayCycle').addEventListener('change',()=>{if($('newQrId').value.trim())previewQrFromId($('newQrId').value)});
 $('saveEmployee').onclick=saveEmployee;$('cancelEdit').onclick=()=>resetEmployeeForm();
-$('quickNextCard').onclick=()=>{resetEmployeeForm(true);const id=makeId();$('newQrId').value=id;previewQrFromId(id)};
+$('quickNextCard').onclick=()=>{resetEmployeeForm(true);const id=makeId($('batchPrefix')?.value||'NX');$('newQrId').value=id;previewQrFromId(id)};
 $('generateBatchBtn').onclick=generateBatchCards;$('printBatchPreviewBtn').onclick=()=>printCardsList(batchDraftCards);
-$('nextUnassignedBtn').onclick=()=>{const n=db.employees.find(e=>e.name===e.qrId);if(!n){toast('All cards named.');return}openTab('employees');loadEmployeeIntoForm(n)};
+$('nextUnassignedBtn').onclick=()=>{const n=db.employees.find(e=>isUnassignedPass(e));if(!n){toast('All cards assigned.');return}openTab('employees');loadEmployeeIntoForm(n)};
 $('lookupQrBtn').onclick=()=>{const id=$('lookupQrInput').value.trim().toUpperCase(),emp=empByQr(id);if(!emp){toast('Not found');return}$('lookupQrInput').value='';loadEmployeeIntoForm(emp)};
 $('manualScan').onclick=()=>recordAttendance($('manualId').value);
 $('manualId').addEventListener('keydown',e=>{if(e.key==='Enter')recordAttendance($('manualId').value)});
@@ -2007,4 +2084,4 @@ if('serviceWorker'in navigator&&location.protocol.startsWith('http')){
 }
 </script>
 </body>
-</html>
+ </html>
