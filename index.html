@@ -887,7 +887,11 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
    <div class="panel">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
      <h2 style="margin:0">Cards & staff directory</h2>
-     <button class="btn secondary small" id="nextUnassignedBtn" type="button">Unassigned (<span id="unassignedCount">0</span>)</button>
+     <div class="row-actions">
+      <button class="btn secondary small" id="exportCardsCsvBtn" type="button">QR CSV</button>
+      <button class="btn secondary small" id="staffBackupBtn" type="button">Backup</button>
+      <button class="btn secondary small" id="nextUnassignedBtn" type="button">Unassigned (<span id="unassignedCount">0</span>)</button>
+     </div>
     </div>
 
     <div class="lookupbox">
@@ -908,8 +912,10 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
      <div class="row-actions">
       <button class="btn small" id="downloadSelectedQr" type="button" disabled>Save PNGs</button>
       <button class="btn secondary small" id="printSelectedQr" type="button" disabled>Print</button>
+      <button class="btn danger small" id="deleteSelectedQr" type="button" disabled>Delete</button>
      </div>
     </div>
+    <div id="batchDownloadStatus" class="note hidden"></div>
     <div id="employeeList" style="margin-top:12px"></div>
    </div>
   </div>
@@ -1143,7 +1149,7 @@ const PALETTE_META={
 };
 
 let db=loadDB(), currentQr='', cameraStream=null, scanLoop=null, lastScanned='', lastScanAt=0, reportRows=[], payrollRows=[], batchDraftCards=[], audioCtx=null;
-let soundEnabled=getSavedSoundEnabled(), bigOverlayTimer=null, reloadedForUpdate=false, lastScanUndo=null;
+let soundEnabled=getSavedSoundEnabled(), bigOverlayTimer=null, reloadedForUpdate=false, lastScanUndo=null, batchDownloadTimer=null;
 let modalState={mode:'create',employeeId:null,paymentId:null,arrivalId:null,allowSelectEmployee:false};
 const selectedIds=new Set();
 const $=id=>document.getElementById(id);
@@ -1633,6 +1639,24 @@ function exportSalesCsv(){
  ]));
 }
 
+function exportCardsCsv(){
+ const cards=db.employees;
+ download(`nexus-qr-cards-${localDate()}.csv`,csv([
+  ['Card #','QR ID','Status','Worker Name','Phone/Notes','Wage ETB','Pay Cycle','Active'],
+  ...cards.map(e=>[
+   e.batchNum?`#${e.batchNum}`:'',
+   e.qrId,
+   isUnassignedPass(e)?'Unassigned':'Assigned',
+   isUnassignedPass(e)?'':e.name,
+   e.extra||'',
+   Number(e.dailyWage)||0,
+   cycleLabel(e.payCycle),
+   e.active===false?'Inactive':'Active'
+  ])
+ ]));
+ toast(`Exported ${cards.length} QR cards to CSV.`);
+}
+
 /* Attendance, Staff, QR, Payroll & Admin */
 function makeId(prefix='NX'){
  const cleanPrefix=String(prefix||'NX').trim().toUpperCase().replace(/[^A-Z0-9]/g,'')||'NX';
@@ -1768,7 +1792,9 @@ function updateSelectionUI(){
  const filtered=getFilteredEmployees();
  $('selectAllQr').checked=filtered.length>0&&filtered.every(e=>selectedIds.has(e.id));
  $('selectedCount').textContent=selectedIds.size;
- $('downloadSelectedQr').disabled=selectedIds.size===0;$('printSelectedQr').disabled=selectedIds.size===0;
+ $('downloadSelectedQr').disabled=selectedIds.size===0;
+ $('printSelectedQr').disabled=selectedIds.size===0;
+ $('deleteSelectedQr').disabled=selectedIds.size===0;
  const unassigned=db.employees.filter(e=>isUnassignedPass(e));
  $('unassignedCount').textContent=unassigned.length;$('nextUnassignedBtn').disabled=unassigned.length===0;
 }
@@ -1782,6 +1808,19 @@ function renderEmployees(){
   }).join('')}</tbody></table></div>`
   :'<div class="empty">No cards or staff match filter.</div>';
  updateSelectionUI();
+}
+
+function deleteSelectedCards(){
+ const ids=[...selectedIds];
+ if(!ids.length)return;
+ if(!confirm(`Delete ${ids.length} selected QR card(s)/staff record(s)?`))return;
+ const prevEmployees=[...db.employees];
+ const idSet=new Set(ids);
+ db.employees=db.employees.filter(e=>!idSet.has(e.id));
+ ids.forEach(id=>selectedIds.delete(id));
+ if($('editId').value&&idSet.has($('editId').value))resetEmployeeForm(true);
+ if(!persist(()=>{db.employees=prevEmployees;ids.forEach(id=>selectedIds.add(id))}))return;
+ toast(`Deleted ${ids.length} selected card(s).`);
 }
 
 function recordAttendance(raw){
@@ -1889,6 +1928,31 @@ window.cardFor=id=>{const e=db.employees.find(x=>x.id===id);if(e){showQr(e);open
 function showQr(emp){currentQr=emp.qrId;$('qrOutput').innerHTML='';$('qrOutput').appendChild(makeBrandedCardCanvas(emp));$('printQr').disabled=false;$('downloadQr').disabled=false}
 function triggerCardDownload(emp){const a=document.createElement('a');a.href=makeBrandedCardCanvas(emp).toDataURL('image/png');a.download=`NEXUS-${emp.qrId}.png`;document.body.appendChild(a);a.click();a.remove()}
 window.downloadOneQr=id=>{const emp=db.employees.find(x=>x.id===id);if(emp){triggerCardDownload(emp);toast('Saved PNG')}};
+
+function downloadSelectedCardsStaggered(emps){
+ if(!emps.length)return;
+ if(batchDownloadTimer){clearTimeout(batchDownloadTimer);batchDownloadTimer=null}
+ const statusEl=$('batchDownloadStatus');
+ const btn=$('downloadSelectedQr');
+ statusEl.classList.remove('hidden');
+ btn.disabled=true;
+ let idx=0;
+ const step=()=>{
+  if(idx>=emps.length){
+   statusEl.textContent=`Finished saving ${emps.length} full QR card PNGs. If your browser blocked any downloads, tap Print to save all cards as one PDF/print sheet.`;
+   btn.disabled=selectedIds.size===0;
+   batchDownloadTimer=null;
+   toast(`Saved ${emps.length} QR cards.`);
+   return;
+  }
+  triggerCardDownload(emps[idx]);
+  idx++;
+  statusEl.textContent=`Saving full PNGs: ${idx}/${emps.length} (${emps[idx-1].qrId})... Keep screen open.`;
+  batchDownloadTimer=setTimeout(step,280);
+ };
+ step();
+}
+
 function printCardsList(emps){
  if(!emps.length)return;const w=window.open('','_blank');if(!w){toast('Allow pop-ups to print.');return}
  const isGrid=($('printMode')?.value||'full')==='grid';
@@ -2053,6 +2117,7 @@ $('newPayCycle').addEventListener('change',()=>{if($('newQrId').value.trim())pre
 $('saveEmployee').onclick=saveEmployee;$('cancelEdit').onclick=()=>resetEmployeeForm();
 $('quickNextCard').onclick=()=>{resetEmployeeForm(true);const id=makeId($('batchPrefix')?.value||'NX');$('newQrId').value=id;previewQrFromId(id)};
 $('generateBatchBtn').onclick=generateBatchCards;$('printBatchPreviewBtn').onclick=()=>printCardsList(batchDraftCards);
+$('exportCardsCsvBtn').onclick=exportCardsCsv;$('staffBackupBtn').onclick=backup;
 $('nextUnassignedBtn').onclick=()=>{const n=db.employees.find(e=>isUnassignedPass(e));if(!n){toast('All cards assigned.');return}openTab('employees');loadEmployeeIntoForm(n)};
 $('lookupQrBtn').onclick=()=>{const id=$('lookupQrInput').value.trim().toUpperCase(),emp=empByQr(id);if(!emp){toast('Not found');return}$('lookupQrInput').value='';loadEmployeeIntoForm(emp)};
 $('manualScan').onclick=()=>recordAttendance($('manualId').value);
@@ -2063,8 +2128,9 @@ $('downloadQr').onclick=()=>{if(currentQr)triggerCardDownload(empByQr(currentQr)
 $('employeeSearch').oninput=renderEmployees;
 $('clearSearch').onclick=()=>{$('employeeSearch').value='';renderEmployees()};
 $('selectAllQr').onchange=e=>{const f=getFilteredEmployees();if(e.target.checked)f.forEach(x=>selectedIds.add(x.id));else f.forEach(x=>selectedIds.delete(x.id));renderEmployees()};
-$('downloadSelectedQr').onclick=()=>db.employees.filter(e=>selectedIds.has(e.id)).forEach(triggerCardDownload);
+$('downloadSelectedQr').onclick=()=>downloadSelectedCardsStaggered(db.employees.filter(e=>selectedIds.has(e.id)));
 $('printSelectedQr').onclick=()=>printCardsList(db.employees.filter(e=>selectedIds.has(e.id)));
+$('deleteSelectedQr').onclick=deleteSelectedCards;
 $('payFrom').value=localDate().slice(0,7)+'-01';$('payTo').value=localDate();
 $('payCycleFilter').onchange=runPayroll;$('payStatusFilter').onchange=runPayroll;
 $('preset7Days').onclick=()=>setPayrollPreset(7);$('preset14Days').onclick=()=>setPayrollPreset(14);$('presetMonth').onclick=()=>setPayrollPreset('month');
@@ -2084,4 +2150,4 @@ if('serviceWorker'in navigator&&location.protocol.startsWith('http')){
 }
 </script>
 </body>
- </html>
+</html>
