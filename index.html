@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0284c7">
-<meta name="description" content="NEXUS — Workforce & Payroll OS. Offline employee attendance, QR cards, advances, and payroll.">
+<meta name="description" content="NEXUS — Workforce & Payroll OS + Offline Coffee Feresula Ledger.">
 <meta name="application-name" content="NEXUS">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.webmanifest">
@@ -325,7 +325,7 @@ h2{font-size:15px;margin:0 0 12px;letter-spacing:-.015em;font-weight:750;color:v
 .stat.clickable{cursor:pointer;transition:transform .14s ease,border-color .14s ease}
 .stat.clickable:hover{transform:translateY(-1px);border-color:var(--accent)}
 .stat small{color:var(--muted);font-weight:700;font-size:12px;display:block}
-.stat strong{display:block;font-size:22px;margin-top:6px;letter-spacing:-.025em;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink)}
+.stat strong{display:block;font-size:21px;margin-top:6px;letter-spacing:-.025em;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink)}
 
 .panel{padding:20px;margin-bottom:16px}
 @media(min-width:760px){.two-col{display:grid;grid-template-columns:1fr 1.15fr;gap:16px;align-items:start}}
@@ -505,8 +505,9 @@ tr.selected-row td{background:var(--accent-soft)}
 }
 .batch-card canvas{width:100%;height:auto;border-radius:8px;display:block}
 
-.bulkbar,.lookupbox{background:var(--surface-subtle);border:1px solid var(--border);border-radius:14px;padding:12px}
+.bulkbar,.lookupbox,.calc-box{background:var(--surface-subtle);border:1px solid var(--border);border-radius:14px;padding:12px}
 .lookupbox{margin-bottom:10px}
+.calc-box{margin-top:12px}
 .bulkbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:10px}
 .chklabel{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer}
 
@@ -522,30 +523,30 @@ tr.selected-row td{background:var(--accent-soft)}
 .money{font-weight:750;color:var(--success)}
 hr{border:0;border-top:1px solid var(--border);margin:18px 0}
 
-/* Bottom Navigation Bar */
+/* Bottom Navigation Bar (6 slots for fast offline access) */
 .bottom-nav{
  position:fixed;left:0;right:0;bottom:0;z-index:30;
  background:var(--nav-bg);backdrop-filter:blur(8px);border-top:1px solid var(--border);
- padding:6px 8px calc(6px + env(safe-area-inset-bottom));
- display:grid;grid-template-columns:repeat(5,1fr);align-items:center;gap:4px;
+ padding:6px 6px calc(6px + env(safe-area-inset-bottom));
+ display:grid;grid-template-columns:repeat(6,1fr);align-items:center;gap:3px;
 }
 .nav-item{
  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
  min-height:50px;border:0;background:transparent;color:var(--muted);
- font:650 10.5px/1.1 -apple-system,BlinkMacSystemFont,"Inter",sans-serif;cursor:pointer;border-radius:12px;
- transition:background-color .15s ease,color .15s ease;
+ font:650 10px/1.1 -apple-system,BlinkMacSystemFont,"Inter",sans-serif;cursor:pointer;border-radius:11px;
+ transition:background-color .15s ease,color .15s ease;padding:2px;
 }
-.nav-item svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav-item svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .nav-item.active{color:var(--accent);background:var(--accent-soft)}
 
 .nav-scan-fab{
  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
- height:50px;border-radius:14px;border:0;
+ height:50px;border-radius:13px;border:0;
  background:var(--primary);color:var(--primary-fg);
- font:750 10.5px/1 -apple-system,BlinkMacSystemFont,"Inter",sans-serif;cursor:pointer;
- box-shadow:var(--shadow-sm);
+ font:750 10px/1 -apple-system,BlinkMacSystemFont,"Inter",sans-serif;cursor:pointer;
+ box-shadow:var(--shadow-sm);padding:2px;
 }
-.nav-scan-fab svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.nav-scan-fab svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 
 @media print{
  header,.bottom-nav,.no-print,.note,.lock-screen,.modal-backdrop,.scan-overlay{display:none!important}
@@ -652,7 +653,7 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
     <rect x="13.2" y="3.2" width="6.6" height="17.6" rx="3.3" transform="rotate(24 13.2 3.2)" fill="currentColor"/>
    </svg>
   </div>
-  <div class="brand">NEXUS <span>Workforce & Payroll</span></div>
+  <div class="brand">NEXUS <span>Workforce & Coffee OS</span></div>
  </div>
  <div class="header-right">
   <button class="pill warn hidden" id="backupBadge" title="Open Backup & Security">Backup</button>
@@ -696,6 +697,10 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
   </button>
 
   <div class="app-shortcuts">
+   <button type="button" class="app-tile" data-jump="coffee">
+    <strong>Coffee & Feresula</strong>
+    <span>Daily 1kg rate, money & 17kg yield</span>
+   </button>
    <button type="button" class="app-tile" data-jump="employees">
     <strong>QR cards (#1–#n)</strong>
     <span>Batch create, edit & print</span>
@@ -703,10 +708,6 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
    <button type="button" class="app-tile" data-jump="payroll">
     <strong>Payroll & advances</strong>
     <span>Record advance & balances</span>
-   </button>
-   <button type="button" class="app-tile" id="homeNextUnassigned">
-    <strong>Assign QR card</strong>
-    <span>Add name to next card</span>
    </button>
    <button type="button" class="app-tile" data-jump="more">
     <strong>Reports, theme & backup</strong>
@@ -722,6 +723,71 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
    <div class="panel" id="homeAbsentPanel">
     <h2>Absent today</h2>
     <div id="homeAbsentButtons"></div>
+   </div>
+  </div>
+ </section>
+
+ <!-- COFFEE LOT & FERESULA LEDGER (100% OFFLINE) -->
+ <section id="tab-coffee" class="tabpage hidden">
+  <section class="stats">
+   <div class="stat"><small>Red cherry bought</small><strong id="coffeeTotalKg">0 kg</strong></div>
+   <div class="stat"><small>Avg 1kg price</small><strong id="coffeeAvgPrice">0 ETB</strong></div>
+   <div class="stat"><small>Money paid</small><strong id="coffeeMoneyPaid">0 ETB</strong></div>
+   <div class="stat"><small>Est. Feresula (17kg)</small><strong id="coffeeEstFeresula">0.00</strong></div>
+  </section>
+
+  <div class="two-col">
+   <div class="panel">
+    <h2 id="coffeeFormTitle">Record daily coffee & money paid</h2>
+    <input id="editCoffeeId" type="hidden">
+    <label for="coffeeDate">Purchase date</label>
+    <input id="coffeeDate" type="date" required>
+
+    <div class="row">
+     <div>
+      <label for="coffeeRedKg">Red cherry (kg)</label>
+      <input id="coffeeRedKg" type="number" min="0.01" step="0.01" placeholder="e.g. 1000" required>
+     </div>
+     <div>
+      <label for="coffeePriceKg">1 kg price (ETB)</label>
+      <input id="coffeePriceKg" type="number" min="0.01" step="0.01" placeholder="e.g. 130" required>
+     </div>
+    </div>
+
+    <div class="row">
+     <div>
+      <label for="coffeeMoneyPaidInput">Money paid now (ETB)</label>
+      <input id="coffeeMoneyPaidInput" type="number" min="0" step="0.01" placeholder="Auto = kg × 1kg price">
+     </div>
+     <div>
+      <label for="coffeeRatioMode">Dry outturn logic</label>
+      <select id="coffeeRatioMode">
+       <option value="jenfel" selected>Jenfel dry cherry (3:1 · 51kg/fer)</option>
+       <option value="green">Clean green bean (6:1 · 102kg/fer)</option>
+      </select>
+     </div>
+    </div>
+
+    <label for="coffeeNote">Supplier / batch note (optional)</label>
+    <input id="coffeeNote" maxlength="120" placeholder="e.g. Day 1 Guji Kercha or Farmer group">
+
+    <div class="calc-box" id="coffeeLiveCalc">
+     <div class="tiny">Enter red cherry kg and 1kg price to preview lot total, dry kg, feresula (17 kg), and break-even price.</div>
+    </div>
+
+    <div class="actions" style="margin-top:12px">
+     <button class="btn" id="saveCoffeeBtn" type="button">Save coffee & money</button>
+     <button class="btn secondary hidden" id="cancelCoffeeEditBtn" type="button">Cancel</button>
+    </div>
+   </div>
+
+   <div class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+     <h2 style="margin:0">Recorded coffee lots & payments</h2>
+     <button class="btn secondary small" id="exportCoffeeCsvBtn" type="button">Export CSV</button>
+    </div>
+    <div id="coffeeRatioSummaryBox" class="calc-box" style="margin-top:0;margin-bottom:12px"></div>
+    <div id="coffeeLotsList"></div>
    </div>
   </div>
  </section>
@@ -990,13 +1056,17 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
   <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
   <span>Home</span>
  </button>
- <button type="button" class="nav-item" data-tab="employees">
-  <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h3v3H7zm7 0h3v3h-3zM7 13h3v3H7z"/></svg>
-  <span>Staff</span>
+ <button type="button" class="nav-item" data-tab="coffee">
+  <svg viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/></svg>
+  <span>Coffee</span>
  </button>
  <button type="button" class="nav-scan-fab" id="navScanBtn" aria-label="Scan QR Attendance">
   <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
   <span>Scan</span>
+ </button>
+ <button type="button" class="nav-item" data-tab="employees">
+  <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h3v3H7zm7 0h3v3h-3zM7 13h3v3H7z"/></svg>
+  <span>Staff</span>
  </button>
  <button type="button" class="nav-item" data-tab="payroll">
   <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
@@ -1133,6 +1203,7 @@ const PASS_KEY='nexus_workforce_passcode_v1';
 const PALETTE_KEY='nexus_workforce_palette_v1';
 const SOUND_KEY='nexus_workforce_sound_v1';
 const DEFAULT_PASSCODE='2026';
+const FERESULA_KG=17;
 const PALETTES=['lightblue','slate','stone','midnight','grainblack'];
 const PALETTE_META={
  lightblue:{label:'Light Blue',themeColor:'#0284c7'},
@@ -1311,7 +1382,7 @@ function lockScreen(){
 function unlockScreen(){$('lockScreen').classList.add('hidden')}
 
 function blankDB(){
- return {version:5,employees:[],attendance:[],payments:[],lastBackupAt:null,createdAt:new Date().toISOString()};
+ return {version:5,employees:[],attendance:[],payments:[],coffeeLots:[],lastBackupAt:null,createdAt:new Date().toISOString()};
 }
 function loadDB(){
  try{
@@ -1327,7 +1398,15 @@ function loadDB(){
   if(!x||!Array.isArray(x.employees)||!Array.isArray(x.attendance))return blankDB();
   const employees=x.employees.map(e=>({...e,payCycle:normalizeCycle(e.payCycle)}));
   const payments=(Array.isArray(x.payments)?x.payments:[]).map(p=>({...p,type:normalizePayType(p.type),note:String(p.note||'')}));
-  return {...blankDB(),...x,employees,payments};
+  const coffeeLots=(Array.isArray(x.coffeeLots)?x.coffeeLots:[]).map(c=>({
+   ...c,
+   redKg:Number(c.redKg)||0,
+   pricePerKg:Number(c.pricePerKg)||0,
+   moneyPaid:Number(c.moneyPaid)??(Number(c.redKg)||0)*(Number(c.pricePerKg)||0),
+   ratioMode:c.ratioMode==='green'?'green':'jenfel',
+   note:String(c.note||'')
+  }));
+  return {...blankDB(),...x,employees,payments,coffeeLots};
  }catch(e){return blankDB()}
 }
 function persist(rollbackFn=null){
@@ -1354,6 +1433,188 @@ function toast(s){
  $('toast').textContent=s;$('toast').classList.remove('hidden');
  clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.add('hidden'),2700);
 }
+
+/* Coffee & Feresula Logic (1 Feresula = 17 kg; Jenfel 3:1; Clean Green 6:1) */
+function computeLotMetrics(redKg,pricePerKg,moneyPaid,ratioMode='jenfel'){
+ const kg=Math.max(0,Number(redKg)||0);
+ const rate=Math.max(0,Number(pricePerKg)||0);
+ const lotCost=kg*rate;
+ const paid=Math.max(0,Number(moneyPaid)??lotCost);
+ const unpaid=lotCost-paid;
+ const isGreen=ratioMode==='green';
+ const divisor=isGreen?6:3;
+ const kgPerFeresula=isGreen?102:51; // divisor * 17 kg
+ const dryKg=kg/divisor;
+ const feresula=dryKg/FERESULA_KG;
+ const rawBePerKg=rate*divisor;
+ const rawBePerFeresula=rate*kgPerFeresula;
+ return {
+  redKg:kg,pricePerKg:rate,lotCost,moneyPaid:paid,unpaid,
+  ratioMode:isGreen?'green':'jenfel',
+  ratioLabel:isGreen?'Green (6:1)':'Jenfel (3:1)',
+  dryKg,feresula,rawBePerKg,rawBePerFeresula
+ };
+}
+
+function updateCoffeeLiveCalc(){
+ const kg=Number($('coffeeRedKg').value)||0;
+ const rate=Number($('coffeePriceKg').value)||0;
+ const paidRaw=$('coffeeMoneyPaidInput').value;
+ const lotCost=kg*rate;
+ const paid=paidRaw===''?lotCost:(Number(paidRaw)||0);
+ const ratioMode=$('coffeeRatioMode').value==='green'?'green':'jenfel';
+ const m=computeLotMetrics(kg,rate,paid,ratioMode);
+ $('coffeeLiveCalc').innerHTML=`
+  <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+   <span>Lot value: <b>${money(m.lotCost)}</b></span>
+   <span>Paid: <b class="money">${money(m.moneyPaid)}</b></span>
+   <span>Due: <b>${money(m.unpaid)}</b></span>
+  </div>
+  <div class="tiny" style="margin-top:6px">
+   ${esc(m.ratioLabel)} dry yield: <b>${m.dryKg.toFixed(2)} kg</b> = <b>${m.feresula.toFixed(2)} feresula</b> (17 kg) · Raw cost/feresula: <b>${money(m.rawBePerFeresula)}</b>
+  </div>`;
+}
+
+function saveCoffeeLot(){
+ const editId=$('editCoffeeId').value;
+ const date=String($('coffeeDate').value||'').trim()||localDate();
+ const redKg=Number($('coffeeRedKg').value);
+ const pricePerKg=Number($('coffeePriceKg').value);
+ const paidRaw=$('coffeeMoneyPaidInput').value;
+ const ratioMode=$('coffeeRatioMode').value==='green'?'green':'jenfel';
+ const note=String($('coffeeNote').value||'').trim();
+
+ if(!Number.isFinite(redKg)||redKg<=0){toast('Enter red cherry kg greater than 0.');return}
+ if(!Number.isFinite(pricePerKg)||pricePerKg<=0){toast('Enter 1kg price greater than 0.');return}
+ const defaultTotal=redKg*pricePerKg;
+ const moneyPaid=paidRaw===''?defaultTotal:Number(paidRaw);
+ if(!Number.isFinite(moneyPaid)||moneyPaid<0){toast('Enter valid money paid.');return}
+
+ if(editId){
+  const item=db.coffeeLots.find(c=>c.id===editId);
+  if(!item)return;
+  const prev={date:item.date,redKg:item.redKg,pricePerKg:item.pricePerKg,moneyPaid:item.moneyPaid,ratioMode:item.ratioMode,note:item.note};
+  item.date=date;item.redKg=redKg;item.pricePerKg=pricePerKg;item.moneyPaid=moneyPaid;item.ratioMode=ratioMode;item.note=note;item.updatedAt=new Date().toISOString();
+  if(!persist(()=>Object.assign(item,prev)))return;
+  toast('Coffee lot updated.');
+ }else{
+  const entry={id:crypto.randomUUID(),date,redKg,pricePerKg,moneyPaid,ratioMode,note,createdAt:new Date().toISOString()};
+  db.coffeeLots.push(entry);
+  if(!persist(()=>db.coffeeLots.pop()))return;
+  toast(`Saved ${redKg} kg @ ${pricePerKg} ETB/kg (Paid: ${money(moneyPaid)}).`);
+ }
+ resetCoffeeForm();
+}
+
+function resetCoffeeForm(){
+ $('editCoffeeId').value='';
+ $('coffeeDate').value=localDate();
+ $('coffeeRedKg').value='';
+ $('coffeePriceKg').value='';
+ $('coffeeMoneyPaidInput').value='';
+ $('coffeeRatioMode').value='jenfel';
+ $('coffeeNote').value='';
+ $('coffeeFormTitle').textContent='Record daily coffee & money paid';
+ $('saveCoffeeBtn').textContent='Save coffee & money';
+ $('cancelCoffeeEditBtn').classList.add('hidden');
+ updateCoffeeLiveCalc();
+}
+
+window.editCoffeeLot=id=>{
+ const item=db.coffeeLots.find(c=>c.id===id);
+ if(!item)return;
+ $('editCoffeeId').value=item.id;
+ $('coffeeDate').value=item.date;
+ $('coffeeRedKg').value=item.redKg;
+ $('coffeePriceKg').value=item.pricePerKg;
+ $('coffeeMoneyPaidInput').value=item.moneyPaid;
+ $('coffeeRatioMode').value=item.ratioMode||'jenfel';
+ $('coffeeNote').value=item.note||'';
+ $('coffeeFormTitle').textContent=`Edit coffee lot (${item.date})`;
+ $('saveCoffeeBtn').textContent='Update coffee lot';
+ $('cancelCoffeeEditBtn').classList.remove('hidden');
+ updateCoffeeLiveCalc();
+ $('coffeeRedKg').focus();
+};
+
+window.addCoffeePayment=id=>{
+ const item=db.coffeeLots.find(c=>c.id===id);
+ if(!item)return;
+ const currentCost=item.redKg*item.pricePerKg;
+ const remaining=Math.max(0,currentCost-item.moneyPaid);
+ const raw=prompt(`Add money paid for ${item.date} (${item.redKg} kg @ ${item.pricePerKg} ETB/kg).\nRemaining balance: ${remaining.toFixed(2)} ETB\nEnter amount to add (ETB):`,remaining>0?remaining.toFixed(2):'');
+ if(raw===null)return;
+ const addAmt=Number(raw);
+ if(!Number.isFinite(addAmt)||addAmt<=0){toast('Enter amount greater than 0.');return}
+ const prevPaid=item.moneyPaid;
+ item.moneyPaid=prevPaid+addAmt;
+ item.updatedAt=new Date().toISOString();
+ if(!persist(()=>{item.moneyPaid=prevPaid}))return;
+ toast(`Added ${money(addAmt)} paid.`);
+};
+
+window.deleteCoffeeLot=id=>{
+ const idx=db.coffeeLots.findIndex(c=>c.id===id);
+ if(idx===-1)return;
+ const item=db.coffeeLots[idx];
+ if(!confirm(`Delete coffee lot on ${item.date} (${item.redKg} kg)?`))return;
+ const removed=db.coffeeLots.splice(idx,1)[0];
+ if(!persist(()=>db.coffeeLots.splice(idx,0,removed)))return;
+ toast('Coffee lot deleted.');
+};
+
+function renderCoffeeTab(){
+ const lots=[...(db.coffeeLots||[])].sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||'').localeCompare(a.createdAt||''));
+ const totalKg=lots.reduce((s,c)=>s+(Number(c.redKg)||0),0);
+ const totalValue=lots.reduce((s,c)=>s+((Number(c.redKg)||0)*(Number(c.pricePerKg)||0)),0);
+ const totalPaid=lots.reduce((s,c)=>s+(Number(c.moneyPaid)||0),0);
+ const avgPrice=totalKg>0?totalValue/totalKg:0;
+
+ const jenfelDryKg=totalKg/3;
+ const jenfelFer=jenfelDryKg/FERESULA_KG;
+ const greenDryKg=totalKg/6;
+ const greenFer=greenDryKg/FERESULA_KG;
+
+ const activeMode=$('coffeeRatioMode')?.value==='green'?'green':'jenfel';
+ $('coffeeTotalKg').textContent=totalKg.toLocaleString(undefined,{maximumFractionDigits:2})+' kg';
+ $('coffeeAvgPrice').textContent=money(avgPrice);
+ $('coffeeMoneyPaid').textContent=money(totalPaid);
+ $('coffeeEstFeresula').textContent=(activeMode==='green'?greenFer:jenfelFer).toFixed(2)+' fer';
+
+ $('coffeeRatioSummaryBox').innerHTML=`
+  <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+   <span><b>Jenfel (3:1):</b> ${jenfelDryKg.toFixed(2)} kg = <b>${jenfelFer.toFixed(2)} feresula</b> (BE: <b>${money(avgPrice*51)}/fer</b>)</span>
+   <span><b>Green (6:1):</b> ${greenDryKg.toFixed(2)} kg = <b>${greenFer.toFixed(2)} feresula</b> (BE: <b>${money(avgPrice*102)}/fer</b>)</span>
+  </div>
+  <div class="tiny" style="margin-top:4px">Total lot value: <b>${money(totalValue)}</b> · Money paid: <b class="money">${money(totalPaid)}</b> · Unpaid balance: <b>${money(totalValue-totalPaid)}</b></div>`;
+
+ $('coffeeLotsList').innerHTML=lots.length
+  ?`<div class="tablewrap"><table><thead><tr><th>Date / Lot</th><th>Red kg & Rate</th><th>Money Paid</th><th>Yield (17kg)</th><th></th></tr></thead><tbody>${lots.map(c=>{
+   const m=computeLotMetrics(c.redKg,c.pricePerKg,c.moneyPaid,c.ratioMode);
+   return `<tr>
+    <td><b>${esc(c.date)}</b>${c.note?`<div class="tiny">${esc(c.note)}</div>`:''}</td>
+    <td><b>${c.redKg} kg</b><div class="tiny">@ ${money(c.pricePerKg)}/kg (${money(m.lotCost)})</div></td>
+    <td><span class="money">${money(m.moneyPaid)}</span>${m.unpaid>0?`<div class="tiny" style="color:var(--warning)">Due: ${money(m.unpaid)}</div>`:'<div class="tiny">Settled</div>'}</td>
+    <td><b>${m.feresula.toFixed(2)} fer</b><div class="tiny">${m.dryKg.toFixed(1)} kg · ${esc(m.ratioLabel)}</div></td>
+    <td><div class="actions"><button class="btn secondary small" onclick="addCoffeePayment('${c.id}')">+ Pay</button><button class="btn secondary small" onclick="editCoffeeLot('${c.id}')">Edit</button><button class="btn danger small" onclick="deleteCoffeeLot('${c.id}')">Del</button></div></td>
+   </tr>`;
+  }).join('')}</tbody></table></div>`
+  :'<div class="empty">No coffee lots recorded yet. Enter red cherry kg, 1kg price, and money paid on the left.</div>';
+
+ updateCoffeeLiveCalc();
+}
+
+function exportCoffeeCsv(){
+ const lots=[...(db.coffeeLots||[])].sort((a,b)=>a.date.localeCompare(b.date));
+ download(`nexus-coffee-feresula-${localDate()}.csv`,csv([
+  ['Date','Note','Red Cherry kg','1kg Price ETB','Lot Value ETB','Money Paid ETB','Balance Due ETB','Ratio Mode','Dry kg','Feresula (17kg)','Raw Break-Even / Feresula ETB'],
+  ...lots.map(c=>{
+   const m=computeLotMetrics(c.redKg,c.pricePerKg,c.moneyPaid,c.ratioMode);
+   return [c.date,c.note||'',m.redKg,m.pricePerKg,m.lotCost,m.moneyPaid,m.unpaid,m.ratioLabel,m.dryKg.toFixed(2),m.feresula.toFixed(2),m.rawBePerFeresula.toFixed(2)];
+  })
+ ]));
+}
+
 function makeId(){
  let id;
  do{id='NX-'+Array.from(crypto.getRandomValues(new Uint8Array(4)),b=>b.toString(16).padStart(2,'0')).join('').toUpperCase()}
@@ -1524,7 +1785,7 @@ function daysSinceBackup(){
 }
 function updateBackupReminder(){
  const badge=$('backupBadge');
- const totalRecords=db.employees.length+db.attendance.length+db.payments.length;
+ const totalRecords=db.employees.length+db.attendance.length+db.payments.length+(db.coffeeLots?.length||0);
  if(totalRecords===0){badge.classList.add('hidden');return}
  const days=daysSinceBackup();
  if(days===null){badge.textContent='Backup';badge.classList.remove('hidden')}
@@ -1572,6 +1833,7 @@ function renderAll(){
   ?`<div class="status-chip-wrap">${absentList.map(e=>renderPersonButton(e,'Mark present','absent',`quickMarkPresentById('${e.id}')`)).join('')}</div>`
   :'<div class="empty">None absent today.</div>';
 
+ renderCoffeeTab();
  renderEmployees();
  runReport();
  runPayroll();
@@ -1579,7 +1841,7 @@ function renderAll(){
  updateUndoUI();
 
  const lastTxt=db.lastBackupAt?`Last backup: ${new Date(db.lastBackupAt).toLocaleString()}`:'No backup exported yet.';
- $('storageInfo').textContent=`${db.employees.length} staff · ${db.attendance.length} scans · ${db.payments.length} entries · ${estimateStorageKb()}. ${lastTxt}`;
+ $('storageInfo').textContent=`${db.employees.length} staff · ${db.attendance.length} scans · ${db.payments.length} entries · ${(db.coffeeLots?.length||0)} coffee lots · ${estimateStorageKb()}. ${lastTxt}`;
 }
 
 function getFilteredEmployees(){
@@ -1987,7 +2249,7 @@ function validBackup(x){
 function backup(){
  const prevBackup=db.lastBackupAt;
  db.lastBackupAt=new Date().toISOString();
- download(`nexus-backup-${localDate()}.json`,JSON.stringify({...db,system:'NEXUS Workforce & Payroll OS',backupCreatedAt:db.lastBackupAt},null,2),'application/json');
+ download(`nexus-backup-${localDate()}.json`,JSON.stringify({...db,system:'NEXUS Workforce & Coffee OS',backupCreatedAt:db.lastBackupAt},null,2),'application/json');
  persist(()=>{db.lastBackupAt=prevBackup});
  toast('Backup downloaded.');
 }
@@ -2001,7 +2263,8 @@ function restoreFile(file){
    const snapshot=JSON.parse(JSON.stringify(db));
    const employees=(x.employees||[]).map(e=>({...e,payCycle:normalizeCycle(e.payCycle)}));
    const payments=(x.payments||[]).map(p=>({...p,type:normalizePayType(p.type),note:String(p.note||'')}));
-   db={...blankDB(),...x,employees,payments,lastBackupAt:new Date().toISOString()};
+   const coffeeLots=(x.coffeeLots||[]).map(c=>({...c,redKg:Number(c.redKg)||0,pricePerKg:Number(c.pricePerKg)||0,moneyPaid:Number(c.moneyPaid)??0,ratioMode:c.ratioMode==='green'?'green':'jenfel',note:String(c.note||'')}));
+   db={...blankDB(),...x,employees,payments,coffeeLots,lastBackupAt:new Date().toISOString()};
    selectedIds.clear();lastScanUndo=null;
    if(!persist(()=>{db=snapshot}))return;
    toast('Backup restored.');
@@ -2043,7 +2306,7 @@ function stopCamera(){
  $('startScan').classList.remove('hidden');$('stopScan').classList.add('hidden');
 }
 
-const TAB_HEADINGS={home:'Home',scan:'Scan QR',employees:'Staff & QR',payroll:'Payroll',more:'More'};
+const TAB_HEADINGS={home:'Home',coffee:'Coffee & Feresula',scan:'Scan QR',employees:'Staff & QR',payroll:'Payroll',more:'More'};
 function openTab(tabName){
  document.querySelectorAll('.bottom-nav .nav-item').forEach(x=>x.classList.toggle('active',x.dataset.tab===tabName));
  document.querySelectorAll('.tabpage').forEach(x=>x.classList.toggle('hidden',x.id!=='tab-'+tabName));
@@ -2060,13 +2323,21 @@ $('jumpPaidListBtn').onclick=()=>{$('payStatusFilter').value='paid';runPayroll()
 $('jumpAbsentListBtn').onclick=()=>{runPayroll();$('whoIsAbsentCard')?.scrollIntoView({behavior:'smooth'})};
 $('quickRecordAdvanceBtn').onclick=()=>openPayModal({mode:'create',defaultType:'advance',allowSelectEmployee:true});
 $('payEmployeeSelect').addEventListener('change',()=>{modalState.employeeId=$('payEmployeeSelect').value;refreshModalSummary(modalState.employeeId)});
-$('homeNextUnassigned').onclick=editNextUnassigned;
 $('backupBadge').onclick=()=>openTab('more');
 document.querySelectorAll('[data-set-palette]').forEach(btn=>btn.addEventListener('click',()=>applyPalette(btn.dataset.setPalette,true)));
 $('lockBtn').onclick=lockScreen;
 $('scanBigOverlay').onclick=hideBigCheckCard;
 $('undoScanBtn').onclick=undoLastScan;
 $('todaySearchInput').addEventListener('input',renderAll);
+
+$('coffeeDate').value=localDate();
+['coffeeRedKg','coffeePriceKg','coffeeMoneyPaidInput','coffeeRatioMode'].forEach(id=>{
+ $(id).addEventListener('input',updateCoffeeLiveCalc);
+ $(id).addEventListener('change',()=>{updateCoffeeLiveCalc();renderCoffeeTab()});
+});
+$('saveCoffeeBtn').onclick=saveCoffeeLot;
+$('cancelCoffeeEditBtn').onclick=resetCoffeeForm;
+$('exportCoffeeCsvBtn').onclick=exportCoffeeCsv;
 
 $('toggleScanSoundBtn').onclick=()=>{
  soundEnabled=!soundEnabled;
