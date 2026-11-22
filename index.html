@@ -834,6 +834,11 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
      <option value="weekly" selected>Weekly</option>
      <option value="monthly">Monthly</option>
     </select>
+    <label for="newQrActive">QR card status</label>
+    <select id="newQrActive">
+     <option value="1" selected>Active — can scan attendance</option>
+     <option value="0">Deactivated — blocks QR scan</option>
+    </select>
     <label for="newQrId">QR card ID (max 17 chars)</label>
     <div class="row">
      <input id="newQrId" maxlength="17" placeholder="Tap Generate">
@@ -903,7 +908,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     </div>
 
     <div class="row">
-     <div style="flex:3"><input id="employeeSearch" placeholder="Search name, unassigned, #tag, daily/weekly/monthly, QR ID..."></div>
+     <div style="flex:3"><input id="employeeSearch" placeholder="Search name, unassigned, deactivated, #tag, daily/weekly/monthly, QR ID..."></div>
      <button class="btn secondary small" id="clearSearch" type="button" style="flex:0 0 auto;min-height:44px">Clear</button>
     </div>
 
@@ -1095,13 +1100,14 @@ function roundRectPath(ctx,x,y,w,h,r){
 
 function makeBrandedCardCanvas(emp){
  const qrCanvas=makeOfflineQr(emp.qrId);
+ const isDeactivated=emp.active===false;
  const W=440,H=596,c=document.createElement('canvas');c.width=W;c.height=H;const ctx=c.getContext('2d');
  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
- ctx.fillStyle='#091e34';ctx.fillRect(0,0,W,90);
+ ctx.fillStyle=isDeactivated?'#7f1d1d':'#091e34';ctx.fillRect(0,0,W,90);
  ctx.fillStyle='#ffffff';ctx.textAlign='center';ctx.font='800 22px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
  ctx.fillText('NEXUS',W/2,38);
- ctx.fillStyle='#bae6fd';ctx.font='600 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
- ctx.fillText('WORKFORCE & PAYROLL PASS',W/2,66);
+ ctx.fillStyle=isDeactivated?'#fecaca':'#bae6fd';ctx.font='600 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+ ctx.fillText(isDeactivated?'DEACTIVATED PASS':'WORKFORCE & PAYROLL PASS',W/2,66);
  if(emp.batchNum){
   ctx.fillStyle='#dff2fc';roundRectPath(ctx,W-132,102,112,26,13);ctx.fill();
   ctx.fillStyle='#0284c7';ctx.font='700 11px ui-monospace,SFMono-Regular,Menlo,monospace';
@@ -1112,12 +1118,12 @@ function makeBrandedCardCanvas(emp){
  ctx.strokeStyle='#c7dff0';ctx.lineWidth=1.5;ctx.strokeRect(qrX-10,qrY-10,qrSize+20,qrSize+20);
  ctx.drawImage(qrCanvas,qrX,qrY,qrSize,qrSize);
  const isUnassigned=!emp.name||emp.name===emp.qrId;
- ctx.fillStyle='#091e34';ctx.font='800 25px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+ ctx.fillStyle=isDeactivated?'#b91c1c':'#091e34';ctx.font='800 25px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
  ctx.fillText(isUnassigned?'UNASSIGNED PASS':emp.name,W/2,410);
- ctx.fillStyle='#dff2fc';ctx.fillRect((W-210)/2,432,210,30);
- ctx.fillStyle='#0284c7';ctx.font='700 15px ui-monospace,SFMono-Regular,Menlo,monospace';
+ ctx.fillStyle=isDeactivated?'#fee2e2':'#dff2fc';ctx.fillRect((W-210)/2,432,210,30);
+ ctx.fillStyle=isDeactivated?'#dc2626':'#0284c7';ctx.font='700 15px ui-monospace,SFMono-Regular,Menlo,monospace';
  ctx.fillText(emp.qrId,W/2,448);
- const info=[emp.batchNum?`#${emp.batchNum}`:'',emp.extra,cycleLabel(emp.payCycle)+' pay'].filter(Boolean).join(' · ');
+ const info=[emp.batchNum?`#${emp.batchNum}`:'',emp.extra,cycleLabel(emp.payCycle)+' pay',isDeactivated?'DEACTIVATED':''].filter(Boolean).join(' · ');
  ctx.fillStyle='#52708f';ctx.font='600 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
  ctx.fillText(info,W/2,480);
  ctx.fillStyle='#eef6fc';ctx.fillRect(0,H-76,W,76);
@@ -1125,7 +1131,7 @@ function makeBrandedCardCanvas(emp){
  ctx.fillText('NEXUS · WORKFORCE & COFFEE OS',W/2,H-42);
  ctx.fillStyle='#52708f';ctx.font='500 10px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
  ctx.fillText('Employee Attendance Pass',W/2,H-20);
- ctx.strokeStyle='#c7dff0';ctx.lineWidth=2;ctx.strokeRect(1,1,W-2,H-2);
+ ctx.strokeStyle=isDeactivated?'#fca5a5':'#c7dff0';ctx.lineWidth=2;ctx.strokeRect(1,1,W-2,H-2);
  return c;
 }
 </script>
@@ -1642,7 +1648,7 @@ function exportSalesCsv(){
 function exportCardsCsv(){
  const cards=db.employees;
  download(`nexus-qr-cards-${localDate()}.csv`,csv([
-  ['Card #','QR ID','Status','Worker Name','Phone/Notes','Wage ETB','Pay Cycle','Active'],
+  ['Card #','QR ID','Status','Worker Name','Phone/Notes','Wage ETB','Pay Cycle','QR Active'],
   ...cards.map(e=>[
    e.batchNum?`#${e.batchNum}`:'',
    e.qrId,
@@ -1651,7 +1657,7 @@ function exportCardsCsv(){
    e.extra||'',
    Number(e.dailyWage)||0,
    cycleLabel(e.payCycle),
-   e.active===false?'Inactive':'Active'
+   e.active===false?'Deactivated':'Active'
   ])
  ]));
  toast(`Exported ${cards.length} QR cards to CSV.`);
@@ -1785,7 +1791,8 @@ function getFilteredEmployees(){
  const q=($('employeeSearch').value||'').trim().toLowerCase();
  return db.employees.filter(e=>{
   const unass=isUnassignedPass(e)?'unassigned blank ready':'assigned';
-  return (e.name+' '+e.qrId+' '+(e.extra||'')+' '+cycleLabel(e.payCycle)+' '+unass+' '+(e.batchNum?`#${e.batchNum}`:'')).toLowerCase().includes(q);
+  const statusWord=e.active===false?'deactivated inactive off':'active on';
+  return (e.name+' '+e.qrId+' '+(e.extra||'')+' '+cycleLabel(e.payCycle)+' '+unass+' '+statusWord+' '+(e.batchNum?`#${e.batchNum}`:'')).toLowerCase().includes(q);
  });
 }
 function updateSelectionUI(){
@@ -1799,12 +1806,23 @@ function updateSelectionUI(){
  $('unassignedCount').textContent=unassigned.length;$('nextUnassignedBtn').disabled=unassigned.length===0;
 }
 window.toggleSelectEmp=(id,checked)=>{if(checked)selectedIds.add(id);else selectedIds.delete(id);renderEmployees()};
+window.toggleQrActive=id=>{
+ const emp=db.employees.find(e=>e.id===id);if(!emp)return;
+ const prevActive=emp.active!==false;
+ const nextActive=!prevActive;
+ if(!nextActive&&!confirm(`Deactivate QR card ${emp.qrId} (${personDisplayLabel(emp)})? Scanning will be blocked until reactivated.`))return;
+ emp.active=nextActive;
+ if($('editId').value===emp.id)$('newQrActive').value=nextActive?'1':'0';
+ if(!persist(()=>{emp.active=prevActive}))return;
+ if(currentQr===emp.qrId)showQr(emp);
+ toast(nextActive?`Activated QR ${emp.qrId}.`:`Deactivated QR ${emp.qrId}.`);
+};
 function renderEmployees(){
  const list=getFilteredEmployees();
  $('employeeList').innerHTML=list.length
   ?`<div class="tablewrap"><table><thead><tr><th style="width:32px"></th><th>Card / Staff</th><th>Wage & Cycle</th><th>Actions</th></tr></thead><tbody>${list.map(e=>{
    const sel=selectedIds.has(e.id),inactive=e.active===false,unass=isUnassignedPass(e);
-   return `<tr class="${sel?'selected-row':''}"><td><input type="checkbox" ${sel?'checked':''} onchange="toggleSelectEmp('${e.id}',this.checked)"></td><td>${e.batchNum?`<span class="tag seq">#${e.batchNum}</span>`:''}<b>${esc(unass?'Unassigned':e.name)}</b>${unass?'<span class="tag unassigned">Blank</span>':''}${inactive?'<span class="tag inactive">Off</span>':''}<div class="tiny">${esc(e.qrId)}</div></td><td><b>${money(e.dailyWage)}</b><div class="tiny">${esc(cycleLabel(e.payCycle))}</div></td><td><div class="row-actions"><button class="btn secondary small" onclick="editEmployee('${e.id}')">${unass?'Assign':'Edit'}</button><button class="btn secondary small" onclick="cardFor('${e.id}')">QR</button><button class="btn small" onclick="downloadOneQr('${e.id}')">PNG</button></div></td></tr>`;
+   return `<tr class="${sel?'selected-row':''}"><td><input type="checkbox" ${sel?'checked':''} onchange="toggleSelectEmp('${e.id}',this.checked)"></td><td>${e.batchNum?`<span class="tag seq">#${e.batchNum}</span>`:''}<b>${esc(unass?'Unassigned':e.name)}</b>${unass?'<span class="tag unassigned">Blank</span>':''}${inactive?'<span class="tag inactive">Deactivated</span>':''}<div class="tiny">${esc(e.qrId)}</div></td><td><b>${money(e.dailyWage)}</b><div class="tiny">${esc(cycleLabel(e.payCycle))}</div></td><td><div class="row-actions"><button class="btn secondary small" onclick="editEmployee('${e.id}')">${unass?'Assign':'Edit'}</button><button class="btn ${inactive?'outline':'danger'} small" onclick="toggleQrActive('${e.id}')">${inactive?'Activate':'Deactivate'}</button><button class="btn small" onclick="downloadOneQr('${e.id}')">PNG</button></div></td></tr>`;
   }).join('')}</tbody></table></div>`
   :'<div class="empty">No cards or staff match filter.</div>';
  updateSelectionUI();
@@ -1828,7 +1846,7 @@ function recordAttendance(raw){
  const id=String(raw||'').trim().toUpperCase(),emp=empByQr(id);
  if(!id){renderScanBanner('warn','Missing ID','!','Enter or scan a QR ID','No code detected.',true);triggerScanFeedback('warn');return}
  if(!emp){renderScanBanner('warn','Unknown Card','?','Not recognized',`Code <b>${esc(id)}</b> not found.`,true);showBigCheckCard('warn','Unknown Card','?','Not Recognized',`Code <b>${esc(id)}</b> not found.`,1600);triggerScanFeedback('warn');return}
- if(emp.active===false){renderScanBanner('warn','Inactive','!',emp.name,'Account inactive.',true);triggerScanFeedback('warn');return}
+ if(emp.active===false){renderScanBanner('warn','Deactivated QR','✕',personDisplayLabel(emp),`QR <b>${esc(emp.qrId)}</b> is deactivated.`,true);showBigCheckCard('warn','Deactivated QR','✕',personDisplayLabel(emp),`QR <b>${esc(emp.qrId)}</b> is deactivated.`,1800);triggerScanFeedback('warn');return}
  const date=localDate(),existing=db.attendance.find(a=>a.employeeId===emp.id&&a.date===date);
  if(existing){renderScanBanner('warn','Already In','✓',emp.name,`Checked in at <b>${esc(existing.time)}</b>.`,true);showBigCheckCard('warn','Already In','✓',emp.name,`Checked in at <b>${esc(existing.time)}</b>.`,1600);triggerScanFeedback('warn');return}
  const now=new Date(),entry={id:crypto.randomUUID(),employeeId:emp.id,qrId:emp.qrId,nameSnapshot:emp.name,date,time:now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'}),timestamp:now.toISOString(),dailyWage:Number(emp.dailyWage)||0};
@@ -1859,31 +1877,31 @@ window.deleteAttendance=attId=>{
 
 function saveEmployee(){
  const editId=$('editId').value,rawName=$('newName').value.trim(),extra=$('newExtra').value.trim(),qrId=$('newQrId').value.trim().toUpperCase();
- const wage=$('newWage').value===''?0:Number($('newWage').value),payCycle=normalizeCycle($('newPayCycle').value);
+ const wage=$('newWage').value===''?0:Number($('newWage').value),payCycle=normalizeCycle($('newPayCycle').value),active=$('newQrActive').value!=='0';
  if(!qrId||!Number.isFinite(wage)||wage<0){toast('Enter QR ID and valid wage.');return}
  if(db.employees.some(e=>e.qrId.toUpperCase()===qrId&&e.id!==editId)){toast('QR ID already in use.');return}
  const name=rawName||qrId;
  if(editId){
   const emp=db.employees.find(e=>e.id===editId);if(!emp)return;
-  const prev={name:emp.name,extra:emp.extra,qrId:emp.qrId,dailyWage:emp.dailyWage,payCycle:emp.payCycle};
-  emp.name=name;emp.extra=extra;emp.qrId=qrId;emp.dailyWage=wage;emp.payCycle=payCycle;
+  const prev={name:emp.name,extra:emp.extra,qrId:emp.qrId,dailyWage:emp.dailyWage,payCycle:emp.payCycle,active:emp.active};
+  emp.name=name;emp.extra=extra;emp.qrId=qrId;emp.dailyWage=wage;emp.payCycle=payCycle;emp.active=active;
   if(!persist(()=>Object.assign(emp,prev)))return;toast('Card & worker saved.');
  }else{
-  db.employees.push({id:crypto.randomUUID(),name,extra,qrId,dailyWage:wage,payCycle,active:true,createdAt:new Date().toISOString()});
+  db.employees.push({id:crypto.randomUUID(),name,extra,qrId,dailyWage:wage,payCycle,active,createdAt:new Date().toISOString()});
   if(!persist(()=>db.employees.pop()))return;toast('QR card saved.');
  }
  showQr(empByQr(qrId));resetEmployeeForm(false);
 }
 function resetEmployeeForm(clearQr=true){
  $('editId').value='';$('editBatchNum').value='';$('editBatchTotal').value='';$('newName').value='';$('newExtra').value='';$('newWage').value='';
- $('newPayCycle').value='weekly';$('newQrId').disabled=false;
+ $('newPayCycle').value='weekly';$('newQrActive').value='1';$('newQrId').disabled=false;
  if(clearQr){$('newQrId').value='';currentQr='';$('qrOutput').innerHTML='<span class="muted">QR card preview</span>';$('printQr').disabled=true;$('downloadQr').disabled=true}
  $('employeeFormTitle').textContent='Assign / create QR card';$('saveEmployee').textContent='Save & generate QR';$('cancelEdit').classList.add('hidden');
 }
 function previewQrFromId(rawId){
  const qrId=String(rawId||'').trim().toUpperCase();if(!qrId)return;
  const existing=empByQr(qrId);
- const draft={qrId,name:$('newName').value.trim()||existing?.name||qrId,extra:$('newExtra').value.trim()||existing?.extra||'',dailyWage:$('newWage').value!==''?Number($('newWage').value):(existing?.dailyWage??0),payCycle:normalizeCycle($('newPayCycle').value),batchNum:existing?.batchNum||null,batchTotal:existing?.batchTotal||null};
+ const draft={qrId,name:$('newName').value.trim()||existing?.name||qrId,extra:$('newExtra').value.trim()||existing?.extra||'',dailyWage:$('newWage').value!==''?Number($('newWage').value):(existing?.dailyWage??0),payCycle:normalizeCycle($('newPayCycle').value),active:$('newQrActive').value!=='0',batchNum:existing?.batchNum||null,batchTotal:existing?.batchTotal||null};
  try{currentQr=qrId;$('qrOutput').innerHTML='';$('qrOutput').appendChild(makeBrandedCardCanvas(draft));$('printQr').disabled=false;$('downloadQr').disabled=false}catch(err){toast(err.message)}
 }
 function generateBatchCards(){
@@ -1918,6 +1936,7 @@ function generateBatchCards(){
 function loadEmployeeIntoForm(e){
  $('editId').value=e.id;$('editBatchNum').value=e.batchNum||'';$('editBatchTotal').value=e.batchTotal||'';
  $('newName').value=isUnassignedPass(e)?'':e.name;$('newExtra').value=e.extra||'';$('newWage').value=e.dailyWage;$('newPayCycle').value=normalizeCycle(e.payCycle);
+ $('newQrActive').value=e.active===false?'0':'1';
  $('newQrId').value=e.qrId;$('newQrId').disabled=true;
  $('employeeFormTitle').textContent=(isUnassignedPass(e)?'Assign card ':'Edit ')+e.qrId;
  $('saveEmployee').textContent='Save assignment';$('cancelEdit').classList.remove('hidden');
@@ -2114,6 +2133,7 @@ $('newName').addEventListener('input',()=>{if($('newQrId').value.trim())previewQ
 $('newExtra').addEventListener('input',()=>{if($('newQrId').value.trim())previewQrFromId($('newQrId').value)});
 $('newWage').addEventListener('input',()=>{if($('newQrId').value.trim())previewQrFromId($('newQrId').value)});
 $('newPayCycle').addEventListener('change',()=>{if($('newQrId').value.trim())previewQrFromId($('newQrId').value)});
+$('newQrActive').addEventListener('change',()=>{if($('newQrId').value.trim())previewQrFromId($('newQrId').value)});
 $('saveEmployee').onclick=saveEmployee;$('cancelEdit').onclick=()=>resetEmployeeForm();
 $('quickNextCard').onclick=()=>{resetEmployeeForm(true);const id=makeId($('batchPrefix')?.value||'NX');$('newQrId').value=id;previewQrFromId(id)};
 $('generateBatchBtn').onclick=generateBatchCards;$('printBatchPreviewBtn').onclick=()=>printCardsList(batchDraftCards);
@@ -2150,4 +2170,4 @@ if('serviceWorker'in navigator&&location.protocol.startsWith('http')){
 }
 </script>
 </body>
-</html>
+ </html>
