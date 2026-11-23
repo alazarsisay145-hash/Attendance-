@@ -1125,8 +1125,13 @@ function makeBrandedCardCanvas(emp){
  ctx.strokeStyle='#c7dff0';ctx.lineWidth=1.5;ctx.strokeRect(qrX-10,qrY-10,qrSize+20,qrSize+20);
  ctx.drawImage(qrCanvas,qrX,qrY,qrSize,qrSize);
  const isUnassigned=!emp.name||emp.name===emp.qrId;
- ctx.fillStyle=isDeactivated?'#b91c1c':'#091e34';ctx.font='800 25px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
- ctx.fillText(isUnassigned?'UNASSIGNED PASS':emp.name,W/2,410);
+ if(isUnassigned){
+  ctx.fillStyle='#64748b';ctx.font='400 16px ui-monospace,SFMono-Regular,Menlo,monospace';
+  ctx.fillText(emp.batchNum?`#${emp.batchNum}`:emp.qrId,W/2,410);
+ }else{
+  ctx.fillStyle=isDeactivated?'#b91c1c':'#091e34';ctx.font='800 25px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+  ctx.fillText(emp.name,W/2,410);
+ }
  ctx.fillStyle=isDeactivated?'#fee2e2':'#dff2fc';ctx.fillRect((W-210)/2,432,210,30);
  ctx.fillStyle=isDeactivated?'#dc2626':'#0284c7';ctx.font='700 15px ui-monospace,SFMono-Regular,Menlo,monospace';
  ctx.fillText(emp.qrId,W/2,448);
@@ -2188,4 +2193,4 @@ if('serviceWorker'in navigator&&location.protocol.startsWith('http')){
 }
 </script>
 </body>
- </html>
+</html>
