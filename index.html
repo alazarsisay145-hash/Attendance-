@@ -500,7 +500,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   <button type="button" class="scan-hero" id="homeOpenScannerBtn">
    <div>
     <strong>Scan QR attendance</strong>
-    <span>Clean scan view · quick access beside nav bar</span>
+    <span>One scan per day · quick access beside nav bar</span>
    </div>
    <div class="scan-icon-box" aria-hidden="true">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -766,7 +766,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     <button class="scan-hero" id="startScan" type="button">
      <div>
       <strong>Start QR camera</strong>
-      <span>Every scan adds a new day / recording</span>
+      <span>Once per day per card</span>
      </div>
      <div class="scan-icon-box" aria-hidden="true">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -789,7 +789,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
       <div class="confirm-body">
        <div class="confirm-status" style="background:var(--accent-soft);color:var(--accent)">Ready</div>
        <b class="name" style="font-size:16px">Scan a pass or enter QR ID</b>
-       <div class="confirm-meta">Each scan adds a new recording & increments days.</div>
+       <div class="confirm-meta">Each pass can only be scanned once per day.</div>
       </div>
      </div>
     </div>
@@ -1870,6 +1870,16 @@ function recordAttendance(raw){
  if(!emp){renderScanBanner('warn','Unknown Card','?','Not recognized',`Code <b>${esc(id)}</b> not found.`,true);showBigCheckCard('warn','Unknown Card','?','Not Recognized',`Code <b>${esc(id)}</b> not found.`,1600);triggerScanFeedback('warn');return}
  if(emp.active===false){renderScanBanner('warn','Deactivated QR','✕',personDisplayLabel(emp),`QR <b>${esc(emp.qrId)}</b> is deactivated.`,true);showBigCheckCard('warn','Deactivated QR','✕',personDisplayLabel(emp),`QR <b>${esc(emp.qrId)}</b> is deactivated.`,1800);triggerScanFeedback('warn');return}
  const date=getScanDate();
+ const alreadyForDate=db.attendance.find(a=>a.employeeId===emp.id&&a.date===date);
+ if(alreadyForDate){
+  const msg=`Already recorded for <b>${esc(dateLabel(date))}</b> at <b>${esc(alreadyForDate.time)}</b>.`;
+  renderScanBanner('warn','Already Scanned','!',emp.name,msg,true);
+  showBigCheckCard('warn','Already Scanned','!',emp.name,msg,1800);
+  triggerScanFeedback('warn');
+  $('manualId').value='';lastScanned=id;lastScanAt=Date.now();
+  toast(`${emp.name} is already marked present on ${date}`);
+  return;
+ }
  const now=new Date(),entry={id:crypto.randomUUID(),employeeId:emp.id,qrId:emp.qrId,nameSnapshot:emp.name,date,time:now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'}),timestamp:now.toISOString(),dailyWage:Number(emp.dailyWage)||0};
  db.attendance.push(entry);
  if(!persist(()=>db.attendance.pop()))return;
