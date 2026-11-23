@@ -541,7 +541,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   </div>
  </section>
 
- <!-- COFFEE TRACKER: RED CHERRY + JENFEL ARRIVALS -> RATIOS (17 KG/FER) -> FERESULA SALES & PROFIT -->
+ <!-- COFFEE TRACKER -->
  <section id="tab-coffee" class="tabpage hidden">
   <section class="stats">
    <div class="stat"><small>Total weight bought</small><strong id="coffeeTotalKg">0 kg</strong></div>
@@ -754,7 +754,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   </div>
  </section>
 
- <!-- SCAN ATTENDANCE (Nav bar hides on Scan; side button stays available) -->
+ <!-- SCAN ATTENDANCE -->
  <section id="tab-scan" class="tabpage hidden">
   <div class="two-col">
    <div class="panel">
@@ -766,7 +766,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     <button class="scan-hero" id="startScan" type="button">
      <div>
       <strong>Start QR camera</strong>
-      <span>Hold QR pass in front of camera</span>
+      <span>Every scan adds a new day / recording</span>
      </div>
      <div class="scan-icon-box" aria-hidden="true">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -789,8 +789,15 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
       <div class="confirm-body">
        <div class="confirm-status" style="background:var(--accent-soft);color:var(--accent)">Ready</div>
        <b class="name" style="font-size:16px">Scan a pass or enter QR ID</b>
-       <div class="confirm-meta">Check-in confirmation appears here.</div>
+       <div class="confirm-meta">Each scan adds a new recording & increments days.</div>
       </div>
+     </div>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+     <div>
+      <label for="scanDateInput" style="margin-top:0">Recording date</label>
+      <input id="scanDateInput" type="date">
      </div>
     </div>
 
@@ -803,8 +810,8 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 
    <div class="panel">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-     <h2 style="margin:0">Present today</h2>
-     <input id="todaySearchInput" placeholder="Filter present..." style="max-width:170px;min-height:34px;padding:6px 10px;font-size:12.5px">
+     <h2 style="margin:0">Last scanned recordings</h2>
+     <input id="todaySearchInput" placeholder="Filter recordings..." style="max-width:170px;min-height:34px;padding:6px 10px;font-size:12.5px">
     </div>
     <div id="todayList"></div>
     <hr>
@@ -1285,6 +1292,7 @@ function persist(rollbackFn=null){
  catch(e){if(typeof rollbackFn==='function')rollbackFn();toast('Storage full or blocked. Export a backup first.');return false}
 }
 function localDate(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function getScanDate(){const val=String($('scanDateInput')?.value||'').trim();return /^\d{4}-\d{2}-\d{2}$/.test(val)?val:localDate()}
 function money(n){return (Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' ETB'}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function toast(s){$('toast').textContent=s;$('toast').classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.add('hidden'),2600)}
@@ -1765,20 +1773,29 @@ function renderAll(){
  const absentList=active.filter(e=>!presentIds.has(e.id));
 
  $('totalEmployees').textContent=active.length;
- $('presentToday').textContent=today.length;
+ $('presentToday').textContent=presentIds.size;
  $('absentToday').textContent=absentList.length;
  $('todayWages').textContent=money(today.reduce((s,a)=>s+Number(a.dailyWage||0),0));
 
  const filterQ=($('todaySearchInput')?.value||'').trim().toLowerCase();
- const sorted=[...today].sort((a,b)=>b.timestamp.localeCompare(a.timestamp)).filter(a=>!filterQ||(a.nameSnapshot+' '+a.qrId+' '+a.time).toLowerCase().includes(filterQ));
- $('todayList').innerHTML=sorted.length
-  ?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Time</th><th>Wage</th><th></th></tr></thead><tbody>${sorted.map(a=>`<tr><td><b>${esc(a.nameSnapshot)}</b><div class="tiny">${esc(a.qrId)}</div></td><td>${esc(a.time)}</td><td>${money(a.dailyWage)}</td><td><button class="btn danger small" onclick="deleteAttendance('${a.id}')">Del</button></td></tr>`).join('')}</tbody></table></div>`
-  :'<div class="empty">No scans today.</div>';
+ const latestScans=[...db.attendance]
+  .sort((a,b)=>(b.timestamp||'').localeCompare(a.timestamp||'')||b.date.localeCompare(a.date))
+  .filter(a=>!filterQ||(a.nameSnapshot+' '+a.qrId+' '+a.date+' '+a.time).toLowerCase().includes(filterQ))
+  .slice(0,50);
+ $('todayList').innerHTML=latestScans.length
+  ?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Date & Time</th><th>Wage</th><th></th></tr></thead><tbody>${latestScans.map(a=>{
+   const empDays=attendanceFor(a.employeeId).length;
+   return `<tr><td><b>${esc(a.nameSnapshot)}</b><span class="tag seq">Day ${empDays}</span><div class="tiny">${esc(a.qrId)}</div></td><td><b>${esc(a.date)}</b><div class="tiny">${esc(a.time)}</div></td><td>${money(a.dailyWage)}</td><td><button class="btn danger small" onclick="deleteAttendance('${a.id}')">Del</button></td></tr>`;
+  }).join('')}</tbody></table></div>`
+  :'<div class="empty">No scans recorded yet.</div>';
 
- const recent=[...today].sort((a,b)=>b.timestamp.localeCompare(a.timestamp)).slice(0,5);
+ const recent=[...db.attendance].sort((a,b)=>(b.timestamp||'').localeCompare(a.timestamp||'')||b.date.localeCompare(a.date)).slice(0,5);
  $('homeRecentList').innerHTML=recent.length
-  ?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Time</th><th>Wage</th></tr></thead><tbody>${recent.map(a=>`<tr><td><b>${esc(a.nameSnapshot)}</b></td><td>${esc(a.time)}</td><td>${money(a.dailyWage)}</td></tr>`).join('')}</tbody></table></div>`
-  :'<div class="empty">No scans today yet.</div>';
+  ?`<div class="tablewrap"><table><thead><tr><th>Employee</th><th>Date & Time</th><th>Wage</th></tr></thead><tbody>${recent.map(a=>{
+   const empDays=attendanceFor(a.employeeId).length;
+   return `<tr><td><b>${esc(a.nameSnapshot)}</b><span class="tag seq">Day ${empDays}</span></td><td>${esc(a.date)} · ${esc(a.time)}</td><td>${money(a.dailyWage)}</td></tr>`;
+  }).join('')}</tbody></table></div>`
+  :'<div class="empty">No scans recorded yet.</div>';
 
  $('homeAbsentButtons').innerHTML=absentList.length?`<div class="status-chip-wrap">${absentList.map(e=>renderPersonButton(e,'Present','absent',`quickMarkPresentById('${e.id}')`)).join('')}</div>`:'<div class="empty">All active staff present today.</div>';
  $('scanAbsentButtons').innerHTML=absentList.length?`<div class="status-chip-wrap">${absentList.map(e=>renderPersonButton(e,'Present','absent',`quickMarkPresentById('${e.id}')`)).join('')}</div>`:'<div class="empty">None absent today.</div>';
@@ -1847,17 +1864,17 @@ function recordAttendance(raw){
  if(!id){renderScanBanner('warn','Missing ID','!','Enter or scan a QR ID','No code detected.',true);triggerScanFeedback('warn');return}
  if(!emp){renderScanBanner('warn','Unknown Card','?','Not recognized',`Code <b>${esc(id)}</b> not found.`,true);showBigCheckCard('warn','Unknown Card','?','Not Recognized',`Code <b>${esc(id)}</b> not found.`,1600);triggerScanFeedback('warn');return}
  if(emp.active===false){renderScanBanner('warn','Deactivated QR','✕',personDisplayLabel(emp),`QR <b>${esc(emp.qrId)}</b> is deactivated.`,true);showBigCheckCard('warn','Deactivated QR','✕',personDisplayLabel(emp),`QR <b>${esc(emp.qrId)}</b> is deactivated.`,1800);triggerScanFeedback('warn');return}
- const date=localDate(),existing=db.attendance.find(a=>a.employeeId===emp.id&&a.date===date);
- if(existing){renderScanBanner('warn','Already In','✓',emp.name,`Checked in at <b>${esc(existing.time)}</b>.`,true);showBigCheckCard('warn','Already In','✓',emp.name,`Checked in at <b>${esc(existing.time)}</b>.`,1600);triggerScanFeedback('warn');return}
+ const date=getScanDate();
  const now=new Date(),entry={id:crypto.randomUUID(),employeeId:emp.id,qrId:emp.qrId,nameSnapshot:emp.name,date,time:now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'}),timestamp:now.toISOString(),dailyWage:Number(emp.dailyWage)||0};
  db.attendance.push(entry);
  if(!persist(()=>db.attendance.pop()))return;
  lastScanUndo={entry:{...entry}};
- const meta=`<b>${esc(dateLabel(date))}</b> · <b>${esc(entry.time)}</b> · <span class="money">${esc(money(entry.dailyWage))}</span>`;
- renderScanBanner('success','Successfully Registered','✓',emp.name,meta,true);
- showBigCheckCard('success','Successfully Registered','✓',emp.name,meta,1800);
+ const totalDays=attendanceFor(emp.id).length;
+ const meta=`<b>Day ${totalDays}</b> · <b>${esc(dateLabel(date))}</b> · <b>${esc(entry.time)}</b> · <span class="money">${esc(money(entry.dailyWage))}</span>`;
+ renderScanBanner('success',`Day ${totalDays} Recorded`,'✓',emp.name,meta,true);
+ showBigCheckCard('success',`Day ${totalDays} Recorded`,'✓',emp.name,meta,1800);
  triggerScanFeedback('success');
- $('manualId').value='';lastScanned=id;lastScanAt=Date.now();toast(`${emp.name} — registered`);
+ $('manualId').value='';lastScanned=id;lastScanAt=Date.now();toast(`${emp.name} — Day ${totalDays} recorded`);
 }
 
 function undoLastScan(){
@@ -2090,6 +2107,7 @@ $('exportNotesCsvBtn').onclick=exportNotesCsv;
 /* Coffee events */
 $('arrivalDate').value=localDate();
 $('saleDate').value=localDate();
+$('scanDateInput').value=localDate();
 if(db.coffeeBatch){
  $('cherryRatioInput').value=db.coffeeBatch.cherryRatio||5;
  $('jenfelRatioInput').value=db.coffeeBatch.jenfelRatio||2.5;
